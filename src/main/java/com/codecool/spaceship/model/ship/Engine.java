@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.Level;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.UpgradeNotAvailable;
 import com.codecool.spaceship.model.Upgradeable;
@@ -9,43 +10,29 @@ import java.util.Map;
 
 public class Engine implements Upgradeable {
 
-    private static final int MAX_LEVEL = 5;
-    private static final List<Map<Resource, Integer>> UPGRADE_COST = List.of(
-            //Level 1
-            Map.of(),
-            //Level 2
-            Map.of(
-                    Resource.SILICONE, 10,
-                    Resource.CRYSTAL, 5
-            ),
-            //Level 3
-            Map.of(
-                    Resource.SILICONE, 25,
-                    Resource.CRYSTAL, 5
-            ),
-            //Level 4
-            Map.of(
-                    Resource.SILICONE, 100,
-                    Resource.CRYSTAL, 10
-            ),
-            //Level 5
-            Map.of(
-                    Resource.SILICONE, 150,
-                    Resource.CRYSTAL, 20,
-                    Resource.PLUTONIUM, 5
-            )
-    );
-    private static final List<Double> SPEED_VALUES = List.of(
-            //Level 1
-            1.0,
-            //Level 2
-            2.5,
-            //Level 3
-            5.0,
-            //Level 4
-            8.0,
-            //Level 5
-            10.0
+    private static final List<Level<Double>> LEVELS = List.of(
+            new Level<>(1, 1.0, Map.of()),
+            new Level<>(2, 2.5,
+                    Map.of(
+                            Resource.SILICONE, 10,
+                            Resource.CRYSTAL, 5
+                    )),
+            new Level<>(3, 5.0,
+                    Map.of(
+                            Resource.SILICONE, 25,
+                            Resource.CRYSTAL, 5
+                    )),
+            new Level<>(4, 7.5,
+                    Map.of(
+                            Resource.SILICONE, 100,
+                            Resource.CRYSTAL, 10
+                    )),
+            new Level<>(5, 10.0,
+                    Map.of(
+                            Resource.SILICONE, 150,
+                            Resource.CRYSTAL, 20,
+                            Resource.PLUTONIUM, 5
+                    ))
     );
     private int currentLevelIndex;
 
@@ -55,26 +42,26 @@ public class Engine implements Upgradeable {
 
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
-        if (getCurrentLevel() == MAX_LEVEL) {
+        if (getCurrentLevel() == LEVELS.size()) {
             throw new UpgradeNotAvailable("Already at max level");
         } else {
-            return UPGRADE_COST.get(getCurrentLevel());
+            return LEVELS.get(currentLevelIndex + 1).cost();
         }
     }
 
     @Override
     public void upgrade() {
-        if (getCurrentLevel() < MAX_LEVEL) {
+        if (getCurrentLevel() < LEVELS.size()) {
             currentLevelIndex++;
         }
     }
 
     @Override
     public int getCurrentLevel() {
-        return currentLevelIndex + 1;
+        return LEVELS.get(currentLevelIndex).level();
     }
 
     public double getSpeed() {
-        return SPEED_VALUES.get(currentLevelIndex);
+        return LEVELS.get(currentLevelIndex).effect();
     }
 }

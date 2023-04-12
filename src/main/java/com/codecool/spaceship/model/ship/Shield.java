@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
 
+import com.codecool.spaceship.model.Level;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.UpgradeNotAvailable;
 import com.codecool.spaceship.model.Upgradeable;
@@ -10,74 +11,61 @@ import java.util.Map;
 
 public class Shield implements Upgradeable {
 
-    private static final int MAX_LEVEL = 5;
-    private static final List<Map<Resource, Integer>> UPGRADE_COST = List.of(
-            //Level 1
-            Map.of(),
-            //Level 2
-            Map.of(
-                    Resource.CRYSTAL, 20
-            ),
-            //Level 3
-            Map.of(
-                    Resource.CRYSTAL, 40,
-                    Resource.SILICONE, 10
-            ),
-            //Level 4
-            Map.of(
-                    Resource.CRYSTAL, 100,
-                    Resource.SILICONE, 20
-            ),
-            //Level 5
-            Map.of(
-                    Resource.CRYSTAL, 150,
-                    Resource.SILICONE, 40,
-                    Resource.PLUTONIUM, 5
-            )
-    );
-    private static final List<Integer> MAX_ENERGY_VALUES = List.of(
-            //Level 1
-            20,
-            //Level 2
-            50,
-            //Level 3
-            100,
-            //Level 4
-            150,
-            //Level 5
-            200
+    private static final List<Level<Integer>> LEVELS = List.of(
+            new Level<>(1, 20, Map.of()),
+            new Level<>(2, 50,
+                    Map.of(
+                            Resource.CRYSTAL, 20
+                    )),
+            new Level<>(3, 100,
+                    Map.of(
+                            Resource.CRYSTAL, 40,
+                            Resource.SILICONE, 10
+                    )),
+            new Level<>(4, 150,
+                    Map.of(
+                            Resource.CRYSTAL, 100,
+                            Resource.SILICONE, 20
+                    )),
+            new Level<>(
+                    5, 200,
+                    Map.of(
+                            Resource.CRYSTAL, 150,
+                            Resource.SILICONE, 40,
+                            Resource.PLUTONIUM, 5
+                    ))
     );
     private int currentLevelIndex;
     private int currentEnergy;
 
     public Shield() {
         currentLevelIndex = 0;
-        currentEnergy = MAX_ENERGY_VALUES.get(0);
+        currentEnergy = LEVELS.get(0).effect();
     }
 
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
-        if (getCurrentLevel() == MAX_LEVEL) {
+        if (getCurrentLevel() == LEVELS.size()) {
             throw new UpgradeNotAvailable("Already at max level");
         } else {
-            return UPGRADE_COST.get(getCurrentLevel());
+            return LEVELS.get(currentLevelIndex + 1).cost();
         }
     }
 
     @Override
     public void upgrade() {
-        if (getCurrentLevel() < MAX_LEVEL) {
+        if (getCurrentLevel() < LEVELS.size()) {
             currentLevelIndex++;
         }
     }
 
     @Override
     public int getCurrentLevel() {
-        return currentLevelIndex + 1;
+        return LEVELS.get(currentLevelIndex).level();
     }
 
     public int getMaxEnergy() {
-        return MAX_ENERGY_VALUES.get(currentLevelIndex);
+        return LEVELS.get(currentLevelIndex).effect();
     }
 
     public int getCurrentEnergy() {
@@ -85,7 +73,7 @@ public class Shield implements Upgradeable {
     }
 
     public void repair(int amount) {
-        currentEnergy = Math.min(currentEnergy + amount ,getMaxEnergy());
+        currentEnergy = Math.min(currentEnergy + amount, getMaxEnergy());
     }
 
     public void damage(int amount) {
