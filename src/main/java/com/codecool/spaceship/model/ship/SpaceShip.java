@@ -1,9 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
-import com.codecool.spaceship.model.Upgradeable;
-
-import java.util.List;
 
 public abstract class SpaceShip {
 
@@ -41,7 +38,13 @@ public abstract class SpaceShip {
     }
 
     public void setCurrentMission(Mission mission) {
-        currentMission = mission;
+        if (currentMission == null) {
+            currentMission = mission;
+        }
+    }
+
+    public void endMission() {
+        currentMission = null;
     }
 
     public int getShieldEnergy() {
@@ -64,7 +67,4 @@ public abstract class SpaceShip {
         return engine.getSpeed();
     }
 
-    public List<Upgradeable> getUpgradeables() {
-        return List.of(shield, engine);
-    }
 }
