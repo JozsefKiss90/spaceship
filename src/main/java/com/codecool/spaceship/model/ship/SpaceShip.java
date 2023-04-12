@@ -56,7 +56,11 @@ public abstract class SpaceShip {
         shield.setCurrentStrength(newStrength);
     }
 
+    public double getSpeed() {
+        return engine.getSpeed();
+    }
+
     public List<Upgradeable> getUpgradeables() {
-        return List.of(shield);
+        return List.of(shield, engine);
     }
 }
