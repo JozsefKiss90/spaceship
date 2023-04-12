@@ -75,7 +75,7 @@ public class BaseStorage implements Upgradeable {
             if (quantity <= storedQuantity) {
                 storedItems.replace(resource, storedQuantity - quantity);
             } else throw new StorageException();
-        }
+        } else throw new StorageException();
     }
 
     @Override
