@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.ship;
+package com.codecool.spaceship.model.ship.shipparts;
 
 public enum Color {
     EMERALD,

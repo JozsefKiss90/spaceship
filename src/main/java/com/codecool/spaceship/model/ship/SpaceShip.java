@@ -1,13 +1,20 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
+import com.codecool.spaceship.model.Upgradeable;
+import com.codecool.spaceship.model.ship.shipparts.Color;
+import com.codecool.spaceship.model.ship.shipparts.Engine;
+import com.codecool.spaceship.model.ship.shipparts.Shield;
+import com.codecool.spaceship.model.ship.shipparts.ShipPart;
+
+import java.util.List;
 
 public abstract class SpaceShip {
 
     private String name;
     private Color color;
-    private final Engine engine;
-    private final Shield shield;
+    protected final Engine engine;
+    protected final Shield shield;
     private Mission currentMission;
 
     protected SpaceShip(String name, Color color) {
@@ -66,5 +73,7 @@ public abstract class SpaceShip {
     public double getSpeed() {
         return engine.getSpeed();
     }
+    public abstract List<ShipPart> getParts();
+    public abstract Upgradeable getPart(ShipPart part) throws Exception;
 
 }

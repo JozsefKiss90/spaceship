@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.ship;
+package com.codecool.spaceship.model.ship.shipparts;
 
 import com.codecool.spaceship.model.Level;
 import com.codecool.spaceship.model.Resource;
@@ -8,37 +8,34 @@ import com.codecool.spaceship.model.Upgradeable;
 import java.util.List;
 import java.util.Map;
 
-public class Engine implements Upgradeable {
+public class Drill implements Upgradeable {
 
-    private static final List<Level<Double>> LEVELS = List.of(
-            new Level<>(1, 1.0, Map.of()),
-            new Level<>(2, 2.5,
+    private static final List<Level<Integer>> LEVELS = List.of(
+            new Level<>(1, 5, Map.of()),
+            new Level<>(2, 10,
                     Map.of(
-                            Resource.SILICONE, 10,
-                            Resource.CRYSTAL, 5
-                    )),
-            new Level<>(3, 5.0,
-                    Map.of(
-                            Resource.SILICONE, 25,
-                            Resource.CRYSTAL, 5
-                    )),
-            new Level<>(4, 7.5,
-                    Map.of(
-                            Resource.SILICONE, 100,
+                            Resource.METAL, 20,
                             Resource.CRYSTAL, 10
                     )),
-            new Level<>(5, 10.0,
+            new Level<>(3, 20,
                     Map.of(
-                            Resource.SILICONE, 150,
-                            Resource.CRYSTAL, 20,
-                            Resource.PLUTONIUM, 5
+                            Resource.METAL, 100,
+                            Resource.CRYSTAL, 50
+                    )),
+            new Level<>(4, 35,
+                    Map.of(
+                            Resource.METAL, 200,
+                            Resource.CRYSTAL, 100
+                    )),
+            new Level<>(5, 50,
+                    Map.of(
+                            Resource.METAL, 400,
+                            Resource.CRYSTAL, 150,
+                            Resource.PLUTONIUM, 10
                     ))
     );
     private int currentLevelIndex;
 
-    public Engine() {
-        currentLevelIndex = 0;
-    }
 
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
@@ -61,7 +58,7 @@ public class Engine implements Upgradeable {
         return LEVELS.get(currentLevelIndex).level();
     }
 
-    public double getSpeed() {
+    public int getEfficiency() {
         return LEVELS.get(currentLevelIndex).effect();
     }
 }
