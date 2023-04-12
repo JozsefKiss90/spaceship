@@ -57,16 +57,16 @@ public class Shield implements Upgradeable {
 
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
-        if (currentLevelIndex + 1 == MAX_LEVEL) {
+        if (getCurrentLevel() == MAX_LEVEL) {
             throw new UpgradeNotAvailable("Already at max level");
         } else {
-            return UPGRADE_COST.get(currentLevelIndex + 1);
+            return UPGRADE_COST.get(getCurrentLevel());
         }
     }
 
     @Override
     public void upgrade() {
-        if (currentLevelIndex < MAX_LEVEL) {
+        if (getCurrentLevel() < MAX_LEVEL) {
             currentLevelIndex++;
         }
     }
