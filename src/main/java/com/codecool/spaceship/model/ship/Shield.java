@@ -50,6 +50,11 @@ public class Shield implements Upgradeable {
     private int currentLevelIndex;
     private int currentStrength;
 
+    public Shield() {
+        currentLevelIndex = 0;
+        currentStrength = MAX_STRENGTH_VALUES.get(0);
+    }
+
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
         if (currentLevelIndex + 1 == MAX_LEVEL) {
