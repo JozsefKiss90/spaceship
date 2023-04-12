@@ -35,7 +35,7 @@ public class Shield implements Upgradeable {
                     Resource.PLUTONIUM, 5
             )
     );
-    private static final List<Integer> MAX_STRENGTH_VALUES = List.of(
+    private static final List<Integer> MAX_ENERGY_VALUES = List.of(
             //Level 1
             20,
             //Level 2
@@ -48,11 +48,11 @@ public class Shield implements Upgradeable {
             200
     );
     private int currentLevelIndex;
-    private int currentStrength;
+    private int currentEnergy;
 
     public Shield() {
         currentLevelIndex = 0;
-        currentStrength = MAX_STRENGTH_VALUES.get(0);
+        currentEnergy = MAX_ENERGY_VALUES.get(0);
     }
 
     @Override
@@ -76,15 +76,19 @@ public class Shield implements Upgradeable {
         return currentLevelIndex + 1;
     }
 
-    public int getMaxStrength() {
-        return MAX_STRENGTH_VALUES.get(currentLevelIndex);
+    public int getMaxEnergy() {
+        return MAX_ENERGY_VALUES.get(currentLevelIndex);
     }
 
-    public int getCurrentStrength() {
-        return currentStrength;
+    public int getCurrentEnergy() {
+        return currentEnergy;
     }
 
-    public void setCurrentStrength(int newStrength) {
-        currentStrength = Math.min(getMaxStrength(), Math.max(0, newStrength));
+    public void repair(int amount) {
+        currentEnergy = Math.min(currentEnergy + amount ,getMaxEnergy());
+    }
+
+    public void damage(int amount) {
+        currentEnergy = Math.max(currentEnergy - amount, 0);
     }
 }

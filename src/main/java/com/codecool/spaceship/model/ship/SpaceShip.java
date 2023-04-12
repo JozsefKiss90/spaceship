@@ -44,16 +44,20 @@ public abstract class SpaceShip {
         currentMission = mission;
     }
 
-    public int getShieldStrength() {
-        return shield.getCurrentStrength();
+    public int getShieldEnergy() {
+        return shield.getCurrentEnergy();
     }
 
-    public int getShieldMaxStrength() {
-        return shield.getMaxStrength();
+    public int getShieldMaxEnergy() {
+        return shield.getMaxEnergy();
     }
 
-    public void setShieldStrength(int newStrength) {
-        shield.setCurrentStrength(newStrength);
+    public void repairShield(int amount) {
+        shield.repair(amount);
+    }
+
+    public void damageShield(int amount) {
+        shield.damage(amount);
     }
 
     public double getSpeed() {
