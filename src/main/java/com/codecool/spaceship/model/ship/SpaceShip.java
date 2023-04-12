@@ -1,6 +1,9 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
+import com.codecool.spaceship.model.Upgradeable;
+
+import java.util.List;
 
 public abstract class SpaceShip {
 
@@ -41,4 +44,19 @@ public abstract class SpaceShip {
         currentMission = mission;
     }
 
+    public int getShieldStrength() {
+        return shield.getCurrentStrength();
+    }
+
+    public int getShieldMaxStrength() {
+        return shield.getMaxStrength();
+    }
+
+    public void setShieldStrength(int newStrength) {
+        shield.setCurrentStrength(newStrength);
+    }
+
+    public List<Upgradeable> getUpgradeables() {
+        return List.of(shield);
+    }
 }
