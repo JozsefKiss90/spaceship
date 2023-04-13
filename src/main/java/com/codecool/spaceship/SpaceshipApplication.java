@@ -17,4 +17,8 @@ public class SpaceshipApplication {
         return new Base("Base One");
     }
 
+	@Bean
+	public Base base() {
+		return new Base("Base One");
+	}
 }
