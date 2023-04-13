@@ -5,6 +5,7 @@ import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
+import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +37,13 @@ public class ShipService {
                 .findFirst();
     }
 
+    public boolean upgradeShip(int id, ShipPart part) throws ShipNotFoundException {
+        SpaceShip ship = findShipById(id);
+        return base.upgradeShipPart(ship, part);
+    }
+
     public boolean updateShipAttributes(int id, String name, Color color) throws ShipNotFoundException {
-        SpaceShip ship = getShipById(id);
+        SpaceShip ship = findShipById(id);
         if (name != null) {
             ship.setName(name);
         }
@@ -48,11 +54,11 @@ public class ShipService {
     }
 
     public boolean deleteShip(int id) throws ShipNotFoundException {
-        SpaceShip ship = getShipById(id);
+        SpaceShip ship = findShipById(id);
         return base.deleteShip(ship);
     }
 
-    private SpaceShip getShipById(int id) throws ShipNotFoundException {
+    private SpaceShip findShipById(int id) throws ShipNotFoundException {
         return base.getAllShips().stream()
                 .filter(s -> s.getId() == id)
                 .findFirst()
