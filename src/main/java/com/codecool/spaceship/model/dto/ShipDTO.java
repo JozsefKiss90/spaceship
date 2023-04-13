@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.dto;
 
-import com.codecool.spaceship.model.NoSuchPartException;
+
+import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 

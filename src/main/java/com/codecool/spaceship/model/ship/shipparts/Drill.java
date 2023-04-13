@@ -2,7 +2,7 @@ package com.codecool.spaceship.model.ship.shipparts;
 
 import com.codecool.spaceship.model.Level;
 import com.codecool.spaceship.model.Resource;
-import com.codecool.spaceship.model.UpgradeNotAvailable;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.Upgradeable;
 
 import java.util.List;
@@ -38,9 +38,9 @@ public class Drill implements Upgradeable {
 
 
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
+    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (getCurrentLevel() == LEVELS.size()) {
-            throw new UpgradeNotAvailable("Already at max level");
+            throw new UpgradeNotAvailableException("Already at max level");
         } else {
             return LEVELS.get(currentLevelIndex + 1).cost();
         }
