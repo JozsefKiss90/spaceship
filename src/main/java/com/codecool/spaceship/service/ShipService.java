@@ -1,5 +1,6 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
@@ -33,5 +34,19 @@ public class ShipService {
                 .filter(ship -> ship.getId() == id)
                 .map(ShipDTO::new)
                 .findFirst();
+    }
+
+    public boolean updateShipAttributes(int id, String name, Color color) throws ShipNotFoundException {
+        SpaceShip ship = ships.stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(ShipNotFoundException::new);
+        if (name != null) {
+            ship.setName(name);
+        }
+        if (color != null) {
+            ship.setColor(color);
+        }
+        return true;
     }
 }

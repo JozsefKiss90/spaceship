@@ -1,13 +1,11 @@
 package com.codecool.spaceship.controller;
 
+import com.codecool.spaceship.model.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -35,5 +33,14 @@ public class ShipController {
         return ship
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Boolean> updateShipAttributes(@PathVariable int id, @RequestBody ShipDTO shipDTO) {
+        try {
+            return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
+        } catch (ShipNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
