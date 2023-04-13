@@ -1,41 +1,35 @@
 package com.codecool.spaceship.model;
 
+import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Hangar implements Upgradeable {
 
-    private static final List<Map<Resource,Integer>> UPGRADE_NEEDS = new ArrayList<>(){{
-        add(null);
-        add(new HashMap<>(){{
-            put(Resource.METAL,5);
-        }});
-        add(new HashMap<>(){{
-            put(Resource.METAL,20);
-            put(Resource.SILICONE,20);
-        }});
-        add(new HashMap<>(){{
-            put(Resource.METAL,100);
-            put(Resource.SILICONE,100);
-            put(Resource.CRYSTAL,50);
-        }});
-        add(new HashMap<>(){{
-            put(Resource.METAL,500);
-            put(Resource.SILICONE,150);
-            put(Resource.CRYSTAL,100);
-        }});
+    private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
+        add(new Level<>(1, 2, null));
+        add(new Level<>(2, 4, new HashMap<>() {{
+            put(Resource.METAL, 5);
+        }}));
+        add(new Level<>(3, 6, new HashMap<>() {{
+            put(Resource.METAL, 20);
+            put(Resource.SILICONE, 20);
+        }}));
+        add(new Level<>(4, 8, new HashMap<>() {{
+            put(Resource.METAL, 100);
+            put(Resource.SILICONE, 100);
+            put(Resource.CRYSTAL, 50);
+        }}));
+        add(new Level<>(5, 10, new HashMap<>() {{
+            put(Resource.METAL, 500);
+            put(Resource.SILICONE, 150);
+            put(Resource.CRYSTAL, 100);
+        }}));
     }};
 
-    private static final List<Integer> UPGRADE_CAPACITIES = new ArrayList<>() {{
-        add(2);
-        add(4);
-        add(6);
-        add(8);
-        add(10);
-    }};
-
-    private static final int MAX_LEVEL_INDEX = 4;
+    private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size()-1;
 
     private int currentLevelIndex;
     private final Set<SpaceShip> shipSet;
@@ -46,29 +40,34 @@ public class Hangar implements Upgradeable {
     }
 
     public int getCurrentCapacity() {
-        return UPGRADE_CAPACITIES.get(currentLevelIndex);
+        return UPGRADE_LEVELS.get(currentLevelIndex).effect();
     }
 
-    private int getCurrentAvailableDocs() {
+    private int getCurrentAvailableDocks() {
         return getCurrentCapacity() - shipSet.size();
     }
 
     public void addShip(SpaceShip ship) throws StorageException {
-        if (getCurrentAvailableDocs()>0) {
+        if (getCurrentAvailableDocks() > 0) {
             shipSet.add(ship);
-        } else throw new StorageException();
+        } else throw new StorageException("No more docks available");
     }
 
-    //get miner ships
+    public Set<MinerShip> getMinerShips() {
+        return shipSet.stream().filter(ship->ship instanceof MinerShip).map(ship->(MinerShip) ship).collect(Collectors.toSet());
+    }
+    public Set<SpaceShip> getAllShips() {
+        return new HashSet<>(shipSet);
+    }
 
     //get scout ships
 
     //get fighter ships
 
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
-        if (currentLevelIndex < MAX_LEVEL_INDEX) return UPGRADE_NEEDS.get(currentLevelIndex + 1);
-        throw new UpgradeNotAvailable();
+    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
+        if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex+1).cost());
+        throw new UpgradeNotAvailableException("Already on max level");
     }
 
     @Override

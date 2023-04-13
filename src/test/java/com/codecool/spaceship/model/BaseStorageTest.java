@@ -121,7 +121,7 @@ class BaseStorageTest {
         baseStorage.upgrade();
         baseStorage.upgrade();
         baseStorage.upgrade();
-        assertThrows(UpgradeNotAvailable.class, baseStorage::getUpgradeCost);
+        assertThrows(UpgradeNotAvailableException.class, baseStorage::getUpgradeCost);
     }
 
     @Test

@@ -1,8 +1,21 @@
 package com.codecool.spaceship.model;
 
+import java.util.UUID;
+
 public class Base {
     private String name;
     //private User user;
-    private BaseStorage storage;
-    private Hangar hangar;
+    private final UUID id;
+    private final BaseStorage storage;
+    private final Hangar hangar;
+
+    public Base(String name) {
+        this.name = name;
+        this.id=UUID.randomUUID();
+        this.storage = new BaseStorage();
+        this.hangar = new Hangar();
+    }
+
+    
+
 }
