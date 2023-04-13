@@ -56,6 +56,12 @@ public class Hangar implements Upgradeable {
         } else throw new StorageException("No more docks available");
     }
 
+    public void removeShip(SpaceShip ship) throws StorageException {
+        if (shipSet.contains(ship)) {
+            shipSet.remove(ship);
+        } else throw new StorageException("No such ship in the docks");
+    }
+
     public Set<MinerShip> getMinerShips() {
         return shipSet.stream().filter(ship->ship instanceof MinerShip).map(ship->(MinerShip) ship).collect(Collectors.toSet());
     }

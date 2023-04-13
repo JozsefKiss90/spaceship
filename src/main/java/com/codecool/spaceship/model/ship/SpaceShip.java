@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
+import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -9,6 +10,7 @@ import com.codecool.spaceship.model.ship.shipparts.Shield;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class SpaceShip {
 
@@ -76,5 +78,6 @@ public abstract class SpaceShip {
     }
     public abstract List<ShipPart> getPartTypes();
     public abstract Upgradeable getPart(ShipPart part) throws NoSuchPartException;
+    public abstract Map<Resource,Integer> getCost();
 
 }
