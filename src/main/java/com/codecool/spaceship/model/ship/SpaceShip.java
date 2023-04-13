@@ -74,7 +74,7 @@ public abstract class SpaceShip {
     public double getSpeed() {
         return engine.getSpeed();
     }
-    public abstract List<ShipPart> getParts();
+    public abstract List<ShipPart> getPartTypes();
     public abstract Upgradeable getPart(ShipPart part) throws NoSuchPartException;
 
 }

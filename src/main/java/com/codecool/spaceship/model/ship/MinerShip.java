@@ -10,6 +10,7 @@ import java.util.List;
 
 public class MinerShip extends SpaceShip {
 
+    private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL);
     private final Drill drill;
 
     public MinerShip(String name, Color color) {
@@ -22,8 +23,8 @@ public class MinerShip extends SpaceShip {
     }
 
     @Override
-    public List<ShipPart> getParts() {
-        return List.of(ShipPart.CARGO, ShipPart.SHIELD, ShipPart.DRILL);
+    public List<ShipPart> getPartTypes() {
+        return PARTS;
     }
 
     @Override

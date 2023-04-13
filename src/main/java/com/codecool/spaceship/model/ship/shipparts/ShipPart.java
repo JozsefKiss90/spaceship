@@ -4,5 +4,5 @@ public enum ShipPart {
     ENGINE,
     SHIELD,
     DRILL,
-    CARGO
+    STORAGE
 }
