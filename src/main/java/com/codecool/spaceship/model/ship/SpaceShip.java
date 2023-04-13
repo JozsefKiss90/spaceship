@@ -14,6 +14,8 @@ import java.util.Map;
 
 public abstract class SpaceShip {
 
+    private static int idCounter = 1;
+    private final int id;
     private String name;
     private Color color;
     protected final Engine engine;
@@ -21,10 +23,15 @@ public abstract class SpaceShip {
     private Mission currentMission;
 
     protected SpaceShip(String name, Color color) {
+        this.id = idCounter++;
         this.name = name;
         this.color = color;
         engine = new Engine();
         shield = new Shield();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
