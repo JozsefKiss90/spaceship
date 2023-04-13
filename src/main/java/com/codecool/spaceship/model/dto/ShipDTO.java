@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.dto;
 
-import com.codecool.spaceship.model.NoSuchPartException;
+import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public record ShipDTO(int id, String name, String type, Color color, Set<PartDTO> parts, boolean available) {
 
     public ShipDTO(SpaceShip ship) {
-        this(ship.getId(), ship.getName(), getShipType(ship), ship.getColor(),getShipParts(ship), ship.isAvailable());
+        this(ship.getId(), ship.getName(), getShipType(ship), ship.getColor(), getShipParts(ship), ship.isAvailable());
     }
 
     private static String getShipType(SpaceShip ship) {

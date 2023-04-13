@@ -40,7 +40,7 @@ public class BaseStorage implements Upgradeable {
         return UPGRADE_LEVELS.get(currentLevelIndex).effect();
     }
 
-    private int getCurrentAvailableStorageSpace() {
+    public int getCurrentAvailableStorageSpace() {
         return getCurrentCapacity() - storedItems.values().stream().mapToInt(i -> i).sum();
     }
 
