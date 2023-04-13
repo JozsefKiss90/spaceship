@@ -14,7 +14,8 @@ public class BaseController {
  private Base base;
  @Autowired
  public BaseController(Base base) {
-   this.base = base;
+   this.base = new Base();
+   base.setName("BaseOne");
  }
 
  @GetMapping("getBase")
