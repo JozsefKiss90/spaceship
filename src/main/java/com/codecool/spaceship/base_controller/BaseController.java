@@ -8,18 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/base/")
+@RequestMapping("/api/base")
 public class BaseController {
 
  private Base base;
- @Autowired
- public BaseController(Base base) {
-   this.base = new Base();
-   base.setName("BaseOne");
+ public BaseController(@Autowired Base base) {
+        this.base = base;
+        base.setName("BaseOne");
+    }
+
+ @GetMapping("/getBase")
+ public BaseDTO getBase() {
+   return new BaseDTO(base.getName());
  }
 
- @GetMapping("getBase")
- public BaseDTO getBase() {
-   return new BaseDTO(getBase().name());
- }
+
 }
