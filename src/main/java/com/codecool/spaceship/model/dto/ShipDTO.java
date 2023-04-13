@@ -1,4 +1,4 @@
-package com.codecool.spaceship.controller.dto;
+package com.codecool.spaceship.model.dto;
 
 import com.codecool.spaceship.model.NoSuchPartException;
 import com.codecool.spaceship.model.ship.SpaceShip;
