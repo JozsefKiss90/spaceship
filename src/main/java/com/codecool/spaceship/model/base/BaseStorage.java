@@ -1,37 +1,32 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.base;
+
+import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 
 import java.util.*;
 
 public class BaseStorage implements Upgradeable {
-    private static final List<Map<Resource, Integer>> UPGRADE_NEEDS = new ArrayList<>() {
-        {
-            add(null);
-            add(new HashMap<>() {{
-                put(Resource.METAL, 5);
-            }});
-            add(new HashMap<>() {{
-                put(Resource.METAL, 20);
-                put(Resource.SILICONE, 10);
-            }});
-            add(new HashMap<>() {{
-                put(Resource.METAL, 200);
-                put(Resource.SILICONE, 100);
-            }});
-            add(new HashMap<>() {{
-                put(Resource.METAL, 400);
-                put(Resource.SILICONE, 150);
-                put(Resource.PLUTONIUM, 50);
-            }});
-        }
-    };
-    private static final List<Integer> UPGRADE_CAPACITIES = new ArrayList<>() {{
-        add(20);
-        add(50);
-        add(100);
-        add(500);
-        add(1000);
+    private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
+        add(new Level<>(1, 20, null));
+        add(new Level<>(2, 50, new HashMap<>() {{
+            put(Resource.METAL, 5);
+        }}));
+        add(new Level<>(3, 100, new HashMap<>() {{
+            put(Resource.METAL, 20);
+            put(Resource.SILICONE, 10);
+        }}));
+        add(new Level<>(4, 500, new HashMap<>() {{
+            put(Resource.METAL, 200);
+            put(Resource.SILICONE, 100);
+        }}));
+        add(new Level<>(5, 1000, new HashMap<>() {{
+            put(Resource.METAL, 400);
+            put(Resource.SILICONE, 150);
+            put(Resource.PLUTONIUM, 50);
+        }}));
     }};
-    private static final int MAX_LEVEL_INDEX = 4;
+    private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size() - 1;
 
     private int currentLevelIndex;
     private final Map<Resource, Integer> storedItems;
@@ -42,7 +37,7 @@ public class BaseStorage implements Upgradeable {
     }
 
     public int getCurrentCapacity() {
-        return UPGRADE_CAPACITIES.get(currentLevelIndex);
+        return UPGRADE_LEVELS.get(currentLevelIndex).effect();
     }
 
     private int getCurrentAvailableStorageSpace() {
@@ -74,14 +69,14 @@ public class BaseStorage implements Upgradeable {
             int storedQuantity = storedItems.get(resource);
             if (quantity <= storedQuantity) {
                 storedItems.replace(resource, storedQuantity - quantity);
-            } else throw new StorageException();
-        } else throw new StorageException();
+            } else throw new StorageException("Not enough resource");
+        } else throw new StorageException("No such resource stored");
     }
 
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailable {
-        if (currentLevelIndex < MAX_LEVEL_INDEX) return UPGRADE_NEEDS.get(currentLevelIndex + 1);
-        throw new UpgradeNotAvailable();
+    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
+        if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex + 1).cost());
+        throw new UpgradeNotAvailableException("Already on max level");
     }
 
     @Override

@@ -1,5 +1,9 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.base;
 
+import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.base.BaseStorage;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -121,7 +125,7 @@ class BaseStorageTest {
         baseStorage.upgrade();
         baseStorage.upgrade();
         baseStorage.upgrade();
-        assertThrows(UpgradeNotAvailable.class, baseStorage::getUpgradeCost);
+        assertThrows(UpgradeNotAvailableException.class, baseStorage::getUpgradeCost);
     }
 
     @Test
