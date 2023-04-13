@@ -1,4 +1,8 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.base;
+
+import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 
 import java.util.*;
 

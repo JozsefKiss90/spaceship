@@ -3,7 +3,7 @@ package com.codecool.spaceship.model.ship.shipparts;
 
 import com.codecool.spaceship.model.Level;
 import com.codecool.spaceship.model.Resource;
-import com.codecool.spaceship.model.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.Upgradeable;
 
 import java.util.List;

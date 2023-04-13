@@ -1,5 +1,8 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.base;
 
+import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
@@ -43,7 +46,7 @@ public class Hangar implements Upgradeable {
         return UPGRADE_LEVELS.get(currentLevelIndex).effect();
     }
 
-    private int getCurrentAvailableDocks() {
+    public int getCurrentAvailableDocks() {
         return getCurrentCapacity() - shipSet.size();
     }
 

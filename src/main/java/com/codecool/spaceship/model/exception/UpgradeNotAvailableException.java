@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.exception;
 
 public class UpgradeNotAvailableException extends Exception {
     public UpgradeNotAvailableException() {

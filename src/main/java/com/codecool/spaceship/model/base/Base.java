@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.base;
 
 import java.util.UUID;
 
@@ -16,6 +16,6 @@ public class Base {
         this.hangar = new Hangar();
     }
 
-    
+
 
 }
