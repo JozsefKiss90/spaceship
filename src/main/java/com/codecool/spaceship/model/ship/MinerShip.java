@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
@@ -26,7 +27,7 @@ public class MinerShip extends SpaceShip {
     }
 
     @Override
-    public Upgradeable getPart(ShipPart part) throws Exception {
+    public Upgradeable getPart(ShipPart part) throws NoSuchPartException {
         switch (part) {
             case ENGINE ->
             {
@@ -38,7 +39,7 @@ public class MinerShip extends SpaceShip {
             case DRILL -> {
                 return drill;
             }
-            default -> throw new Exception("No such part on this ship");
+            default -> throw new NoSuchPartException("No such part on this ship");
         }
     }
 }

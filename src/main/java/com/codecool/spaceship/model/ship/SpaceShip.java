@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
+import com.codecool.spaceship.model.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.Engine;
@@ -74,6 +75,6 @@ public abstract class SpaceShip {
         return engine.getSpeed();
     }
     public abstract List<ShipPart> getParts();
-    public abstract Upgradeable getPart(ShipPart part) throws Exception;
+    public abstract Upgradeable getPart(ShipPart part) throws NoSuchPartException;
 
 }
