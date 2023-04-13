@@ -62,17 +62,17 @@ public class Base {
     }
 
     public boolean addNewShip(SpaceShip ship) {
-        boolean hasEnoughDocs = hangar.getCurrentAvailableDocks() > 0;
+        boolean hasEnoughDocks = hangar.getCurrentAvailableDocks() > 0;
         Map<Resource, Integer> cost = ship.getCost();
         boolean hasEnoughResource = hasEnoughResource(cost);
-        if (hasEnoughDocs && hasEnoughResource) {
+        if (hasEnoughDocks && hasEnoughResource) {
             removeResources(cost);
             try {
                 hangar.addShip(ship);
             } catch (Exception ignored) {
             }
         }
-        return hasEnoughDocs && hasEnoughResource;
+        return hasEnoughDocks && hasEnoughResource;
     }
 
     public boolean deleteShip(SpaceShip ship) {
