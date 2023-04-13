@@ -8,6 +8,7 @@ import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,6 +37,14 @@ public class Base {
             hangar.addShip(new MinerShip("Eeny Meeny Miny Moe", Color.EMERALD));
         } catch (Exception ignored) {
         }
+    }
+
+    public BaseStorage getStorage() {
+        return storage;
+    }
+
+    public Hangar getHangar() {
+        return hangar;
     }
 
     public String getName() {

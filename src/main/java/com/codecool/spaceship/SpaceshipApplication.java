@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class SpaceshipApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpaceshipApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SpaceshipApplication.class, args);
+    }
 
 	@Bean
 	public Base base() {
