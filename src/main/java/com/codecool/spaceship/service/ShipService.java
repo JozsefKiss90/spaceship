@@ -7,6 +7,7 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,5 +26,12 @@ public class ShipService {
         return ships.stream()
                 .map(ShipDTO::new)
                 .collect(Collectors.toSet());
+    }
+
+    public Optional<ShipDTO> getShipByID(int id) {
+        return ships.stream()
+                .filter(ship -> ship.getId() == id)
+                .map(ShipDTO::new)
+                .findFirst();
     }
 }
