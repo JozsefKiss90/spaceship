@@ -43,4 +43,13 @@ public class ShipController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteShipById(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(shipService.deleteShip(id));
+        } catch (ShipNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

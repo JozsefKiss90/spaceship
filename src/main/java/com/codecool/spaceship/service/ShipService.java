@@ -37,10 +37,7 @@ public class ShipService {
     }
 
     public boolean updateShipAttributes(int id, String name, Color color) throws ShipNotFoundException {
-        SpaceShip ship = base.getAllShips().stream()
-                .filter(s -> s.getId() == id)
-                .findFirst()
-                .orElseThrow(ShipNotFoundException::new);
+        SpaceShip ship = getShipById(id);
         if (name != null) {
             ship.setName(name);
         }
@@ -48,5 +45,17 @@ public class ShipService {
             ship.setColor(color);
         }
         return true;
+    }
+
+    public boolean deleteShip(int id) throws ShipNotFoundException {
+        SpaceShip ship = getShipById(id);
+        return base.deleteShip(ship);
+    }
+
+    private SpaceShip getShipById(int id) throws ShipNotFoundException {
+        return base.getAllShips().stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(ShipNotFoundException::new);
     }
 }
