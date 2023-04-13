@@ -43,6 +43,9 @@ public class BaseController {
     public void upgradeStorage() {
         baseService.upgradeStorage();
     }
-
+    @PostMapping("/upgrade/hangar")
+    public void upgradeHangar() {
+        baseService.upgradeHangar();
+    }
 
 }

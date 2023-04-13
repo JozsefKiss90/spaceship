@@ -30,4 +30,8 @@ public class BaseService {
     public void upgradeStorage() {
         base.upgradeStorage();
     }
+
+    public void upgradeHangar() {
+        base.upgradeHangar();
+    }
 }
