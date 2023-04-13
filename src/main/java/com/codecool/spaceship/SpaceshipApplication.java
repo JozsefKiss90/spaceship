@@ -12,11 +12,6 @@ public class SpaceshipApplication {
         SpringApplication.run(SpaceshipApplication.class, args);
     }
 
-    @Bean
-    public Base base() {
-        return new Base("Base One");
-    }
-
 	@Bean
 	public Base base() {
 		return new Base("Base One");
