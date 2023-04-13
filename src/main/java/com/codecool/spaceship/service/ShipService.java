@@ -1,6 +1,6 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;

@@ -1,6 +1,6 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
