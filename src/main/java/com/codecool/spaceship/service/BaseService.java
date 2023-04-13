@@ -3,15 +3,16 @@ package com.codecool.spaceship.service;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.base.Base;
 import com.codecool.spaceship.model.ship.SpaceShip;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BaseService {
 
     private final Base base;
-
-    public BaseService() {
-        this.base = new Base("The Base Base");
+    @Autowired
+    public BaseService(Base base) {
+        this.base = base;
     }
 
     public Base getBase() {
