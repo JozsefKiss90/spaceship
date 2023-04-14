@@ -63,16 +63,9 @@ public class Hangar implements Upgradeable {
         } else return false;
     }
 
-    public Set<MinerShip> getMinerShips() {
-        return shipSet.stream().filter(ship->ship instanceof MinerShip).map(ship->(MinerShip) ship).collect(Collectors.toSet());
-    }
     public Set<SpaceShip> getAllShips() {
         return new HashSet<>(shipSet);
     }
-
-    //get scout ships
-
-    //get fighter ships
 
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {

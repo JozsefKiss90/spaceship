@@ -46,25 +46,6 @@ class HangarTest {
     }
 
     @Test
-    void getMinerShipsOneReturnedFromTwoShips() {
-        Hangar hangar = new Hangar();
-        try {
-            hangar.addShip(ship1);
-            hangar.addShip(ship3);
-        } catch (StorageException ignored) {
-        }
-        Set<MinerShip> expected = Set.of(ship1);
-        assertEquals(expected, hangar.getMinerShips());
-    }
-
-    @Test
-    void getMinerShipsEmpty() {
-        Hangar hangar = new Hangar();
-        Set<MinerShip> expected = Set.of();
-        assertEquals(expected, hangar.getMinerShips());
-    }
-
-    @Test
     void getAllShipsTwo() {
         Hangar hangar = new Hangar();
         try {

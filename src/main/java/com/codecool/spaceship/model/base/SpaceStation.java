@@ -87,10 +87,6 @@ public class SpaceStation {
         return new HashSet<>(hangar.getAllShips());
     }
 
-    public Set<MinerShip> getAvailableMinerShips() {
-        return hangar.getMinerShips().stream().filter(SpaceShip::isAvailable).collect(Collectors.toSet());
-    }
-
     public boolean upgradeShipPart(SpaceShip ship, ShipPart shipPart) {
         try {
             Upgradeable part = ship.getPart(shipPart);
