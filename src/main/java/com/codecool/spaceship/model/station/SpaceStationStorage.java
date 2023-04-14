@@ -56,7 +56,7 @@ public class SpaceStationStorage implements Upgradeable {
                 storedItems.put(resource, quantity);
             }
         } else {
-            throw new StorageException();
+            throw new StorageException("Not enough storage space");
         }
     }
 
