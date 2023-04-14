@@ -48,16 +48,16 @@ public class SpaceStationStorage implements Upgradeable {
         return new HashMap<>(storedItems);
     }
 
-    public void addResource(Resource resource, int quantity) throws StorageException {
+    public boolean addResource(Resource resource, int quantity) throws StorageException {
         if (quantity < getCurrentAvailableStorageSpace()) {
             if (storedItems.containsKey(resource)) {
                 storedItems.replace(resource, storedItems.get(resource) + quantity);
             } else {
                 storedItems.put(resource, quantity);
             }
-        } else {
-            throw new StorageException("Not enough storage space");
+            return true;
         }
+        throw new StorageException("Not enough storage space");
     }
 
     public boolean hasResource(Resource resource, int quantity) {
