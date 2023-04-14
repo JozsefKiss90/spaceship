@@ -29,7 +29,7 @@ class HangarTest {
         Hangar hangar = new Hangar();
         try {
             hangar.addShip(ship1);
-        } catch (Exception ignored) {
+        } catch (StorageException ignored) {
         }
         assertEquals(Set.of(ship1), hangar.getAllShips());
     }
@@ -51,7 +51,7 @@ class HangarTest {
         try {
             hangar.addShip(ship1);
             hangar.addShip(ship3);
-        } catch (Exception ignored) {
+        } catch (StorageException ignored) {
         }
         Set<MinerShip> expected = Set.of(ship1);
         assertEquals(expected, hangar.getMinerShips());
@@ -70,7 +70,7 @@ class HangarTest {
         try {
             hangar.addShip(ship1);
             hangar.addShip(ship3);
-        } catch (Exception ignored) {
+        } catch (StorageException ignored) {
         }
         Set<SpaceShip> expected = Set.of(ship1, ship3);
         assertEquals(expected, hangar.getAllShips());
@@ -92,7 +92,7 @@ class HangarTest {
         Map<Resource, Integer> actual = null;
         try {
             actual = hangar.getUpgradeCost();
-        } catch (Exception ignored) {
+        } catch (UpgradeNotAvailableException ignored) {
         }
         assertEquals(expected, actual);
     }
@@ -110,7 +110,7 @@ class HangarTest {
         Map<Resource, Integer> actual = null;
         try {
             actual = hangar.getUpgradeCost();
-        } catch (Exception ignored) {
+        } catch (UpgradeNotAvailableException ignored) {
         }
         assertEquals(expected, actual);
     }
