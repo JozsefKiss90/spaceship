@@ -5,6 +5,8 @@ import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +42,8 @@ public class ShipController {
     public ResponseEntity<Boolean> upgradeShipPart(@RequestParam int id, @RequestParam ShipPart part) {
         try {
             return ResponseEntity.ok(shipService.upgradeShip(id, part));
-        } catch (ShipNotFoundException e) {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
     }
 
@@ -58,8 +60,8 @@ public class ShipController {
     public ResponseEntity<Boolean> deleteShipById(@PathVariable int id) {
         try {
             return ResponseEntity.ok(shipService.deleteShip(id));
-        } catch (ShipNotFoundException e) {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
     }
 }

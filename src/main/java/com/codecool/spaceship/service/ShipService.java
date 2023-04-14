@@ -1,6 +1,9 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.base.Base;
+import com.codecool.spaceship.model.exception.NoSuchPartException;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.SpaceShip;
@@ -16,10 +19,10 @@ import java.util.stream.Collectors;
 @Service
 public class ShipService {
 
-    private final Base base;
+    private final SpaceStation base;
 
     @Autowired
-    public ShipService(Base base) {
+    public ShipService(SpaceStation base) {
         this.base = base;
     }
 
@@ -37,7 +40,7 @@ public class ShipService {
                 .findFirst();
     }
 
-    public boolean upgradeShip(int id, ShipPart part) throws ShipNotFoundException {
+    public boolean upgradeShip(int id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
         SpaceShip ship = findShipById(id);
         return base.upgradeShipPart(ship, part);
     }
@@ -53,7 +56,7 @@ public class ShipService {
         return true;
     }
 
-    public boolean deleteShip(int id) throws ShipNotFoundException {
+    public boolean deleteShip(int id) throws ShipNotFoundException, StorageException {
         SpaceShip ship = findShipById(id);
         return base.deleteShip(ship);
     }

@@ -44,6 +44,14 @@ public class SpaceStation {
         this.name = name;
     }
 
+    public SpaceStationStorage getStorage() {
+        return storage;
+    }
+
+    public Hangar getHangar() {
+        return hangar;
+    }
+
     private boolean hasEnoughResource(Map<Resource, Integer> cost) {
         return cost.entrySet().stream().allMatch(entry -> storage.hasResource(entry.getKey(), entry.getValue()));
     }
