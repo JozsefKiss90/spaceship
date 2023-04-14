@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.base;
+package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;

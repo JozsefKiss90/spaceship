@@ -1,13 +1,11 @@
-package com.codecool.spaceship.model.base;
+package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Hangar implements Upgradeable {
 
