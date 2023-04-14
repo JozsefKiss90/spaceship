@@ -3,6 +3,7 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
@@ -131,14 +132,81 @@ class SpaceStationTest {
     }
 
     @Test
-    void addResource() {
+    void upgradeShipPartShipNotInStation() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        assertThrows(StorageException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
     }
 
     @Test
-    void upgradeStorage() {
+    void upgradeShipPartShipNotAvailable() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        when(ship.getCost()).thenReturn(Map.of());
+        when(ship.isAvailable()).thenReturn(false);
+        try {
+            spaceStation.addNewShip(ship);
+        } catch (Exception ignored) {
+        }
+        assertThrows(UpgradeNotAvailableException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
     }
 
     @Test
-    void upgradeHangar() {
+    void upgradeShipPartNotEnoughResource() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        when(ship.getCost()).thenReturn(Map.of());
+        when(ship.isAvailable()).thenReturn(true);
+        try {
+            spaceStation.addNewShip(ship);
+            when(ship.getPart(ShipPart.DRILL)).thenReturn(drill);
+            when(drill.getUpgradeCost()).thenReturn(Map.of(Resource.METAL, 1));
+        } catch (Exception ignored) {
+        }
+        assertThrows(StorageException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
+    }
+
+    @Test
+    void addResourceSuccess() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        try {
+            assertTrue(spaceStation.addResource(Resource.METAL, 1));
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Test
+    void addResourceNotEnoughSpace() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        assertThrows(StorageException.class, () -> spaceStation.addResource(Resource.METAL, 21));
+    }
+
+    @Test
+    void upgradeStorageSuccess() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        try {
+            spaceStation.addResource(Resource.METAL,5);
+        } catch (Exception ignored) {
+        }
+        assertDoesNotThrow(spaceStation::upgradeStorage);
+    }
+
+    @Test
+    void upgradeStorageNotEnoughResource() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        assertThrows(StorageException.class,spaceStation::upgradeStorage);
+    }
+
+    @Test
+    void upgradeHangarSuccess() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        try {
+            spaceStation.addResource(Resource.METAL,5);
+        } catch (Exception ignored) {
+        }
+        assertDoesNotThrow(spaceStation::upgradeHangar);
+    }
+
+    @Test
+    void upgradeHangarNotEnoughResource() {
+        SpaceStation spaceStation = new SpaceStation("test");
+        assertThrows(StorageException.class,spaceStation::upgradeHangar);
     }
 }
