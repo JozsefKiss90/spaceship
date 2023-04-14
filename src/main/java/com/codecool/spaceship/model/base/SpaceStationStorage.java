@@ -6,7 +6,7 @@ import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 
 import java.util.*;
 
-public class BaseStorage implements Upgradeable {
+public class SpaceStationStorage implements Upgradeable {
     private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
         add(new Level<>(1, 20, null));
         add(new Level<>(2, 50, new HashMap<>() {{
@@ -31,7 +31,7 @@ public class BaseStorage implements Upgradeable {
     private int currentLevelIndex;
     private final Map<Resource, Integer> storedItems;
 
-    public BaseStorage() {
+    public SpaceStationStorage() {
         currentLevelIndex = 0;
         storedItems = new HashMap<>();
     }

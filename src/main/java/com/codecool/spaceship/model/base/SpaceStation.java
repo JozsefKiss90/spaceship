@@ -3,7 +3,6 @@ package com.codecool.spaceship.model.base;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -13,20 +12,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class Base {
+public class SpaceStation {
     private String name;
     //private User user;
     private final UUID id;
-    private final BaseStorage storage;
+    private final SpaceStationStorage storage;
     private final Hangar hangar;
 
-    public Base(String name) {
+    public SpaceStation(String name) {
         this.name = name;
         this.id = UUID.randomUUID();
-        this.storage = new BaseStorage();
+        this.storage = new SpaceStationStorage();
         this.hangar = new Hangar();
         addFirstShip();
     }
