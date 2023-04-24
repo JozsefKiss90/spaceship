@@ -50,18 +50,12 @@ public class Hangar implements Upgradeable {
 
     public boolean addShip(SpaceShip ship) throws StorageException {
         if (getCurrentAvailableDocks() > 0) {
-            if (!shipSet.contains(ship)) {
-                shipSet.add(ship);
-                return true;
-            } throw new StorageException("Ship already added");
+            return shipSet.add(ship);
         } throw new StorageException("No more docks available");
     }
 
-    public boolean removeShip(SpaceShip ship) throws StorageException {
-        if (shipSet.contains(ship)) {
-            shipSet.remove(ship);
-            return true;
-        } else throw new StorageException("No such ship in hangar");
+    public boolean removeShip(SpaceShip ship) {
+        return shipSet.contains(ship);
     }
 
     public Set<SpaceShip> getAllShips() {

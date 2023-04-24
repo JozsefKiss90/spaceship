@@ -56,7 +56,7 @@ public class ShipService {
         return true;
     }
 
-    public boolean deleteShip(int id) throws ShipNotFoundException, StorageException {
+    public boolean deleteShip(int id) throws ShipNotFoundException {
         SpaceShip ship = findShipById(id);
         return base.deleteShip(ship);
     }

@@ -66,9 +66,9 @@ class SpaceStationTest {
         when(ship.getCost()).thenReturn(Map.of());
         try {
             spaceStation.addNewShip(ship);
+            assertFalse(spaceStation.addNewShip(ship));
         } catch (StorageException ignored) {
         }
-        assertThrows(StorageException.class, () -> spaceStation.addNewShip(ship));
     }
 
     @Test
@@ -79,16 +79,13 @@ class SpaceStationTest {
             spaceStation.addNewShip(ship);
         } catch (StorageException ignored) {
         }
-        try {
-            assertTrue(spaceStation.deleteShip(ship));
-        } catch (StorageException ignored) {
-        }
+        assertTrue(spaceStation.deleteShip(ship));
     }
 
     @Test
     void deleteShipNoSuchShip() {
         SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class, () -> spaceStation.deleteShip(ship));
+        assertFalse(spaceStation.deleteShip(ship));
     }
 
     @Test
@@ -182,7 +179,7 @@ class SpaceStationTest {
     void upgradeStorageSuccess() {
         SpaceStation spaceStation = new SpaceStation("test");
         try {
-            spaceStation.addResource(Resource.METAL,5);
+            spaceStation.addResource(Resource.METAL, 5);
         } catch (Exception ignored) {
         }
         assertDoesNotThrow(spaceStation::upgradeStorage);
@@ -191,14 +188,14 @@ class SpaceStationTest {
     @Test
     void upgradeStorageNotEnoughResource() {
         SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class,spaceStation::upgradeStorage);
+        assertThrows(StorageException.class, spaceStation::upgradeStorage);
     }
 
     @Test
     void upgradeHangarSuccess() {
         SpaceStation spaceStation = new SpaceStation("test");
         try {
-            spaceStation.addResource(Resource.METAL,5);
+            spaceStation.addResource(Resource.METAL, 5);
         } catch (Exception ignored) {
         }
         assertDoesNotThrow(spaceStation::upgradeHangar);
@@ -207,6 +204,6 @@ class SpaceStationTest {
     @Test
     void upgradeHangarNotEnoughResource() {
         SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class,spaceStation::upgradeHangar);
+        assertThrows(StorageException.class, spaceStation::upgradeHangar);
     }
 }

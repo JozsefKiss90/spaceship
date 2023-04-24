@@ -1,12 +1,9 @@
 package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.Resource;
-import com.codecool.spaceship.model.dto.BaseDTO;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
+import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.BaseService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -20,34 +17,30 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/base")
-public class BaseController {
+public class SpaceStationController {
 
     private final BaseService baseService;
 
     @Autowired
-    public BaseController(BaseService baseService) {
+    public SpaceStationController(BaseService baseService) {
         this.baseService = baseService;
     }
 
     @GetMapping()
-    public ResponseEntity<BaseDTO> getBase() {
-        return ResponseEntity.ok(new BaseDTO(baseService.getBase()));
+    public ResponseEntity<SpaceStationDTO> getBase() {
+        return ResponseEntity.ok(new SpaceStationDTO(baseService.getBase()));
     }
 
     @PostMapping("/add/resources")
-    public ResponseEntity<Boolean> addResource(@RequestBody Map<Resource, Integer> resource) {
-        try {
-            resource.forEach((key, value) -> {
-                try {
-                    baseService.addResource(key, value);
-                } catch (StorageException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            return ResponseEntity.ok(true);
-        } catch (RuntimeException e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+    public ResponseEntity<Boolean> addResource(@RequestBody Map<Resource, Integer> resources) {
+        for (Resource resource : resources.keySet()) {
+            try {
+                baseService.addResource(resource, resources.get(resource));
+            } catch (StorageException e) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            }
         }
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/add/ship")
@@ -69,7 +62,7 @@ public class BaseController {
     }
 
     @PostMapping("/upgrade/hangar")
-    public ResponseEntity<Boolean>  upgradeHangar() {
+    public ResponseEntity<Boolean> upgradeHangar() {
         try {
             return ResponseEntity.ok(baseService.upgradeHangar());
         } catch (Exception e) {
