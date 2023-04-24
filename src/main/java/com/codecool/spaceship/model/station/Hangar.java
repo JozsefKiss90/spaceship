@@ -1,13 +1,11 @@
-package com.codecool.spaceship.model.base;
+package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Hangar implements Upgradeable {
 
@@ -32,7 +30,7 @@ public class Hangar implements Upgradeable {
         }}));
     }};
 
-    private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size()-1;
+    private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size() - 1;
 
     private int currentLevelIndex;
     private final Set<SpaceShip> shipSet;
@@ -50,33 +48,23 @@ public class Hangar implements Upgradeable {
         return getCurrentCapacity() - shipSet.size();
     }
 
-    public void addShip(SpaceShip ship) throws StorageException {
+    public boolean addShip(SpaceShip ship) throws StorageException {
         if (getCurrentAvailableDocks() > 0) {
-            shipSet.add(ship);
-        } else throw new StorageException("No more docks available");
+            return shipSet.add(ship);
+        } throw new StorageException("No more docks available");
     }
 
     public boolean removeShip(SpaceShip ship) {
-        if (shipSet.contains(ship)) {
-            shipSet.remove(ship);
-            return true;
-        } else return false;
+        return shipSet.contains(ship);
     }
 
-    public Set<MinerShip> getMinerShips() {
-        return shipSet.stream().filter(ship->ship instanceof MinerShip).map(ship->(MinerShip) ship).collect(Collectors.toSet());
-    }
     public Set<SpaceShip> getAllShips() {
         return new HashSet<>(shipSet);
     }
 
-    //get scout ships
-
-    //get fighter ships
-
     @Override
     public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
-        if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex+1).cost());
+        if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex + 1).cost());
         throw new UpgradeNotAvailableException("Already on max level");
     }
 

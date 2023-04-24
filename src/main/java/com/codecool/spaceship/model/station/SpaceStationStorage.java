@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.base;
+package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;
@@ -6,7 +6,7 @@ import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 
 import java.util.*;
 
-public class BaseStorage implements Upgradeable {
+public class SpaceStationStorage implements Upgradeable {
     private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
         add(new Level<>(1, 20, null));
         add(new Level<>(2, 50, new HashMap<>() {{
@@ -31,7 +31,7 @@ public class BaseStorage implements Upgradeable {
     private int currentLevelIndex;
     private final Map<Resource, Integer> storedItems;
 
-    public BaseStorage() {
+    public SpaceStationStorage() {
         currentLevelIndex = 0;
         storedItems = new HashMap<>();
     }
@@ -48,16 +48,16 @@ public class BaseStorage implements Upgradeable {
         return new HashMap<>(storedItems);
     }
 
-    public void addResource(Resource resource, int quantity) throws StorageException {
+    public boolean addResource(Resource resource, int quantity) throws StorageException {
         if (quantity < getCurrentAvailableStorageSpace()) {
             if (storedItems.containsKey(resource)) {
                 storedItems.replace(resource, storedItems.get(resource) + quantity);
             } else {
                 storedItems.put(resource, quantity);
             }
-        } else {
-            throw new StorageException();
+            return true;
         }
+        throw new StorageException("Not enough storage space");
     }
 
     public boolean hasResource(Resource resource, int quantity) {

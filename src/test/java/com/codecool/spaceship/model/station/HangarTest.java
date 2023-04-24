@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.base;
+package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
@@ -29,7 +29,7 @@ class HangarTest {
         Hangar hangar = new Hangar();
         try {
             hangar.addShip(ship1);
-        } catch (Exception ignored) {
+        } catch (StorageException ignored) {
         }
         assertEquals(Set.of(ship1), hangar.getAllShips());
     }
@@ -46,31 +46,12 @@ class HangarTest {
     }
 
     @Test
-    void getMinerShipsOneReturnedFromTwoShips() {
-        Hangar hangar = new Hangar();
-        try {
-            hangar.addShip(ship1);
-            hangar.addShip(ship3);
-        } catch (Exception ignored) {
-        }
-        Set<MinerShip> expected = Set.of(ship1);
-        assertEquals(expected, hangar.getMinerShips());
-    }
-
-    @Test
-    void getMinerShipsEmpty() {
-        Hangar hangar = new Hangar();
-        Set<MinerShip> expected = Set.of();
-        assertEquals(expected, hangar.getMinerShips());
-    }
-
-    @Test
     void getAllShipsTwo() {
         Hangar hangar = new Hangar();
         try {
             hangar.addShip(ship1);
             hangar.addShip(ship3);
-        } catch (Exception ignored) {
+        } catch (StorageException ignored) {
         }
         Set<SpaceShip> expected = Set.of(ship1, ship3);
         assertEquals(expected, hangar.getAllShips());
@@ -92,7 +73,7 @@ class HangarTest {
         Map<Resource, Integer> actual = null;
         try {
             actual = hangar.getUpgradeCost();
-        } catch (Exception ignored) {
+        } catch (UpgradeNotAvailableException ignored) {
         }
         assertEquals(expected, actual);
     }
@@ -110,7 +91,7 @@ class HangarTest {
         Map<Resource, Integer> actual = null;
         try {
             actual = hangar.getUpgradeCost();
-        } catch (Exception ignored) {
+        } catch (UpgradeNotAvailableException ignored) {
         }
         assertEquals(expected, actual);
     }

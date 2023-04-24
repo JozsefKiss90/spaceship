@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.dto;
 
-import com.codecool.spaceship.model.base.Hangar;
+import com.codecool.spaceship.model.station.Hangar;
 
 import java.util.Set;
 import java.util.stream.Collectors;

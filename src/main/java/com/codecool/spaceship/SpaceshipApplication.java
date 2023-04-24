@@ -1,6 +1,6 @@
 package com.codecool.spaceship;
 
-import com.codecool.spaceship.model.base.Base;
+import com.codecool.spaceship.model.station.SpaceStation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ public class SpaceshipApplication {
     }
 
 	@Bean
-	public Base base() {
-		return new Base("Base One");
+	public SpaceStation base() {
+		return new SpaceStation("Base One");
 	}
 }
