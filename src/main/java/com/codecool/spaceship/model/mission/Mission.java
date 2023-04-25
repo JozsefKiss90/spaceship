@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Stack;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,23 +17,11 @@ import java.time.LocalDateTime;
 public class Mission {
 
     private LocalDateTime startTime;
-    private LocalDateTime arrivalAtActivity;
-    private LocalDateTime activityEnd;
-    private LocalDateTime returnToStation;
     private Location location;
     private MissionType missionType;
     private SpaceShip ship;
-    
-    public MissionStatus getMissionStatus() {
-        LocalDateTime now = LocalDateTime.now();
-        if (returnToStation.isBefore(now)) {
-            return MissionStatus.COMPLETE;
-        } else if (activityEnd.isBefore(now)) {
-            return MissionStatus.TRAVELING_BACK_TO_BASE;
-        } else if (arrivalAtActivity.isBefore(now)) {
-            return MissionStatus.IN_PROGRESS;
-        } else {
-            return MissionStatus.TRAVELING_TO_MISSION;
-        }
-    }
+    private long travelTimeInSecs;
+    private long activityTimeInSecs;
+    private MissionStatus currentStatus;
+    private Stack<Event> eventLog;
 }
