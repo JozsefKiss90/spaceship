@@ -3,7 +3,7 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipService;
 import com.codecool.spaceship.model.ship.SpaceShipService;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
@@ -22,11 +22,11 @@ import static org.mockito.Mockito.*;
 class SpaceStationTest {
 
     @Mock
-    MinerShip ship;
+    MinerShipService ship;
     @Mock
-    MinerShip ship2;
+    MinerShipService ship2;
     @Mock
-    MinerShip ship3;
+    MinerShipService ship3;
 
     @Test
     void addNewShipSuccess() {

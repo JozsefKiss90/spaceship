@@ -3,7 +3,7 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipService;
 import com.codecool.spaceship.model.ship.SpaceShipService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class HangarTest {
     @Mock
-    MinerShip ship1;
+    MinerShipService ship1;
     @Mock
-    MinerShip ship2;
+    MinerShipService ship2;
     @Mock
     SpaceShipService ship3;
     @Test
