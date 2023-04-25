@@ -6,7 +6,7 @@ import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.SpaceShipService;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +41,12 @@ public class ShipService {
     }
 
     public boolean upgradeShip(int id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
-        SpaceShip ship = findShipById(id);
+        SpaceShipService ship = findShipById(id);
         return base.upgradeShipPart(ship, part);
     }
 
     public boolean updateShipAttributes(int id, String name, Color color) throws ShipNotFoundException {
-        SpaceShip ship = findShipById(id);
+        SpaceShipService ship = findShipById(id);
         if (name != null) {
             ship.setName(name);
         }
@@ -57,11 +57,11 @@ public class ShipService {
     }
 
     public boolean deleteShip(int id) throws ShipNotFoundException {
-        SpaceShip ship = findShipById(id);
+        SpaceShipService ship = findShipById(id);
         return base.deleteShip(ship);
     }
 
-    private SpaceShip findShipById(int id) throws ShipNotFoundException {
+    private SpaceShipService findShipById(int id) throws ShipNotFoundException {
         return base.getAllShips().stream()
                 .filter(s -> s.getId() == id)
                 .findFirst()

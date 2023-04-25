@@ -4,7 +4,7 @@ import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.station.SpaceStation;
-import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.SpaceShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class BaseService {
         return true;
     }
 
-    public boolean addShip(SpaceShip ship) throws StorageException {
+    public boolean addShip(SpaceShipService ship) throws StorageException {
         base.addNewShip(ship);
         return true;
     }

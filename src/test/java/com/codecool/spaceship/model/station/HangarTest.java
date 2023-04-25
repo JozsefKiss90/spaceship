@@ -4,7 +4,7 @@ import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.SpaceShipService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -23,7 +23,7 @@ class HangarTest {
     @Mock
     MinerShip ship2;
     @Mock
-    SpaceShip ship3;
+    SpaceShipService ship3;
     @Test
     void addShipSuccess() {
         Hangar hangar = new Hangar();
@@ -53,14 +53,14 @@ class HangarTest {
             hangar.addShip(ship3);
         } catch (StorageException ignored) {
         }
-        Set<SpaceShip> expected = Set.of(ship1, ship3);
+        Set<SpaceShipService> expected = Set.of(ship1, ship3);
         assertEquals(expected, hangar.getAllShips());
     }
 
     @Test
     void getAllShipsEmpty() {
         Hangar hangar = new Hangar();
-        Set<SpaceShip> expected = Set.of();
+        Set<SpaceShipService> expected = Set.of();
         assertEquals(expected, hangar.getAllShips());
     }
 

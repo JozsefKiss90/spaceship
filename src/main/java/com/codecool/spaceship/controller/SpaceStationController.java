@@ -4,6 +4,7 @@ import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipService;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.BaseService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,7 +47,7 @@ public class SpaceStationController {
     @PostMapping("/add/ship")
     public ResponseEntity<Boolean> addShip(@RequestBody ObjectNode objectNode) {
         try {
-            return ResponseEntity.ok(baseService.addShip(new MinerShip(objectNode.get("name").asText(), Color.valueOf(objectNode.get("color").asText()))));
+            return ResponseEntity.ok(baseService.addShip(new MinerShipService(objectNode.get("name").asText(), Color.valueOf(objectNode.get("color").asText()))));
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }

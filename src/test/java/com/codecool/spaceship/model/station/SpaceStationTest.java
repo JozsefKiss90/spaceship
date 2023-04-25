@@ -1,11 +1,10 @@
 package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.Resource;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.SpaceShipService;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import org.junit.jupiter.api.Test;
@@ -91,7 +90,7 @@ class SpaceStationTest {
     @Test
     void getAllShipsEmpty() {
         SpaceStation spaceStation = new SpaceStation("test");
-        Set<SpaceShip> expected = Set.of();
+        Set<SpaceShipService> expected = Set.of();
         assertEquals(expected, spaceStation.getAllShips());
     }
 
@@ -103,7 +102,7 @@ class SpaceStationTest {
             spaceStation.addNewShip(ship);
         } catch (StorageException ignored) {
         }
-        Set<SpaceShip> expected = Set.of(ship);
+        Set<SpaceShipService> expected = Set.of(ship);
         assertEquals(expected, spaceStation.getAllShips());
     }
 

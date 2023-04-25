@@ -5,9 +5,7 @@ import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.SpaceShip;
-import com.codecool.spaceship.model.ship.shipparts.Color;
+import com.codecool.spaceship.model.ship.SpaceShipService;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 
 import java.util.HashSet;
@@ -66,20 +64,20 @@ public class SpaceStation {
         throw new StorageException("Not enough resource");
     }
 
-    public boolean addNewShip(SpaceShip ship) throws StorageException {
+    public boolean addNewShip(SpaceShipService ship) throws StorageException {
         Map<Resource, Integer> cost = ship.getCost();
         return hangar.addShip(ship) && removeResources(cost); //throws storage exception if not enough resource or docks
     }
 
-    public boolean deleteShip(SpaceShip ship){
+    public boolean deleteShip(SpaceShipService ship){
         return hangar.removeShip(ship);
     }
 
-    public Set<SpaceShip> getAllShips() {
+    public Set<SpaceShipService> getAllShips() {
         return new HashSet<>(hangar.getAllShips());
     }
 
-    public boolean upgradeShipPart(SpaceShip ship, ShipPart shipPart) throws NoSuchPartException, UpgradeNotAvailableException, StorageException {
+    public boolean upgradeShipPart(SpaceShipService ship, ShipPart shipPart) throws NoSuchPartException, UpgradeNotAvailableException, StorageException {
         if (!hangar.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
         if (!ship.isAvailable()) throw new UpgradeNotAvailableException("Ship is on a mission");
         Upgradeable part = ship.getPart(shipPart);
