@@ -1,0 +1,9 @@
+.station-bar {
+    min-width: fit-content;
+    width: 27vw;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    margin: 10px;
+    height: 80vh;
+}
