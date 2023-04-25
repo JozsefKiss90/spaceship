@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.Mission;
+import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
