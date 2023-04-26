@@ -20,7 +20,10 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return ChronoUnit.SECONDS.between(endTime, event.endTime) < 1
+        return ((endTime != null && event.endTime != null
+                    && (ChronoUnit.SECONDS.between(endTime, event.endTime) < 0.5
+                        && ChronoUnit.SECONDS.between(endTime, event.endTime) > -0.5))
+                    || (endTime == null && event.endTime == null))
                 && eventType == event.eventType
                 && Objects.equals(eventMessage, event.eventMessage);
     }

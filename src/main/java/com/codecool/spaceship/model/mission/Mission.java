@@ -39,13 +39,19 @@ public class Mission {
         Mission mission = (Mission) o;
         return travelDurationInSecs == mission.travelDurationInSecs
                 && activityDurationInSecs == mission.activityDurationInSecs
-                && ChronoUnit.SECONDS.between(startTime, mission.startTime) < 1
-                && ChronoUnit.SECONDS.between(currentObjectiveTime, mission.currentObjectiveTime) < 1
+                && ((startTime != null && mission.startTime != null
+                    && (ChronoUnit.SECONDS.between(startTime, mission.startTime) < 0.5
+                        && ChronoUnit.SECONDS.between(startTime, mission.startTime) > -0.5))
+                    || startTime == null && mission.startTime == null)
+                && ((currentObjectiveTime != null && mission.currentObjectiveTime != null
+                    && (ChronoUnit.SECONDS.between(currentObjectiveTime, mission.currentObjectiveTime) < 0.5
+                        && ChronoUnit.SECONDS.between(currentObjectiveTime, mission.currentObjectiveTime) > -0.5))
+                    || currentObjectiveTime == null && mission.currentObjectiveTime == null)
                 && currentStatus == mission.currentStatus
                 && missionType == mission.missionType
-                && location.equals(mission.location)
-                && ship.equals(mission.ship)
-                && events.equals(mission.events);
+                && Objects.equals(location, mission.location)
+                && Objects.equals(ship, mission.ship)
+                && Objects.equals(events, mission.events);
     }
 
     @Override
