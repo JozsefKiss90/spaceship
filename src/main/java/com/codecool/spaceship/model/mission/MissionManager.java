@@ -52,7 +52,7 @@ public class MissionManager {
         switch (lastEvent.getEventType()) {
             case START -> generateEnRouteEvents(mission);
             case ARRIVAL_AT_LOCATION -> startActivity(mission);
-            case MINING_COMPLETE -> startReturnTravel(mission);
+            case MINING_COMPLETE -> finishMining(mission);
             case RETURNED_TO_STATION -> endMission(mission);
             case PIRATE_ATTACK -> simulatePirateAttack(mission);
             case METEOR_STORM -> simulateMeteorStorm(mission);
@@ -104,12 +104,12 @@ public class MissionManager {
     }
 
     private void startActivity(Mission mission) {
-        mission.getEvents().peek().setEventMessage("Arrived on %s".formatted(mission.getLocation().getName()));
         mission.setCurrentStatus(MissionStatus.IN_PROGRESS);
 
         LocalDateTime lastEventTime = mission.getLastEventTime();
         mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(mission.getActivityDurationInSecs()));
         if (mission.getMissionType() == MissionType.MINING) {
+            mission.getEvents().peek().setEventMessage("Arrived on %s. Starting mining operation.".formatted(mission.getLocation().getName()));
             long miningDurationInSecs = calculateMiningDurationInSecs((MinerShip) mission.getShip(), mission.getActivityDurationInSecs());
             Event miningEvent = Event.builder()
                     .eventType(EventType.MINING_COMPLETE)
@@ -129,6 +129,7 @@ public class MissionManager {
         } else {
             minedResources = minerShip.getEmptyStorageSpace();
         }
+
         Resource resourceType = mission.getLocation().getResourceType();
         try {
             minerShip.addResourceToStorage(resourceType, minedResources);
@@ -137,7 +138,10 @@ public class MissionManager {
         }
         if (minerShip.getEmptyStorageSpace() > 0) {
             mission.getEvents().peek().setEventMessage("Mining complete. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
+        } else {
+            mission.getEvents().peek().setEventMessage("Storage is full. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
         }
+
         startReturnTravel(mission);
     }
 
