@@ -9,8 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "hangar")
+
 public class Hangar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

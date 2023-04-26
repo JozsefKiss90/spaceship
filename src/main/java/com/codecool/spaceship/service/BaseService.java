@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class BaseService {
 
-    private final SpaceStationService base;
     private final SpaceStationRepository spaceStationRepository;
     @Autowired
-    public BaseService(SpaceStationService base, SpaceStationRepository spaceStationRepository) {
-        this.base = base;
+    public BaseService(SpaceStationRepository spaceStationRepository) {
+
         this.spaceStationRepository = spaceStationRepository;
     }
 
@@ -30,25 +29,25 @@ public class BaseService {
         return spaceStationRepository.findAll()
                 .stream().map(SpaceStationDTO::new).findFirst();
     }
-
-    public boolean addResource(Resource resource, int quantity) throws StorageException {
-        base.addResource(resource, quantity);
-        return true;
-    }
-
-    public boolean addShip(SpaceShipService ship) throws StorageException {
-        base.addNewShip(ship);
-        return true;
-    }
-
-    public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
-        base.upgradeStorage();
-        return true;
-    }
-
-    public boolean upgradeHangar() throws UpgradeNotAvailableException, StorageException {
-        base.upgradeHangar();
-        return true;
-    }
+//
+//    public boolean addResource(Resource resource, int quantity) throws StorageException {
+//        base.addResource(resource, quantity);
+//        return true;
+//    }
+//
+//    public boolean addShip(SpaceShipService ship) throws StorageException {
+//        base.addNewShip(ship);
+//        return true;
+//    }
+//
+//    public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
+//        base.upgradeStorage();
+//        return true;
+//    }
+//
+//    public boolean upgradeHangar() throws UpgradeNotAvailableException, StorageException {
+//        base.upgradeHangar();
+//        return true;
+//    }
 
 }

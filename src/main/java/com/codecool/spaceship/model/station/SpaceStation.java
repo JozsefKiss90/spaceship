@@ -21,6 +21,7 @@ public class SpaceStation {
     private Long id;
     private String name;
     private int storageLevel;
+    private int hangarLevel;
     @OneToMany
     @JoinColumn(name ="ship_id")
     private List<SpaceShip> hangar;

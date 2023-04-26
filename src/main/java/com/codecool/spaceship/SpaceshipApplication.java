@@ -61,14 +61,12 @@ public class SpaceshipApplication {
 		SpaceStation spaceStation = new SpaceStation();
 		spaceStation.setName("spaceStation");
 		spaceStation.setStorageLevel(3);
+		spaceStation.setHangarLevel(1);
 		spaceStation.setHangar(hangar);
 		spaceStation.setResources(stationResources);
 		spaceStationRepository.save(spaceStation);
 
 	}
 
-	@Bean
-	public SpaceStationService base() {
-		return new SpaceStationService("Base One");
-	}
+
 }

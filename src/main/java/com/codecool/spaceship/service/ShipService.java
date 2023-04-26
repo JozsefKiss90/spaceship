@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class ShipService {
-    private final SpaceStationService base;
+
     private MinerShipRepository minerShipRepository;
     private SpaceShipRepository spaceShipRepository;
     @Autowired
-    public ShipService(SpaceStationService base, MinerShipRepository minerShipRepository, SpaceShipRepository spaceShipRepository) {
-        this.base = base;
+    public ShipService( MinerShipRepository minerShipRepository, SpaceShipRepository spaceShipRepository) {
+
         this.minerShipRepository = minerShipRepository;
         this.spaceShipRepository = spaceShipRepository;
     }
