@@ -159,7 +159,7 @@ public class MissionManager {
     }
 
     private void endMission(Mission mission) {
-        mission.getEvents().peek().setEventMessage("Returned to base.");
+        mission.getEvents().peek().setEventMessage("Returned to station.");
         mission.setCurrentStatus(MissionStatus.OVER);
     }
 
