@@ -44,6 +44,7 @@ class SpaceStationTest {
         SpaceStation spaceStation = new SpaceStation("test");
         when(ship.getCost()).thenReturn(Map.of(Resource.METAL, 1));
         assertThrows(StorageException.class, () -> spaceStation.addNewShip(ship));
+        assertFalse(spaceStation.getAllShips().contains(ship));
     }
 
     @Test
