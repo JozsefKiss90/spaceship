@@ -11,24 +11,24 @@ import java.time.LocalDateTime;
 import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MissionManagerTest {
 
     @Mock
-    MinerShip minerShip;
+    MinerShip minerShipMock;
     @Mock
-    Location location;
-
-
+    Location locationMock;
+    @Mock
+    Event eventMock;
     MissionManager missionManager = new MissionManager();
 
     @Test
     void missionCreationTest() {
-        when(minerShip.getSpeed()).thenReturn(2.5);
-        when(location.getDistanceFromStation()).thenReturn(5);
-        when(location.getName()).thenReturn("Test planet");
+        when(minerShipMock.getSpeed()).thenReturn(2.5);
+        when(locationMock.getDistanceFromStation()).thenReturn(5);
+        when(locationMock.getName()).thenReturn("Test planet");
 
         LocalDateTime now = LocalDateTime.now();
         Mission expected = Mission.builder()
@@ -36,8 +36,8 @@ class MissionManagerTest {
                 .currentObjectiveTime(now.plusSeconds(7200L))
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .missionType(MissionType.MINING)
-                .location(location)
-                .ship(minerShip)
+                .location(locationMock)
+                .ship(minerShipMock)
                 .travelDurationInSecs(7200L)
                 .activityDurationInSecs(1800L)
                 .events(new Stack<>())
@@ -54,9 +54,32 @@ class MissionManagerTest {
         expected.getEvents().push(event1);
         expected.getEvents().push(event2);
 
-        Mission actual = missionManager.startMiningMission(minerShip, location, 1800L);
+        Mission actual = missionManager.startMiningMission(minerShipMock, locationMock, 1800L);
 
         assertEquals(expected, actual);
     }
 
+    @Test
+    void noUpdateStatusBeforeNextUpdate() {
+        Mission mission = Mission.builder()
+                .events(new Stack<>())
+                .build();
+        mission.getEvents().push(eventMock);
+        when(eventMock.getEndTime()).thenReturn(LocalDateTime.now().plusSeconds(1));
+
+        missionManager.updateStatus(mission);
+        verify(eventMock, never()).getEventType();
+    }
+
+    @Test
+    void noUpdateStatusWhenMissionIsOver() {
+        Mission mission = Mission.builder()
+                .currentStatus(MissionStatus.OVER)
+                .events(new Stack<>())
+                .build();
+        mission.getEvents().push(eventMock);
+
+        missionManager.updateStatus(mission);
+        verify(eventMock, never()).getEventType();
+    }
 }
