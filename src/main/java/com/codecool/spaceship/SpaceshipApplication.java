@@ -58,7 +58,6 @@ public class SpaceshipApplication {
 			add(minerShip);
 		}};
 
-
 		SpaceStation spaceStation = new SpaceStation();
 		spaceStation.setName("spaceStation");
 		spaceStation.setStorageLevel(3);

@@ -26,6 +26,12 @@ public class SpaceStationController {
     public SpaceStationController(BaseService baseService) {
         this.baseService = baseService;
     }
+
+    @GetMapping()
+    public ResponseEntity<SpaceStationDTO> getBase() {
+        return ResponseEntity.ok(baseService.getBase().get());
+    }
+
     /*
     @GetMapping()
     public ResponseEntity<SpaceStationDTO> getBase() {

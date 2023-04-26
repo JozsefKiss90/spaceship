@@ -29,6 +29,16 @@ public class ShipController {
     public ResponseEntity<List<ShipDTO>> getAllShipsFromBase() {
         return ResponseEntity.ok(shipService.getShips());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ShipDTO> getShipById(@PathVariable int id) {
+        Optional<ShipDTO> ship = shipService.getShipByID(id);
+        return ship
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     /*
     @GetMapping("/{id}")
     public ResponseEntity<ShipDTO> getShipById(@PathVariable int id) {

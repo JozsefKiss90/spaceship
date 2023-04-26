@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,9 +24,16 @@ public class ShipService {
     }
 
     public List<ShipDTO> getShips() {
-        return minerShipRepository.findAll().stream()
+        return spaceShipRepository.findAll().stream()
                 .map(ShipDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<ShipDTO> getShipByID(int id) {
+        return spaceShipRepository.findAll().stream()
+                .filter(ship -> ship.getId() == id)
+                .map(ShipDTO::new)
+                .findFirst();
     }
 
     /*
