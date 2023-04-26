@@ -7,7 +7,7 @@ const Storage = (props) => {
     return (
         <div className="storage">
                 <div className="menu">
-                    <div>{"STORAGE | " + storage.level + " | " + storage.freeSpace + " / " + storage.capacity}</div>
+                    <div>{"STORAGE | " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
                     <div className="button">Upgrade</div>
                 </div>
                 {Object.keys(storage.resources).length === 0 ? (<div>No resources yet</div>) : (

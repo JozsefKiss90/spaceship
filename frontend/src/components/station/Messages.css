@@ -1,0 +1,24 @@
+.message-log {
+    min-width: fit-content;
+    width: -moz-available;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    margin: 10px;
+    height: 80vh;
+}
+
+.messages {
+    width: -moz-available;
+    height: 92%;
+    background-image: -webkit-linear-gradient(rgba(0, 89, 0, 0.75), rgba(0, 96, 0, 0.35), rgba(0, 89, 0, 0.75));
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    font-family: Garamond, serif;
+    font-size: 15px;
+    border: #000000 solid 4px;
+    box-shadow: 0 0 5px 5px rgba(0, 23, 0, 0.85);
+}
+
+

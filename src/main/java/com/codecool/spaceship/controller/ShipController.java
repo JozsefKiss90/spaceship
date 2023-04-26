@@ -1,7 +1,10 @@
 package com.codecool.spaceship.controller;
 
+import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.dto.CostDTO;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +13,13 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/ship")
+@CrossOrigin("http://localhost:3000")
 public class ShipController {
 
     private final ShipService shipService;
@@ -45,6 +50,11 @@ public class ShipController {
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
+    }
+
+    @GetMapping("/cost/miner")
+    public ResponseEntity<CostDTO> getMinerShipCost() {
+        return ResponseEntity.ok(shipService.getMinerShipCost());
     }
 
     @PatchMapping("/{id}")

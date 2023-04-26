@@ -16,7 +16,7 @@ import java.util.Map;
 public class MinerShip extends SpaceShip {
 
     private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
-    private static final Map<Resource, Integer> COST = new HashMap<>() {{
+    public static final Map<Resource, Integer> COST = new HashMap<>() {{
         put(Resource.METAL, 50);
         put(Resource.CRYSTAL, 20);
         put(Resource.SILICONE, 20);
@@ -79,7 +79,9 @@ public class MinerShip extends SpaceShip {
     }
 
     @Override
-    public Map<Resource, Integer> getCost() {
+    public  Map<Resource, Integer> getCost() {
         return new HashMap<>(COST);
     }
+
+
 }

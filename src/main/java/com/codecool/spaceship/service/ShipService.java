@@ -1,8 +1,11 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.dto.CostDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
@@ -12,6 +15,7 @@ import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,5 +70,9 @@ public class ShipService {
                 .filter(s -> s.getId() == id)
                 .findFirst()
                 .orElseThrow(ShipNotFoundException::new);
+    }
+
+    public CostDTO getMinerShipCost() {
+        return new CostDTO(MinerShip.COST);
     }
 }
