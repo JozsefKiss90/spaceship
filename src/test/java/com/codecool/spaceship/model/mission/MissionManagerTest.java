@@ -47,7 +47,7 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now)
-                .eventMessage("Left station for mining mission on Test planet.")
+                .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now))
                 .build();
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
@@ -138,7 +138,7 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
-                .eventMessage("Arrived on Test Planet. Starting mining operation.")
+                .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(5)))
                 .build();
         expected.getEvents().push(expectedEvent1);
         Event expectedEvent2 = Event.builder()
@@ -186,7 +186,7 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
-                .eventMessage("Arrived on Test Planet. Starting mining operation.")
+                .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(5)))
                 .build();
         expected.getEvents().push(expectedEvent1);
         Event expectedEvent2  = Event.builder()
@@ -233,7 +233,7 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
-                .eventMessage("Storage is full. Mined 8 CRYSTAL(s). Returning to station.")
+                .eventMessage("<%tF %<tT> Storage is full. Mined 8 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(4)))
                 .build();
         expected.getEvents().push(expectedEvent1);
         Event expectedEvent2 = Event.builder()
@@ -283,7 +283,7 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
-                .eventMessage("Mining complete. Mined 2 CRYSTAL(s). Returning to station.")
+                .eventMessage("<%tF %<tT> Mining complete. Mined 2 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(4)))
                 .build();
         expected.getEvents().push(expectedEvent1);
         Event expectedEvent2 = Event.builder()
@@ -326,7 +326,7 @@ class MissionManagerTest {
         Event expectedEvent = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.minusSeconds(5))
-                .eventMessage("Returned to station.")
+                .eventMessage("<%tF %<tT> Returned to station.".formatted(now.minusSeconds(5)))
                 .build();
         expected.getEvents().push(expectedEvent);
 
@@ -368,25 +368,25 @@ class MissionManagerTest {
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now.minusSeconds(20000))
-                .eventMessage("Left station for mining mission on Test planet.")
+                .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now.minusSeconds(20000)))
                 .build();
         expected.getEvents().push(expectedEvent1);
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(14600))
-                .eventMessage("Arrived on Test Planet. Starting mining operation.")
+                .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(14600)))
                 .build();
         expected.getEvents().push(expectedEvent2);
         Event expectedEvent3 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(8300))
-                .eventMessage("Mining complete. Mined 8 CRYSTAL(s). Returning to station.")
+                .eventMessage("<%tF %<tT> Mining complete. Mined 8 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(8300)))
                 .build();
         expected.getEvents().push(expectedEvent3);
         Event expectedEvent4 = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.minusSeconds(2900))
-                .eventMessage("Returned to station.")
+                .eventMessage("<%tF %<tT> Returned to station.".formatted(now.minusSeconds(2900)))
                 .build();
         expected.getEvents().push(expectedEvent4);
 
@@ -405,7 +405,7 @@ class MissionManagerTest {
         Event actualEvent = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now.minusSeconds(20000))
-                .eventMessage("Left station for mining mission on Test planet.")
+                .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now.minusSeconds(20000)))
                 .build();
         actual.getEvents().push(actualEvent);
 

@@ -34,7 +34,7 @@ public class MissionManager {
         Event startEvent = Event.builder()
                 .endTime(startTime)
                 .eventType(EventType.START)
-                .eventMessage("Left station for mining mission on %s.".formatted(location.getName()))
+                .eventMessage("<%tF %<tT> Left station for mining mission on %s.".formatted(startTime, location.getName()))
                 .build();
 
         mission.getEvents().push(startEvent);
@@ -70,7 +70,7 @@ public class MissionManager {
         Event abortEvent = Event.builder()
                 .eventType(EventType.ABORT)
                 .endTime(now)
-                .eventMessage("Mission aborted by Command. Returning to station.")
+                .eventMessage("<%tF %<tT> Mission aborted by Command. Returning to station.".formatted(now))
                 .build();
 
         if (abortedEvent.getEventType() == EventType.MINING_COMPLETE) {
@@ -109,7 +109,7 @@ public class MissionManager {
         LocalDateTime lastEventTime = mission.getLastEventTime();
         mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(mission.getActivityDurationInSecs()));
         if (mission.getMissionType() == MissionType.MINING) {
-            mission.getEvents().peek().setEventMessage("Arrived on %s. Starting mining operation.".formatted(mission.getLocation().getName()));
+            mission.getEvents().peek().setEventMessage("<%tF %<tT> Arrived on %s. Starting mining operation.".formatted(lastEventTime, mission.getLocation().getName()));
             long miningDurationInSecs = calculateMiningDurationInSecs((MinerShip) mission.getShip(), mission.getActivityDurationInSecs());
             Event miningEvent = Event.builder()
                     .eventType(EventType.MINING_COMPLETE)
@@ -124,7 +124,8 @@ public class MissionManager {
     private void finishMining(Mission mission) {
         MinerShip minerShip = (MinerShip) mission.getShip();
         int minedResources;
-        if (mission.getCurrentObjectiveTime().isEqual(mission.getLastEventTime())) {
+        LocalDateTime lastEventTime = mission.getLastEventTime();
+        if (mission.getCurrentObjectiveTime().isEqual(lastEventTime)) {
             minedResources = calculateMinedResources(minerShip, mission.getActivityDurationInSecs());
         } else {
             minedResources = minerShip.getEmptyStorageSpace();
@@ -137,9 +138,9 @@ public class MissionManager {
             throw new RuntimeException(e);
         }
         if (minerShip.getEmptyStorageSpace() > 0) {
-            mission.getEvents().peek().setEventMessage("Mining complete. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
+            mission.getEvents().peek().setEventMessage("<%tF %<tT> Mining complete. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
         } else {
-            mission.getEvents().peek().setEventMessage("Storage is full. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
+            mission.getEvents().peek().setEventMessage("<%tF %<tT> Storage is full. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
         }
 
         startReturnTravel(mission);
@@ -159,7 +160,7 @@ public class MissionManager {
     }
 
     private void endMission(Mission mission) {
-        mission.getEvents().peek().setEventMessage("Returned to station.");
+        mission.getEvents().peek().setEventMessage("<%tF %<tT> Returned to station.".formatted(mission.getLastEventTime()));
         mission.setCurrentStatus(MissionStatus.OVER);
     }
 
