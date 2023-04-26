@@ -4,23 +4,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-@Entity
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Table(name = "resource")
+@Entity
 public class Resource {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long Id;
     private ResourceType resourceType;
     private int quantity;
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Long getId() {
-        return id;
-    }
+
 }

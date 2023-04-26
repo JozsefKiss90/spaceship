@@ -3,7 +3,7 @@ package com.codecool.spaceship.service;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.station.SpaceStation;
+import com.codecool.spaceship.model.station.SpaceStationService;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.ship.SpaceShipService;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Service
 public class ShipService {
 
-    private final SpaceStation base;
+    private final SpaceStationService base;
 
     @Autowired
-    public ShipService(SpaceStation base) {
+    public ShipService(SpaceStationService base) {
         this.base = base;
     }
 

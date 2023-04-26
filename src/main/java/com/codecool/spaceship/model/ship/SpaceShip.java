@@ -18,7 +18,7 @@ public abstract class SpaceShip {
     private Long id;
     private String name;
     private Color color;
-    private int engingeLevel;
+    private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
 

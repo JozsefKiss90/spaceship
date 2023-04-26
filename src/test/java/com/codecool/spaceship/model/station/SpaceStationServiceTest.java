@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SpaceStationTest {
+class SpaceStationServiceTest {
 
     @Mock
     MinerShipService ship;
@@ -30,80 +30,80 @@ class SpaceStationTest {
 
     @Test
     void addNewShipSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         try {
-            assertTrue(spaceStation.addNewShip(ship));
+            assertTrue(spaceStationService.addNewShip(ship));
         } catch (StorageException ignored) {
         }
     }
 
     @Test
     void addNewShipNotEnoughResource() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of(Resource.METAL, 1));
-        assertThrows(StorageException.class, () -> spaceStation.addNewShip(ship));
+        assertThrows(StorageException.class, () -> spaceStationService.addNewShip(ship));
     }
 
     @Test
     void addNewShipNotEnoughDocks() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         when(ship2.getCost()).thenReturn(Map.of());
         when(ship3.getCost()).thenReturn(Map.of());
         try {
-            spaceStation.addNewShip(ship);
-            spaceStation.addNewShip(ship2);
+            spaceStationService.addNewShip(ship);
+            spaceStationService.addNewShip(ship2);
         } catch (StorageException ignored) {
         }
-        assertThrows(StorageException.class, () -> spaceStation.addNewShip(ship3));
+        assertThrows(StorageException.class, () -> spaceStationService.addNewShip(ship3));
     }
 
     @Test
     void addNewShipShipAlreadyAdded() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         try {
-            spaceStation.addNewShip(ship);
-            assertFalse(spaceStation.addNewShip(ship));
+            spaceStationService.addNewShip(ship);
+            assertFalse(spaceStationService.addNewShip(ship));
         } catch (StorageException ignored) {
         }
     }
 
     @Test
     void deleteShipSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         try {
-            spaceStation.addNewShip(ship);
+            spaceStationService.addNewShip(ship);
         } catch (StorageException ignored) {
         }
-        assertTrue(spaceStation.deleteShip(ship));
+        assertTrue(spaceStationService.deleteShip(ship));
     }
 
     @Test
     void deleteShipNoSuchShip() {
-        SpaceStation spaceStation = new SpaceStation("test");
-        assertFalse(spaceStation.deleteShip(ship));
+        SpaceStationService spaceStationService = new SpaceStationService("test");
+        assertFalse(spaceStationService.deleteShip(ship));
     }
 
     @Test
     void getAllShipsEmpty() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         Set<SpaceShipService> expected = Set.of();
-        assertEquals(expected, spaceStation.getAllShips());
+        assertEquals(expected, spaceStationService.getAllShips());
     }
 
     @Test
     void getAllShipsNotEmpty() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         try {
-            spaceStation.addNewShip(ship);
+            spaceStationService.addNewShip(ship);
         } catch (StorageException ignored) {
         }
         Set<SpaceShipService> expected = Set.of(ship);
-        assertEquals(expected, spaceStation.getAllShips());
+        assertEquals(expected, spaceStationService.getAllShips());
     }
 
     @Mock
@@ -111,17 +111,17 @@ class SpaceStationTest {
 
     @Test
     void upgradeShipPartSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         try {
             when(ship.getCost()).thenReturn(Map.of());
-            spaceStation.addNewShip(ship);
+            spaceStationService.addNewShip(ship);
             when(ship.isAvailable()).thenReturn(true);
             when(ship.getPart(ShipPart.DRILL)).thenReturn(drill);
             when(drill.getUpgradeCost()).thenReturn(Map.of());
         } catch (Exception ignored) {
         }
         try {
-            assertTrue(spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
+            assertTrue(spaceStationService.upgradeShipPart(ship, ShipPart.DRILL));
         } catch (Exception ignored) {
         }
         verify(drill, times(1)).upgrade();
@@ -129,80 +129,80 @@ class SpaceStationTest {
 
     @Test
     void upgradeShipPartShipNotInStation() {
-        SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
+        SpaceStationService spaceStationService = new SpaceStationService("test");
+        assertThrows(StorageException.class, () -> spaceStationService.upgradeShipPart(ship, ShipPart.DRILL));
     }
 
     @Test
     void upgradeShipPartShipNotAvailable() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         when(ship.isAvailable()).thenReturn(false);
         try {
-            spaceStation.addNewShip(ship);
+            spaceStationService.addNewShip(ship);
         } catch (Exception ignored) {
         }
-        assertThrows(UpgradeNotAvailableException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
+        assertThrows(UpgradeNotAvailableException.class, () -> spaceStationService.upgradeShipPart(ship, ShipPart.DRILL));
     }
 
     @Test
     void upgradeShipPartNotEnoughResource() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         when(ship.getCost()).thenReturn(Map.of());
         when(ship.isAvailable()).thenReturn(true);
         try {
-            spaceStation.addNewShip(ship);
+            spaceStationService.addNewShip(ship);
             when(ship.getPart(ShipPart.DRILL)).thenReturn(drill);
             when(drill.getUpgradeCost()).thenReturn(Map.of(Resource.METAL, 1));
         } catch (Exception ignored) {
         }
-        assertThrows(StorageException.class, () -> spaceStation.upgradeShipPart(ship, ShipPart.DRILL));
+        assertThrows(StorageException.class, () -> spaceStationService.upgradeShipPart(ship, ShipPart.DRILL));
     }
 
     @Test
     void addResourceSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         try {
-            assertTrue(spaceStation.addResource(Resource.METAL, 1));
+            assertTrue(spaceStationService.addResource(Resource.METAL, 1));
         } catch (Exception ignored) {
         }
     }
 
     @Test
     void addResourceNotEnoughSpace() {
-        SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class, () -> spaceStation.addResource(Resource.METAL, 21));
+        SpaceStationService spaceStationService = new SpaceStationService("test");
+        assertThrows(StorageException.class, () -> spaceStationService.addResource(Resource.METAL, 21));
     }
 
     @Test
     void upgradeStorageSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         try {
-            spaceStation.addResource(Resource.METAL, 5);
+            spaceStationService.addResource(Resource.METAL, 5);
         } catch (Exception ignored) {
         }
-        assertDoesNotThrow(spaceStation::upgradeStorage);
+        assertDoesNotThrow(spaceStationService::upgradeStorage);
     }
 
     @Test
     void upgradeStorageNotEnoughResource() {
-        SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class, spaceStation::upgradeStorage);
+        SpaceStationService spaceStationService = new SpaceStationService("test");
+        assertThrows(StorageException.class, spaceStationService::upgradeStorage);
     }
 
     @Test
     void upgradeHangarSuccess() {
-        SpaceStation spaceStation = new SpaceStation("test");
+        SpaceStationService spaceStationService = new SpaceStationService("test");
         try {
-            spaceStation.addResource(Resource.METAL, 5);
+            spaceStationService.addResource(Resource.METAL, 5);
         } catch (Exception ignored) {
         }
-        assertDoesNotThrow(spaceStation::upgradeHangar);
+        assertDoesNotThrow(spaceStationService::upgradeHangar);
     }
 
     @Test
     void upgradeHangarNotEnoughResource() {
-        SpaceStation spaceStation = new SpaceStation("test");
-        assertThrows(StorageException.class, spaceStation::upgradeHangar);
+        SpaceStationService spaceStationService = new SpaceStationService("test");
+        assertThrows(StorageException.class, spaceStationService::upgradeHangar);
     }
 }

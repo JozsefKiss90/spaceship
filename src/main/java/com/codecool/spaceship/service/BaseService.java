@@ -3,7 +3,7 @@ package com.codecool.spaceship.service;
 import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.station.SpaceStation;
+import com.codecool.spaceship.model.station.SpaceStationService;
 import com.codecool.spaceship.model.ship.SpaceShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class BaseService {
 
-    private final SpaceStation base;
+    private final SpaceStationService base;
     @Autowired
-    public BaseService(SpaceStation base) {
+    public BaseService(SpaceStationService base) {
         this.base = base;
     }
 
-    public SpaceStation getBase() {
+    public SpaceStationService getBase() {
         return base;
     }
 
