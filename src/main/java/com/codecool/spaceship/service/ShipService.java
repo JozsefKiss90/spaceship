@@ -1,12 +1,20 @@
 package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.exception.NoSuchPartException;
+import com.codecool.spaceship.model.exception.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.shipparts.Color;
+import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.station.SpaceStationService;
 import com.codecool.spaceship.repository.MinerShipRepository;
 import com.codecool.spaceship.repository.SpaceShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,10 +38,39 @@ public class ShipService {
     }
 
     public Optional<ShipDTO> getShipByID(int id) {
+
         return spaceShipRepository.findAll().stream()
                 .filter(ship -> ship.getId() == id)
                 .map(ShipDTO::new)
                 .findFirst();
+    }
+
+    public SpaceShip upgradeShip(Long id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
+        SpaceShip ship = spaceShipRepository.findById(id).get();
+        switch (part) {
+            case ENGINE :
+                ship.setEngineLevel(ship.getEngineLevel() + 1);
+                spaceShipRepository.save(ship);
+                break;
+            case SHIELD:
+                ship.setShieldLevel(ship.getShieldLevel() + 1);
+                spaceShipRepository.save(ship);
+                break;
+        }
+        return ship;
+    }
+
+    public boolean updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
+        SpaceShip ship = spaceShipRepository.findById(id).get();
+        if (name != null) {
+            ship.setName(name);
+            spaceShipRepository.save(ship);
+        }
+        if (color != null) {
+            ship.setColor(color);
+            spaceShipRepository.save(ship);
+        }
+        return true;
     }
 
     /*

@@ -2,6 +2,7 @@ package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,23 @@ public class ShipController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PatchMapping("/upgrade")
+    public ResponseEntity<SpaceShip> upgradeShipPart(@RequestParam Long id, @RequestParam ShipPart part) {
+        try {
+            return ResponseEntity.ok(shipService.upgradeShip(id, part));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Boolean> updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
+        try {
+            return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
+        } catch (ShipNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     /*
     @GetMapping("/{id}")

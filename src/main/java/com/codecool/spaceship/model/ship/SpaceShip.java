@@ -2,6 +2,7 @@ package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "spaceship")
+@Transactional
 public abstract class SpaceShip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
