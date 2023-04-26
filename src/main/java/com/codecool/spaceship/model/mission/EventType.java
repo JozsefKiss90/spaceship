@@ -7,7 +7,8 @@ public enum EventType {
     RETURNED_TO_STATION,
     MINING_COMPLETE,
     PIRATE_ATTACK,
-    METEOR_STORM
+    METEOR_STORM,
+    ABORT
 
 
 }

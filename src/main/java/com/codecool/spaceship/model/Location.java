@@ -7,5 +7,5 @@ public class Location {
 
     private String name;
     private int distanceFromStation;
-    private Resource resource;
+    private Resource resourceType;
 }
