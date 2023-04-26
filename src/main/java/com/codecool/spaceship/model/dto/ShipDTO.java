@@ -2,19 +2,20 @@ package com.codecool.spaceship.model.dto;
 
 
 import com.codecool.spaceship.model.exception.NoSuchPartException;
+import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.SpaceShipService;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record ShipDTO(Long id, String name, String type, Color color, Set<PartDTO> parts, boolean available) {
+public record ShipDTO(Long id, String name, Color color, int engineLevel, int shieldLevel, int shieldEnergy) {
 
-    public ShipDTO(SpaceShipService ship) {
-        this(ship.getId(), ship.getName(), getShipType(ship), ship.getColor(),getShipParts(ship), ship.isAvailable());
+    public ShipDTO(SpaceShip ship) {
+        this(ship.getId(), ship.getName(), ship.getColor(), ship.getEngineLevel(), ship.getShieldLevel(), ship.getEngineLevel());
     }
 
-    private static String getShipType(SpaceShipService ship) {
+    /*private static String getShipType(SpaceShipService ship) {
         switch (ship.getClass().getSimpleName()) {
             case "MinerShip" -> {
                 return "Miner ship";
@@ -35,5 +36,5 @@ public record ShipDTO(Long id, String name, String type, Color color, Set<PartDT
                     }
                 })
                 .collect(Collectors.toSet());
-    }
+    }*/
 }

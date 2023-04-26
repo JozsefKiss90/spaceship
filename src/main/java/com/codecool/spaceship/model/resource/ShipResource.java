@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Resource {
+public class ShipResource {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;

@@ -26,7 +26,7 @@ public class SpaceStationController {
     public SpaceStationController(BaseService baseService) {
         this.baseService = baseService;
     }
-
+    /*
     @GetMapping()
     public ResponseEntity<SpaceStationDTO> getBase() {
         return ResponseEntity.ok(new SpaceStationDTO(baseService.getBase()));
@@ -70,4 +70,6 @@ public class SpaceStationController {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
     }
+
+     */
 }

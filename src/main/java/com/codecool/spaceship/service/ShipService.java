@@ -1,33 +1,35 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.station.SpaceStationService;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.ship.SpaceShipService;
-import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.model.ship.shipparts.ShipPart;
+import com.codecool.spaceship.model.station.SpaceStationService;
+import com.codecool.spaceship.repository.MinerShipRepository;
+import com.codecool.spaceship.repository.SpaceShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ShipService {
-
     private final SpaceStationService base;
-
+    private MinerShipRepository minerShipRepository;
+    private SpaceShipRepository spaceShipRepository;
     @Autowired
-    public ShipService(SpaceStationService base) {
+    public ShipService(SpaceStationService base, MinerShipRepository minerShipRepository, SpaceShipRepository spaceShipRepository) {
         this.base = base;
+        this.minerShipRepository = minerShipRepository;
+        this.spaceShipRepository = spaceShipRepository;
     }
 
+    public List<ShipDTO> getShips() {
+        return minerShipRepository.findAll().stream()
+                .map(ShipDTO::new)
+                .collect(Collectors.toList());
+    }
 
-    public Set<ShipDTO> getAllShipsFromBase() {
+    /*
+   public Set<ShipDTO> getAllShipsFromBase() {
         return base.getAllShips().stream()
                 .map(ShipDTO::new)
                 .collect(Collectors.toSet());
@@ -67,4 +69,5 @@ public class ShipService {
                 .findFirst()
                 .orElseThrow(ShipNotFoundException::new);
     }
+ */
 }

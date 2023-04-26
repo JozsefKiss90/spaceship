@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.resource.Resource;
+import com.codecool.spaceship.model.resource.ShipResource;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,11 +11,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@PrimaryKeyJoinColumn(name = "ship_id")
+
 public class MinerShip extends SpaceShip {
     private int drillLevel;
     @OneToMany
     @JoinColumn(name ="ship_id")
-    private Set<Resource> resources;
+    private Set<ShipResource> resources;
     private int storageLevel;
 }

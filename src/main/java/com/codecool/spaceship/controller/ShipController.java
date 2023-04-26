@@ -10,6 +10,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,12 +25,11 @@ public class ShipController {
         this.shipService = shipService;
     }
 
-
     @GetMapping("/all")
-    public ResponseEntity<Set<ShipDTO>> getAllShipsFromBase() {
-        return ResponseEntity.ok(shipService.getAllShipsFromBase());
+    public ResponseEntity<List<ShipDTO>> getAllShipsFromBase() {
+        return ResponseEntity.ok(shipService.getShips());
     }
-
+    /*
     @GetMapping("/{id}")
     public ResponseEntity<ShipDTO> getShipById(@PathVariable int id) {
         Optional<ShipDTO> ship = shipService.getShipByID(id);
@@ -64,4 +64,6 @@ public class ShipController {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
     }
+
+     */
 }
