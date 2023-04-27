@@ -1,109 +1,30 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.Resource;
-import com.codecool.spaceship.model.Upgradeable;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.resource.StationResource;
 import com.codecool.spaceship.model.ship.SpaceShip;
-import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.model.ship.shipparts.ShipPart;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@Table(name = "spacestation")
 public class SpaceStation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    //private User user;
-    private final UUID id;
-    private final SpaceStationStorage storage;
-    private final Hangar hangar;
+    private int storageLevelIndex;
+    private int hangarLevelIndex;
+    @OneToMany(cascade = CascadeType.MERGE)
+    @JoinColumn(name ="ship_id")
+    private Set<SpaceShip> hangar;
+    @OneToMany(cascade = CascadeType.MERGE)
+    @JoinColumn(name ="station_id")
+    private Set<StationResource> resources;
 
-    public SpaceStation(String name) {
-        this.name = name;
-        this.id = UUID.randomUUID();
-        this.storage = new SpaceStationStorage();
-        this.hangar = new Hangar();
-    }
-    /*
-    public void addFirstShip() {
-        try {
-            hangar.addShip(new MinerShip("Eeny Meeny Miny Moe", Color.EMERALD));
-        } catch (StorageException ignored) {
-        }
-    }*/
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public SpaceStationStorage getStorage() {
-        return storage;
-    }
-
-    public Hangar getHangar() {
-        return hangar;
-    }
-
-    private boolean hasEnoughResource(Map<Resource, Integer> cost) {
-        return cost.entrySet().stream().allMatch(entry -> storage.hasResource(entry.getKey(), entry.getValue()));
-    }
-
-    private boolean removeResources(Map<Resource, Integer> cost) throws StorageException {
-        if (hasEnoughResource(cost)) {
-            for (Resource resource : cost.keySet()) {
-                storage.removeResource(resource, cost.get(resource));
-            }
-            return true;
-        }
-        throw new StorageException("Not enough resource");
-    }
-
-    public boolean addNewShip(SpaceShip ship) throws StorageException {
-        Map<Resource, Integer> cost = ship.getCost();
-        return removeResources(cost) && hangar.addShip(ship); //throws storage exception if not enough resource or docks
-    }
-
-    public boolean deleteShip(SpaceShip ship){
-        return hangar.removeShip(ship);
-    }
-
-    public Set<SpaceShip> getAllShips() {
-        return new HashSet<>(hangar.getAllShips());
-    }
-
-    public boolean upgradeShipPart(SpaceShip ship, ShipPart shipPart) throws NoSuchPartException, UpgradeNotAvailableException, StorageException {
-        if (!hangar.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
-        if (!ship.isAvailable()) throw new UpgradeNotAvailableException("Ship is on a mission");
-        Upgradeable part = ship.getPart(shipPart);
-        Map<Resource, Integer> cost = part.getUpgradeCost();
-        removeResources(cost);
-        part.upgrade();
-        return true;
-    }
-
-    public boolean addResource(Resource resource, int quantity) throws StorageException {
-        return storage.addResource(resource, quantity);
-    }
-
-    public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
-        Map<Resource, Integer> cost = storage.getUpgradeCost();
-        removeResources(cost);
-        storage.upgrade();
-        return true;
-    }
-
-    public boolean upgradeHangar() throws UpgradeNotAvailableException, StorageException {
-        Map<Resource, Integer> cost = hangar.getUpgradeCost();
-        removeResources(cost);
-        hangar.upgrade();
-        return true;
-    }
 }
