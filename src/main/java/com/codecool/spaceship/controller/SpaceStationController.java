@@ -1,20 +1,10 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.MinerShipService;
-import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.BaseService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/base")

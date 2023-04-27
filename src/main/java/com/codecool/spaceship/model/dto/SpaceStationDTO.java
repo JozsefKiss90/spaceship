@@ -3,7 +3,6 @@ package com.codecool.spaceship.model.dto;
 import com.codecool.spaceship.model.resource.StationResource;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.station.SpaceStation;
-import com.codecool.spaceship.model.station.SpaceStationService;
 
 import java.util.List;
 import java.util.Set;

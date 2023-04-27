@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShipService;
@@ -68,10 +68,10 @@ class HangarServiceTest {
     @Test
     void getUpgradeCostLevel1() {
         HangarService hangarService = new HangarService();
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 5);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 5);
         }};
-        Map<Resource, Integer> actual = null;
+        Map<ResourceType, Integer> actual = null;
         try {
             actual = hangarService.getUpgradeCost();
         } catch (UpgradeNotAvailableException ignored) {
@@ -84,12 +84,12 @@ class HangarServiceTest {
         HangarService hangarService = new HangarService();
         hangarService.upgrade();
         hangarService.upgrade();
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 100);
-            put(Resource.SILICONE, 100);
-            put(Resource.CRYSTAL, 50);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 100);
+            put(ResourceType.SILICONE, 100);
+            put(ResourceType.CRYSTAL, 50);
         }};
-        Map<Resource, Integer> actual = null;
+        Map<ResourceType, Integer> actual = null;
         try {
             actual = hangarService.getUpgradeCost();
         } catch (UpgradeNotAvailableException ignored) {

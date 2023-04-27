@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SpaceStationServiceStorageTest {
+class SpaceStationManagerStorageTest {
 
     @Test
     void getCurrentCapacityTestLevel1() {
@@ -33,12 +33,12 @@ class SpaceStationServiceStorageTest {
     void addResourceSuccessOne() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
         try {
-            spaceStationStorage.addResource(Resource.METAL, 5);
+            spaceStationStorage.addResource(ResourceType.METAL, 5);
         } catch (StorageException ignored) {
         }
 
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 5);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 5);
         }};
         assertEquals(expected, spaceStationStorage.getStoredItems());
     }
@@ -47,15 +47,15 @@ class SpaceStationServiceStorageTest {
     void addResourceSuccessMultiple() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
         try {
-            spaceStationStorage.addResource(Resource.METAL, 5);
-            spaceStationStorage.addResource(Resource.METAL, 10);
-            spaceStationStorage.addResource(Resource.SILICONE, 2);
+            spaceStationStorage.addResource(ResourceType.METAL, 5);
+            spaceStationStorage.addResource(ResourceType.METAL, 10);
+            spaceStationStorage.addResource(ResourceType.SILICONE, 2);
         } catch (StorageException ignored) {
         }
 
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 15);
-            put(Resource.SILICONE, 2);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 15);
+            put(ResourceType.SILICONE, 2);
         }};
         assertEquals(expected, spaceStationStorage.getStoredItems());
     }
@@ -63,35 +63,35 @@ class SpaceStationServiceStorageTest {
     @Test
     void addResourceError() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
-        assertThrows(StorageException.class, () -> spaceStationStorage.addResource(Resource.METAL, 25));
+        assertThrows(StorageException.class, () -> spaceStationStorage.addResource(ResourceType.METAL, 25));
     }
 
     @Test
     void hasResourceTrue() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
         try {
-            spaceStationStorage.addResource(Resource.METAL, 5);
+            spaceStationStorage.addResource(ResourceType.METAL, 5);
         } catch (StorageException ignored) {
         }
-        assertTrue(spaceStationStorage.hasResource(Resource.METAL, 5));
+        assertTrue(spaceStationStorage.hasResource(ResourceType.METAL, 5));
     }
 
     @Test
     void hasResourceFalse() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
-        assertFalse(spaceStationStorage.hasResource(Resource.METAL, 5));
+        assertFalse(spaceStationStorage.hasResource(ResourceType.METAL, 5));
     }
 
     @Test
     void removeResourceSuccess() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
         try {
-            spaceStationStorage.addResource(Resource.METAL, 5);
-            spaceStationStorage.removeResource(Resource.METAL, 4);
+            spaceStationStorage.addResource(ResourceType.METAL, 5);
+            spaceStationStorage.removeResource(ResourceType.METAL, 4);
         } catch (StorageException ignored) {
         }
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 1);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 1);
         }};
         assertEquals(expected, spaceStationStorage.getStoredItems());
     }
@@ -99,20 +99,20 @@ class SpaceStationServiceStorageTest {
     @Test
     void removeResourceError() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
-        assertThrows(StorageException.class, () -> spaceStationStorage.removeResource(Resource.METAL, 1));
+        assertThrows(StorageException.class, () -> spaceStationStorage.removeResource(ResourceType.METAL, 1));
     }
 
     @Test
     void getUpgradeCostSuccess() {
         SpaceStationStorage spaceStationStorage = new SpaceStationStorage();
-        Map<Resource, Integer> actual = null;
+        Map<ResourceType, Integer> actual = null;
         try {
             actual = spaceStationStorage.getUpgradeCost();
         } catch (UpgradeNotAvailableException ignored) {
         }
 
-        Map<Resource, Integer> expected = new HashMap<>() {{
-            put(Resource.METAL, 5);
+        Map<ResourceType, Integer> expected = new HashMap<>() {{
+            put(ResourceType.METAL, 5);
         }};
         assertEquals(expected, actual);
     }

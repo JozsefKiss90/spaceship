@@ -2,7 +2,7 @@ package com.codecool.spaceship.model.ship.shipparts;
 
 
 import com.codecool.spaceship.model.Level;
-import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.Upgradeable;
 
@@ -15,24 +15,24 @@ public class Shield implements Upgradeable {
             new Level<>(1, 20, Map.of()),
             new Level<>(2, 50,
                     Map.of(
-                            Resource.CRYSTAL, 20
+                            ResourceType.CRYSTAL, 20
                     )),
             new Level<>(3, 100,
                     Map.of(
-                            Resource.CRYSTAL, 40,
-                            Resource.SILICONE, 10
+                            ResourceType.CRYSTAL, 40,
+                            ResourceType.SILICONE, 10
                     )),
             new Level<>(4, 150,
                     Map.of(
-                            Resource.CRYSTAL, 100,
-                            Resource.SILICONE, 20
+                            ResourceType.CRYSTAL, 100,
+                            ResourceType.SILICONE, 20
                     )),
             new Level<>(
                     5, 200,
                     Map.of(
-                            Resource.CRYSTAL, 150,
-                            Resource.SILICONE, 40,
-                            Resource.PLUTONIUM, 5
+                            ResourceType.CRYSTAL, 150,
+                            ResourceType.SILICONE, 40,
+                            ResourceType.PLUTONIUM, 5
                     ))
     );
     private int currentLevelIndex;
@@ -44,7 +44,7 @@ public class Shield implements Upgradeable {
     }
 
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
+    public Map<ResourceType, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (getCurrentLevel() == LEVELS.size()) {
             throw new UpgradeNotAvailableException("Already at max level");
         } else {

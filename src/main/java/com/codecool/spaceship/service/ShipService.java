@@ -8,13 +8,11 @@ import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
-import com.codecool.spaceship.model.station.SpaceStationService;
 import com.codecool.spaceship.repository.MinerShipRepository;
 import com.codecool.spaceship.repository.SpaceShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,9 +35,9 @@ public class ShipService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<ShipDTO> getShipByID(int id) {
+    public Optional<ShipDTO> getShipByID(long id) {
 
-        return spaceShipRepository.findAll().stream()
+        return spaceShipRepository.findById(id).stream()
                 .filter(ship -> ship.getId() == id)
                 .map(ShipDTO::new)
                 .findFirst();

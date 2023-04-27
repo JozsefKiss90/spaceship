@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.StorageException;
@@ -8,9 +8,6 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.ship.shipparts.ShipStorage;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +16,10 @@ import java.util.Map;
 public class MinerShipService extends SpaceShipService {
 
     private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
-    private static final Map<Resource, Integer> COST = new HashMap<>() {{
-        put(Resource.METAL, 50);
-        put(Resource.CRYSTAL, 20);
-        put(Resource.SILICONE, 20);
+    private static final Map<ResourceType, Integer> COST = new HashMap<>() {{
+        put(ResourceType.METAL, 50);
+        put(ResourceType.CRYSTAL, 20);
+        put(ResourceType.SILICONE, 20);
     }};
     private Drill drill;
 
@@ -44,16 +41,16 @@ public class MinerShipService extends SpaceShipService {
     public int getEmptyStorageSpace() {
         return storage.getEmptySpace();
     }
-    public Map<Resource, Integer> getStorageContents() {
+    public Map<ResourceType, Integer> getStorageContents() {
         return storage.getStoredResources();
     }
 
-    public boolean addResourceToStorage(Resource resource, int amount) throws StorageException {
-        return storage.addResource(resource, amount);
+    public boolean addResourceToStorage(ResourceType resourceType, int amount) throws StorageException {
+        return storage.addResource(resourceType, amount);
     }
 
-    public boolean removeResourceFromStorage(Resource resource, int amount) throws StorageException {
-        return storage.removeResource(resource, amount);
+    public boolean removeResourceFromStorage(ResourceType resourceType, int amount) throws StorageException {
+        return storage.removeResource(resourceType, amount);
     }
     @Override
     public List<ShipPart> getPartTypes() {
@@ -80,7 +77,7 @@ public class MinerShipService extends SpaceShipService {
     }
 
     @Override
-    public Map<Resource, Integer> getCost() {
+    public Map<ResourceType, Integer> getCost() {
         return new HashMap<>(COST);
     }
 }

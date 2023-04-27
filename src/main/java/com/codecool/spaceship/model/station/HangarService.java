@@ -3,6 +3,7 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.SpaceShipService;
 
 import java.util.*;
@@ -12,21 +13,21 @@ public class HangarService implements Upgradeable {
     private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
         add(new Level<>(1, 2, null));
         add(new Level<>(2, 4, new HashMap<>() {{
-            put(Resource.METAL, 5);
+            put(ResourceType.METAL, 5);
         }}));
         add(new Level<>(3, 6, new HashMap<>() {{
-            put(Resource.METAL, 20);
-            put(Resource.SILICONE, 20);
+            put(ResourceType.METAL, 20);
+            put(ResourceType.SILICONE, 20);
         }}));
         add(new Level<>(4, 8, new HashMap<>() {{
-            put(Resource.METAL, 100);
-            put(Resource.SILICONE, 100);
-            put(Resource.CRYSTAL, 50);
+            put(ResourceType.METAL, 100);
+            put(ResourceType.SILICONE, 100);
+            put(ResourceType.CRYSTAL, 50);
         }}));
         add(new Level<>(5, 10, new HashMap<>() {{
-            put(Resource.METAL, 500);
-            put(Resource.SILICONE, 150);
-            put(Resource.CRYSTAL, 100);
+            put(ResourceType.METAL, 500);
+            put(ResourceType.SILICONE, 150);
+            put(ResourceType.CRYSTAL, 100);
         }}));
     }};
 
@@ -63,7 +64,7 @@ public class HangarService implements Upgradeable {
     }
 
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
+    public Map<ResourceType, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex + 1).cost());
         throw new UpgradeNotAvailableException("Already on max level");
     }
