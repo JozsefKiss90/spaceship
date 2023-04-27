@@ -2,6 +2,8 @@ package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.resource.ResourceType;
+import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,6 +57,15 @@ public class ShipController {
             return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
         } catch (ShipNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/cost/{shipType}")
+    public ResponseEntity<Map<ResourceType, Integer>> getMinerShipCost(@PathVariable String shipType) {
+        try {
+            return ResponseEntity.ok(shipService.getShipCost(ShipType.valueOf(shipType.toUpperCase())));
+        } catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
