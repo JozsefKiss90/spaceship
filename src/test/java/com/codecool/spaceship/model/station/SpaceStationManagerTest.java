@@ -1,22 +1,7 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShipManager;
-import com.codecool.spaceship.model.ship.SpaceShipManager;
-import com.codecool.spaceship.model.ship.shipparts.Drill;
-import com.codecool.spaceship.model.ship.shipparts.ShipPart;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SpaceStationManagerTest {
