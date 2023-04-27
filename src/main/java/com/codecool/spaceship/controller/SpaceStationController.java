@@ -28,16 +28,11 @@ public class SpaceStationController {
         this.stationService = stationService;
     }
 
-    @GetMapping()
-    public ResponseEntity<SpaceStationDTO> getBase() {
-        return ResponseEntity.ok(stationService.getBase().get());
+    @GetMapping({"{baseId}"})
+    public ResponseEntity<SpaceStationDTO> getBaseById(@PathVariable long baseId) {
+        return ResponseEntity.ok(stationService.getBaseById(baseId).get());
     }
 
-    //    @GetMapping()
-//    public ResponseEntity<SpaceStationDTO> getBase() {
-//        return ResponseEntity.ok(new SpaceStationDTO(baseService.getBase()));
-//    }
-//
     @PostMapping("{baseId}/add/resources")
     public ResponseEntity<Boolean> addResource(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
         for (ResourceType resource : resources.keySet()) {
@@ -72,27 +67,45 @@ public class SpaceStationController {
         return ResponseEntity.ok(stationService.getStoredResources(baseId));
     }
 
+    @GetMapping("/{baseId}/storage/upgrade")
+    public ResponseEntity<Map<ResourceType, Integer>> getStorageUpgradeCost(@PathVariable long baseId) {
+        try {
+            return ResponseEntity.ok(stationService.getStorageUpgradeCost(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
+
+    @PostMapping("{baseId}/storage/upgrade")
+    public ResponseEntity<Boolean> upgradeStorage(@PathVariable long baseId) {
+        try {
+            return ResponseEntity.ok(stationService.upgradeStorage(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
+
     @GetMapping("{baseId}/hangar")
     public ResponseEntity<HangarDTO> getStationHangar(@PathVariable long baseId) {
         return ResponseEntity.ok(stationService.getStationHangar(baseId));
     }
-//
-//    @PostMapping("/upgrade/storage")
-//    public ResponseEntity<Boolean> upgradeStorage() {
-//        try {
-//            return ResponseEntity.ok(baseService.upgradeStorage());
-//        } catch (Exception e) {
-//            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
-//        }
-//    }
-//
-//    @PostMapping("/upgrade/hangar")
-//    public ResponseEntity<Boolean> upgradeHangar() {
-//        try {
-//            return ResponseEntity.ok(baseService.upgradeHangar());
-//        } catch (Exception e) {
-//            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
-//        }
-//    }
+
+    @GetMapping("/{baseId}/hangar/upgrade")
+    public ResponseEntity<Map<ResourceType, Integer>> getHangarUpgradeCost(@PathVariable long baseId) {
+        try {
+            return ResponseEntity.ok(stationService.getHangarUpgradeCost(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
+
+    @PostMapping("/{baseId}/hangar/upgrade")
+    public ResponseEntity<Boolean> upgradeHangar(@PathVariable long baseId) {
+        try {
+            return ResponseEntity.ok(stationService.upgradeHangar(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
 
 }

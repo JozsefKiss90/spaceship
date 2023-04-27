@@ -4,6 +4,7 @@ import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.ShipType;
@@ -29,12 +30,16 @@ public class StationService {
         this.spaceStationRepository = spaceStationRepository;
     }
 
-    public Optional<SpaceStationDTO> getBase() {
-        return spaceStationRepository.findAll()
-                .stream().map(SpaceStationDTO::new).findFirst();
+    public Optional<SpaceStationDTO> getBaseById(long baseId) {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return Optional.empty();
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return Optional.of(stationManager.getStationDTO());
     }
 
-    //
     public boolean addResource(long baseId, ResourceType resource, int quantity) throws StorageException {
         SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
         if (station == null) {
@@ -95,15 +100,54 @@ public class StationService {
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getStoredResources();
     }
-//
-//    public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
-//        base.upgradeStorage();
-//        return true;
-//    }
-//
-//    public boolean upgradeHangar() throws UpgradeNotAvailableException, StorageException {
-//        base.upgradeHangar();
-//        return true;
-//    }
 
+    public Map<ResourceType, Integer> getStorageUpgradeCost(long baseId) throws UpgradeNotAvailableException {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return null;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return stationManager.getStorageUpgradeCost();
+    }
+
+    public boolean upgradeStorage(long baseId) throws UpgradeNotAvailableException, StorageException {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return false;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        if(stationManager.upgradeStorage()) {
+            spaceStationRepository.save(station);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Map<ResourceType, Integer> getHangarUpgradeCost(long baseId) throws UpgradeNotAvailableException {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return null;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return stationManager.getHangarUpgradeCost();
+    }
+
+    public boolean upgradeHangar(long baseId) throws UpgradeNotAvailableException, StorageException {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return false;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        if(stationManager.upgradeHangar()) {
+            spaceStationRepository.save(station);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
