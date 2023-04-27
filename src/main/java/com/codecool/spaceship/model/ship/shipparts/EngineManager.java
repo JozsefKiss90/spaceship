@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.ship.shipparts;
 
 import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.exception.InvalidLevelException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.Upgradeable;
@@ -8,7 +9,7 @@ import com.codecool.spaceship.model.Upgradeable;
 import java.util.List;
 import java.util.Map;
 
-public class Engine implements Upgradeable {
+public class EngineManager implements Upgradeable {
 
     private static final List<Level<Double>> LEVELS = List.of(
             new Level<>(1, 1.0, Map.of()),
@@ -34,10 +35,20 @@ public class Engine implements Upgradeable {
                             ResourceType.PLUTONIUM, 5
                     ))
     );
+    private static final int MAX_LEVEL_INDEX = LEVELS.size() - 1;
     private int currentLevelIndex;
 
-    public Engine() {
+    public EngineManager() {
         currentLevelIndex = 0;
+    }
+
+    public EngineManager(int currentLevelIndex) {
+        if (currentLevelIndex < 0) {
+            throw new InvalidLevelException("Level index can't be lower than 0");
+        } else if (currentLevelIndex > MAX_LEVEL_INDEX) {
+            throw new InvalidLevelException("Level index can't be higher than %d".formatted(MAX_LEVEL_INDEX));
+        }
+        this.currentLevelIndex = currentLevelIndex;
     }
 
     @Override

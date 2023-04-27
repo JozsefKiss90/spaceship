@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class MinerShip extends SpaceShip {
     private int drillLevel;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="ship_id")
     private Set<ShipResource> resources;
     private int storageLevel;

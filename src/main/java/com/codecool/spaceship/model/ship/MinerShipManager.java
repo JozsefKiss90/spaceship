@@ -4,10 +4,7 @@ import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.model.ship.shipparts.Drill;
-import com.codecool.spaceship.model.ship.shipparts.ShipPart;
-import com.codecool.spaceship.model.ship.shipparts.ShipStorage;
+import com.codecool.spaceship.model.ship.shipparts.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,35 +18,38 @@ public class MinerShipManager extends SpaceShipManager {
         put(ResourceType.CRYSTAL, 20);
         put(ResourceType.SILICONE, 20);
     }};
-    private Drill drill;
 
-    private final ShipStorage storage = new ShipStorage();;
-
-    public MinerShipManager(String name, Color color) {
-        super(name, color);
-        drill = new Drill();
+    public MinerShipManager(MinerShip minerShip) {
+        super(minerShip);
     }
 
     public int getDrillEfficiency() {
+        DrillManager drill = new DrillManager(((MinerShip) spaceShip).getDrillLevel());
         return drill.getEfficiency();
     }
 
     public int getMaxStorageCapacity() {
+        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.getMaxCapacity();
     }
 
     public int getEmptyStorageSpace() {
+        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.getEmptySpace();
     }
+
     public Map<ResourceType, Integer> getStorageContents() {
+        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.getStoredResources();
     }
 
     public boolean addResourceToStorage(ResourceType resourceType, int amount) throws StorageException {
+        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.addResource(resourceType, amount);
     }
 
     public boolean removeResourceFromStorage(ResourceType resourceType, int amount) throws StorageException {
+        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.removeResource(resourceType, amount);
     }
     @Override
@@ -61,16 +61,16 @@ public class MinerShipManager extends SpaceShipManager {
     public Upgradeable getPart(ShipPart part) throws NoSuchPartException {
         switch (part) {
             case ENGINE -> {
-                return engine;
+                return new EngineManager(spaceShip.getEngineLevel());
             }
             case SHIELD -> {
-                return shield;
+                return new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
             }
             case DRILL -> {
-                return drill;
+                return new DrillManager(((MinerShip) spaceShip).getDrillLevel());
             }
             case STORAGE -> {
-                return storage;
+                return new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
             }
             default -> throw new NoSuchPartException("No such part on this ship");
         }

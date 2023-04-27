@@ -1,16 +1,16 @@
 package com.codecool.spaceship.model.ship.shipparts;
 
 import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.exception.InvalidLevelException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.resource.ShipResource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class ShipStorage implements Upgradeable {
+public class ShipStorageManager implements Upgradeable {
 
     private static final List<Level<Integer>> LEVELS = List.of(
             new Level<>(1, 10, Map.of()),
@@ -36,11 +36,26 @@ public class ShipStorage implements Upgradeable {
                             ResourceType.PLUTONIUM, 10
                     ))
     );
+    private static final int MAX_LEVEL_INDEX = LEVELS.size() - 1;
     private int currentLevelIndex;
-    private final Map<ResourceType, Integer> storedResources;
+    private final Set<ShipResource> storedResources;
 
-    public ShipStorage() {
-        storedResources = new HashMap<>();
+    public ShipStorageManager() {
+        currentLevelIndex = 0;
+        storedResources = new HashSet<>();
+    }
+
+    public ShipStorageManager(int currentLevelIndex, Set<ShipResource> storedResources) {
+        if (currentLevelIndex < 0) {
+            throw new InvalidLevelException("Level index can't be lower than 0");
+        } else if (currentLevelIndex > MAX_LEVEL_INDEX) {
+            throw new InvalidLevelException("Level index can't be higher than %d".formatted(MAX_LEVEL_INDEX));
+        }
+        this.currentLevelIndex = currentLevelIndex;
+        if (storedResources.stream().mapToInt(ShipResource::getQuantity).sum() > LEVELS.get(currentLevelIndex).effect()) {
+            throw new IllegalArgumentException("Stored resources can't exceed %d at this level".formatted(LEVELS.get(currentLevelIndex).effect()));
+        }
+        this.storedResources = storedResources;
     }
 
     @Override
@@ -65,7 +80,11 @@ public class ShipStorage implements Upgradeable {
     }
 
     public Map<ResourceType, Integer> getStoredResources() {
-        return new HashMap<>(storedResources);
+        Map<ResourceType, Integer> resources = new HashMap<>();
+        for (ShipResource shipResource : storedResources) {
+            resources.put(shipResource.getResourceType(), shipResource.getQuantity());
+        }
+        return resources;
     }
 
     public int getMaxCapacity() {
@@ -73,8 +92,8 @@ public class ShipStorage implements Upgradeable {
     }
 
     public int getEmptySpace() {
-        int filledSpace = storedResources.values().stream()
-                .mapToInt(i -> i)
+        int filledSpace = storedResources.stream()
+                .mapToInt(ShipResource::getQuantity)
                 .sum();
         return getMaxCapacity() - filledSpace;
     }
@@ -84,20 +103,35 @@ public class ShipStorage implements Upgradeable {
         if (emptySpace < amount) {
             throw new StorageException("Not enough free space");
         }
-        storedResources.merge(resourceType, amount, (Integer::sum));
+        ShipResource resource = storedResources.stream()
+                .filter(sr -> sr.getResourceType() == resourceType)
+                .findFirst()
+                .orElse(null);
+        if (resource != null) {
+            resource.setQuantity(resource.getQuantity() + amount);
+        } else {
+            resource = ShipResource.builder()
+                    .resourceType(resourceType)
+                    .quantity(amount)
+                    .build();
+            storedResources.add(resource);
+        }
         return true;
     }
 
     public boolean removeResource(ResourceType resourceType, int amount) throws StorageException {
-        if (!storedResources.containsKey(resourceType)) {
-            throw new StorageException("No such resource stored");
-        }
-        int storedAmount = storedResources.get(resourceType);
-        if (amount > storedAmount) {
+        ShipResource resource = storedResources.stream()
+                .filter(sr -> sr.getResourceType() == resourceType
+                        && sr.getQuantity() >= amount)
+                .findFirst()
+                .orElse(null);
+        if (resource == null) {
             throw new StorageException("Not enough resource");
+        } else if (resource.getQuantity() == amount) {
+            storedResources.remove(resource);
+        } else {
+            resource.setQuantity(resource.getQuantity() - amount);
         }
-        storedResources.replace(resourceType, storedAmount - amount);
-        storedResources.remove(resourceType, 0);
         return true;
     }
 

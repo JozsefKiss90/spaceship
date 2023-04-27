@@ -1,9 +1,9 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
-import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.shipparts.*;
 
 import java.util.List;
@@ -11,78 +11,50 @@ import java.util.Map;
 
 
 public abstract class SpaceShipManager {
-    private Long id;
-    private String name;
-    private Color color;
 
-    protected Engine engine ;
+    protected final SpaceShip spaceShip;
 
-    protected Shield shield;
-
-    private Mission currentMission;
-    protected SpaceShipManager(String name, Color color) {
-        this.name = name;
-        this.color = color;
-        engine = new Engine();
-        shield = new Shield();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
+    protected SpaceShipManager(SpaceShip spaceShip) {
+        this.spaceShip = spaceShip;
     }
 
     public boolean isAvailable() {
-        return currentMission == null;
+        //TODO add mission
+        return true;
     }
 
     public void setCurrentMission(Mission mission) {
-        if (currentMission == null) {
-            currentMission = mission;
-        }
+        //TODO
     }
 
     public void endMission() {
-        currentMission = null;
+        //TODO
     }
 
-    public int getShieldEnergy(SpaceShip spaceShip) {
+    public int getShieldEnergy() {
         return spaceShip.getShieldEnergy();
     }
 
-    public int getShieldMaxEnergy(SpaceShip spaceShip) {
-        return spaceShip.getEngineLevel();
+    public int getShieldMaxEnergy() {
+        return spaceShip.getShieldEnergy();
     }
 
     public void repairShield(int amount) {
+        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
         shield.repair(amount);
     }
 
     public void damageShield(int amount) {
+        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
         shield.damage(amount);
     }
 
     public double getSpeed() {
+        EngineManager engine = new EngineManager(spaceShip.getEngineLevel());
         return engine.getSpeed();
     }
     public abstract List<ShipPart> getPartTypes();
 
     public abstract Upgradeable getPart(ShipPart part) throws NoSuchPartException;
-    public abstract Map<ResourceType,Integer> getCost();
-
+    public abstract Map<ResourceType, Integer> getCost();
 }

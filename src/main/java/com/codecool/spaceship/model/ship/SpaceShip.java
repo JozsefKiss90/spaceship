@@ -4,7 +4,6 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
@@ -23,5 +22,4 @@ public abstract class SpaceShip {
     private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
-
 }
