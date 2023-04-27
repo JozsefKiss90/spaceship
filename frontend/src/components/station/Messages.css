@@ -22,4 +22,11 @@
     box-shadow: 0 0 5px 5px rgba(0, 23, 0, 0.85);
 }
 
+.message-row {
+    padding: 0px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 

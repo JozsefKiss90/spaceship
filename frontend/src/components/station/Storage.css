@@ -25,3 +25,10 @@
     border-radius: 2px;
     background-color: forestgreen;
 }
+
+.resource-row {
+    padding: 0px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}

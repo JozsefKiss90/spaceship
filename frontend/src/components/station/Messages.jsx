@@ -39,9 +39,11 @@ console.log(message);
     const element = message.data ? (<div className="cost">
         <div>Resources needed to add miner ship:</div>
         {Object.keys(message.data).map(key => {
-            console.log(key);
-            console.log(message.data[key]);
-            return <p key={key}>{key}: {message.data[key]}</p>;
+
+            return <div className="message-row">
+                <img style={{width: "25px", height: "25px"}} src={key.toLowerCase() +'.png'} alt={key} />
+                <p style={{marginLeft:"5px"}} key={key} >{key}: {message.data[key]}</p>
+            </div>
         })}
         {checkStorage(message.data, message.storage) ? <div className="button" onClick={addShip}>Confirm</div> :
             <div style={{color: "red"}}>Not enough resource</div>}

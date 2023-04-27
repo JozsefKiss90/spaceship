@@ -28,7 +28,10 @@ const Storage = () => {
             </div>
             {Object.keys(storage.resources).length === 0 ? (<div>No resources yet</div>) : (
                 Object.keys(storage.resources).map((key) => {
-                    return <p>{key.toLowerCase()}: {storage.resources[key]}</p>;
+                    return <div className="resource-row">
+                        <img style={{width: "25px", height: "25px"}} src={key.toLowerCase() +'.png'} alt={key} />
+                        <p style={{marginLeft:"5px"}} key={key} >{key}: {storage.resources[key]}</p>
+                    </div>;
                 })
             )}
         </div>)}</>
