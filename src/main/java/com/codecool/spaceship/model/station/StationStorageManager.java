@@ -20,13 +20,13 @@ public class StationStorageManager implements Upgradeable {
             put(ResourceType.SILICONE, 10);
         }}));
         add(new Level<>(4, 500, new HashMap<>() {{
-            put(ResourceType.METAL, 200);
-            put(ResourceType.SILICONE, 100);
+            put(ResourceType.METAL, 50);
+            put(ResourceType.SILICONE, 20);
         }}));
         add(new Level<>(5, 1000, new HashMap<>() {{
-            put(ResourceType.METAL, 400);
+            put(ResourceType.METAL, 300);
             put(ResourceType.SILICONE, 150);
-            put(ResourceType.PLUTONIUM, 50);
+            put(ResourceType.PLUTONIUM, 20);
         }}));
     }};
     private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size() - 1;
