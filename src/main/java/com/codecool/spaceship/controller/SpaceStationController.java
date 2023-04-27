@@ -5,6 +5,7 @@ import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.BaseService;
@@ -37,6 +38,10 @@ public class SpaceStationController {
     public ResponseEntity<SpaceStationStorageDTO> getStorage() {
         return ResponseEntity.ok(new SpaceStationStorageDTO(baseService.getBase().getStorage()));
     }
+    @GetMapping("/storage/upgrade")
+    public ResponseEntity<Map<Resource,Integer>> getStorageUpgradeCost() throws UpgradeNotAvailableException {
+        return ResponseEntity.ok(baseService.getBase().getStorage().getUpgradeCost());
+    }
 
     @GetMapping("/storage/resources")
     public ResponseEntity<Map<Resource,Integer>> getStorageResources() {
@@ -45,6 +50,11 @@ public class SpaceStationController {
     @GetMapping("/hangar")
     public ResponseEntity<HangarDTO> getHangar() {
         return ResponseEntity.ok(new HangarDTO(baseService.getBase().getHangar()));
+    }
+
+    @GetMapping("/hangar/upgrade")
+    public ResponseEntity<Map<Resource,Integer>> getHangarUpgradeCost() throws UpgradeNotAvailableException {
+        return ResponseEntity.ok(baseService.getBase().getHangar().getUpgradeCost());
     }
 
     @PostMapping("/add/resources")

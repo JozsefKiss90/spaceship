@@ -24,16 +24,26 @@ export function StationContext({children}) {
 
 const messageReducer = (message, action) => {
     switch (action.type) {
-        case 'cost': {
+        case 'miner cost':
+            console.log("miner");
+
+        case 'storage upgrade':
+            console.log("storage")
             return {
                 type: action.type,
                 data: action.data,
                 storage: action.storage
             };
-        }
-        default: {
-            return {};
-        }
+        case 'hangar upgrade':
+            console.log("hangar")
+            return {
+                type: action.type,
+                data: action.data,
+                storage: action.storage
+            };
+        default:
+            return {type:null};
+
     }
 }
 
