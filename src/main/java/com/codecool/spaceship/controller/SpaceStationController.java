@@ -1,7 +1,9 @@
 package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
+import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -31,6 +33,20 @@ public class SpaceStationController {
         return ResponseEntity.ok(new SpaceStationDTO(baseService.getBase()));
     }
 
+    @GetMapping("/storage")
+    public ResponseEntity<SpaceStationStorageDTO> getStorage() {
+        return ResponseEntity.ok(new SpaceStationStorageDTO(baseService.getBase().getStorage()));
+    }
+
+    @GetMapping("/storage/resources")
+    public ResponseEntity<Map<Resource,Integer>> getStorageResources() {
+        return ResponseEntity.ok(baseService.getBase().getStorage().getStoredItems());
+    }
+    @GetMapping("/hangar")
+    public ResponseEntity<HangarDTO> getHangar() {
+        return ResponseEntity.ok(new HangarDTO(baseService.getBase().getHangar()));
+    }
+
     @PostMapping("/add/resources")
     public ResponseEntity<Boolean> addResource(@RequestBody Map<Resource, Integer> resources) {
         for (Resource resource : resources.keySet()) {
@@ -43,7 +59,7 @@ public class SpaceStationController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/add/ship")
+    @PostMapping("/hangar/add")
     public ResponseEntity<Boolean> addShip(@RequestBody ObjectNode objectNode) {
         try {
             return ResponseEntity.ok(baseService.addShip(new MinerShip(objectNode.get("name").asText(), Color.valueOf(objectNode.get("color").asText()))));

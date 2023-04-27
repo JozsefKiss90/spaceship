@@ -68,10 +68,13 @@ public class SpaceStation {
 
     public boolean addNewShip(SpaceShip ship) throws StorageException {
         Map<Resource, Integer> cost = ship.getCost();
-        return removeResources(cost) && hangar.addShip(ship); //throws storage exception if not enough resource or docks
+        if (hasEnoughResource(cost)) {
+            return hangar.addShip(ship) && removeResources(cost);
+        }
+        return false;
     }
 
-    public boolean deleteShip(SpaceShip ship){
+    public boolean deleteShip(SpaceShip ship) {
         return hangar.removeShip(ship);
     }
 

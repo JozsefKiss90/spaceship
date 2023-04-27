@@ -4,29 +4,15 @@ import Hangar from "./Hangar";
 import {useEffect, useState} from "react";
 
 const StationBar = () => {
-    const [station, setStation] = useState();
-
-    useEffect(() => {
-        fetch('http://localhost:8080/base')
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                setStation(data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, []);
 
 
-    return (<>{!station ?
-        <div className="station-bar">Loading...</div> :
+
+    return (
         <div className="station-bar">
-            <Storage storage={station.storage}></Storage>
-            <Hangar hangar={station.hangar}></Hangar>
+            <Storage></Storage>
+            <Hangar></Hangar>
         </div>
-    }</>);
+    );
 }
 
 export default StationBar;
