@@ -3,7 +3,10 @@ package com.codecool.spaceship.controller;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
+import com.codecool.spaceship.model.ship.ShipType;
+import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.BaseService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -28,7 +31,7 @@ public class SpaceStationController {
         return ResponseEntity.ok(baseService.getBase().get());
     }
 
-//    @GetMapping()
+    //    @GetMapping()
 //    public ResponseEntity<SpaceStationDTO> getBase() {
 //        return ResponseEntity.ok(new SpaceStationDTO(baseService.getBase()));
 //    }
@@ -44,15 +47,18 @@ public class SpaceStationController {
         }
         return ResponseEntity.ok(true);
     }
-//
-//    @PostMapping("/add/ship")
-//    public ResponseEntity<Boolean> addShip(@RequestBody ObjectNode objectNode) {
-//        try {
-//            return ResponseEntity.ok(baseService.addShip(new MinerShipService(objectNode.get("name").asText(), Color.valueOf(objectNode.get("color").asText()))));
-//        } catch (Exception e) {
-//            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
-//        }
-//    }
+
+    @PostMapping("{baseId}/add/ship")
+    public ResponseEntity<Boolean> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
+        try {
+            return ResponseEntity.ok(baseService.addShip(baseId,
+                            objectNode.get("name").asText(),
+                            Color.valueOf(objectNode.get("color").asText().toUpperCase()),
+                    ShipType.valueOf(objectNode.get("type").asText().toUpperCase())));
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
 //
 //    @PostMapping("/upgrade/storage")
 //    public ResponseEntity<Boolean> upgradeStorage() {
