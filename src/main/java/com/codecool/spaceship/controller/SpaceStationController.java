@@ -1,11 +1,13 @@
 package com.codecool.spaceship.controller;
 
+import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
+import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.service.BaseService;
+import com.codecool.spaceship.service.StationService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -19,16 +21,16 @@ import java.util.Map;
 @RequestMapping("/base")
 public class SpaceStationController {
 
-    private final BaseService baseService;
+    private final StationService stationService;
 
     @Autowired
-    public SpaceStationController(BaseService baseService) {
-        this.baseService = baseService;
+    public SpaceStationController(StationService stationService) {
+        this.stationService = stationService;
     }
 
     @GetMapping()
     public ResponseEntity<SpaceStationDTO> getBase() {
-        return ResponseEntity.ok(baseService.getBase().get());
+        return ResponseEntity.ok(stationService.getBase().get());
     }
 
     //    @GetMapping()
@@ -40,7 +42,7 @@ public class SpaceStationController {
     public ResponseEntity<Boolean> addResource(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
         for (ResourceType resource : resources.keySet()) {
             try {
-                baseService.addResource(baseId, resource, resources.get(resource));
+                stationService.addResource(baseId, resource, resources.get(resource));
             } catch (StorageException e) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
             }
@@ -51,13 +53,28 @@ public class SpaceStationController {
     @PostMapping("{baseId}/add/ship")
     public ResponseEntity<Boolean> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
         try {
-            return ResponseEntity.ok(baseService.addShip(baseId,
+            return ResponseEntity.ok(stationService.addShip(baseId,
                             objectNode.get("name").asText(),
                             Color.valueOf(objectNode.get("color").asText().toUpperCase()),
                     ShipType.valueOf(objectNode.get("type").asText().toUpperCase())));
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
+    }
+
+    @GetMapping("{baseId}/storage")
+    public ResponseEntity<SpaceStationStorageDTO> getStationStorage(@PathVariable long baseId) {
+        return ResponseEntity.ok(stationService.getStationStorage(baseId));
+    }
+
+    @GetMapping("{baseId}/storage/resources")
+    public ResponseEntity<Map<ResourceType, Integer>> getStoredResources(@PathVariable long baseId) {
+        return ResponseEntity.ok(stationService.getStoredResources(baseId));
+    }
+
+    @GetMapping("{baseId}/hangar")
+    public ResponseEntity<HangarDTO> getStationHangar(@PathVariable long baseId) {
+        return ResponseEntity.ok(stationService.getStationHangar(baseId));
     }
 //
 //    @PostMapping("/upgrade/storage")

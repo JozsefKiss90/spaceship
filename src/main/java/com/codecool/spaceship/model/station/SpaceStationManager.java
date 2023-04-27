@@ -1,5 +1,7 @@
 package com.codecool.spaceship.model.station;
 
+import com.codecool.spaceship.model.dto.HangarDTO;
+import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
@@ -81,5 +83,18 @@ public class SpaceStationManager {
         hangar.upgrade();
         station.setStorageLevelIndex(hangar.getCurrentLevel() - 1);
         return true;
+    }
+
+    public SpaceStationStorageDTO getStorageDTO() {
+        return new SpaceStationStorageDTO(new StationStorageManager(station.getStorageLevelIndex(), station.getResources()));
+    }
+
+    public HangarDTO getHangarDTO() {
+        return new HangarDTO(new HangarManager(station.getHangarLevelIndex(), station.getHangar()));
+    }
+
+    public Map<ResourceType, Integer> getStoredResources() {
+        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        return storage.getStoredItems();
     }
 }

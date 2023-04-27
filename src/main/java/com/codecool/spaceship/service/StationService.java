@@ -1,6 +1,8 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
+import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
@@ -13,15 +15,16 @@ import com.codecool.spaceship.repository.SpaceStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class BaseService {
+public class StationService {
 
     private final SpaceStationRepository spaceStationRepository;
 
     @Autowired
-    public BaseService(SpaceStationRepository spaceStationRepository) {
+    public StationService(SpaceStationRepository spaceStationRepository) {
 
         this.spaceStationRepository = spaceStationRepository;
     }
@@ -61,6 +64,36 @@ public class BaseService {
 
         spaceStationRepository.save(station);
         return true;
+    }
+
+    public SpaceStationStorageDTO getStationStorage(long baseId) {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return null;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return stationManager.getStorageDTO();
+    }
+
+    public HangarDTO getStationHangar(long baseId) {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return null;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return stationManager.getHangarDTO();
+    }
+
+    public Map<ResourceType, Integer>  getStoredResources(long baseId) {
+        SpaceStation station = spaceStationRepository.findById(baseId).orElse(null);
+        if (station == null) {
+            return null;
+        }
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        return stationManager.getStoredResources();
     }
 //
 //    public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
