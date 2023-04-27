@@ -34,6 +34,14 @@ function Hangar() {
             .catch(err => console.log(err));
     }
 
+    function getStorage() {
+
+        fetch("http://localhost:8080/base/storage/resources")
+            .then(res => res.json())
+            .then(data => setStorage(data))
+            .catch(err => console.log(err));
+    }
+
     useEffect(() => {
         if (upgradeCost && storage) {
             dispatch({
@@ -41,15 +49,10 @@ function Hangar() {
                 data: upgradeCost,
                 storage: storage
             })
+            setUpgradeCost(null);
+            setStorage(null);
         }
-    }, [upgradeCost])
-
-    function getStorage() {
-        fetch("http://localhost:8080/base/storage/resources")
-            .then(res => res.json())
-            .then(data => setStorage(data))
-            .catch(err => console.log(err));
-    }
+    }, [upgradeCost,storage])
 
     useEffect(() => {
         if (minerCost && storage) {
@@ -58,8 +61,10 @@ function Hangar() {
                 data: minerCost,
                 storage: storage
             });
+            setMinerCost(null);
+            setStorage(null)
         }
-    }, [minerCost])
+    }, [minerCost,storage])
 
 
     return (<div className="hangar">
