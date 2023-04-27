@@ -4,7 +4,7 @@ import com.codecool.spaceship.model.*;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.SpaceShipService;
+import com.codecool.spaceship.model.ship.SpaceShipManager;
 
 import java.util.*;
 
@@ -34,7 +34,7 @@ public class HangarService implements Upgradeable {
     private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size() - 1;
 
     private int currentLevelIndex;
-    private final Set<SpaceShipService> shipSet;
+    private final Set<SpaceShipManager> shipSet;
 
     public HangarService() {
         currentLevelIndex = 0;
@@ -49,17 +49,17 @@ public class HangarService implements Upgradeable {
         return getCurrentCapacity() - shipSet.size();
     }
 
-    public boolean addShip(SpaceShipService ship) throws StorageException {
+    public boolean addShip(SpaceShipManager ship) throws StorageException {
         if (getCurrentAvailableDocks() > 0) {
             return shipSet.add(ship);
         } throw new StorageException("No more docks available");
     }
 
-    public boolean removeShip(SpaceShipService ship) {
+    public boolean removeShip(SpaceShipManager ship) {
         return shipSet.contains(ship);
     }
 
-    public Set<SpaceShipService> getAllShips() {
+    public Set<SpaceShipManager> getAllShips() {
         return new HashSet<>(shipSet);
     }
 

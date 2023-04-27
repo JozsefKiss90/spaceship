@@ -3,8 +3,8 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShipService;
-import com.codecool.spaceship.model.ship.SpaceShipService;
+import com.codecool.spaceship.model.ship.MinerShipManager;
+import com.codecool.spaceship.model.ship.SpaceShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Drill;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import org.junit.jupiter.api.Test;
@@ -22,11 +22,11 @@ import static org.mockito.Mockito.*;
 class SpaceStationManagerTest {
 
     @Mock
-    MinerShipService ship;
+    MinerShipManager ship;
     @Mock
-    MinerShipService ship2;
+    MinerShipManager ship2;
     @Mock
-    MinerShipService ship3;
+    MinerShipManager ship3;
 
     @Test
     void addNewShipSuccess() {
@@ -90,7 +90,7 @@ class SpaceStationManagerTest {
     @Test
     void getAllShipsEmpty() {
         SpaceStationManager spaceStationManager = new SpaceStationManager("test");
-        Set<SpaceShipService> expected = Set.of();
+        Set<SpaceShipManager> expected = Set.of();
         assertEquals(expected, spaceStationManager.getAllShips());
     }
 
@@ -102,7 +102,7 @@ class SpaceStationManagerTest {
             spaceStationManager.addNewShip(ship);
         } catch (StorageException ignored) {
         }
-        Set<SpaceShipService> expected = Set.of(ship);
+        Set<SpaceShipManager> expected = Set.of(ship);
         assertEquals(expected, spaceStationManager.getAllShips());
     }
 

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MinerShipService extends SpaceShipService {
+public class MinerShipManager extends SpaceShipManager {
 
     private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
     private static final Map<ResourceType, Integer> COST = new HashMap<>() {{
@@ -25,7 +25,7 @@ public class MinerShipService extends SpaceShipService {
 
     private final ShipStorage storage = new ShipStorage();;
 
-    public MinerShipService(String name, Color color) {
+    public MinerShipManager(String name, Color color) {
         super(name, color);
         drill = new Drill();
     }

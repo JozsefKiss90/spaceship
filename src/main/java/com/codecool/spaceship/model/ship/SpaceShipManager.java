@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public abstract class SpaceShipService {
+public abstract class SpaceShipManager {
     private Long id;
     private String name;
     private Color color;
@@ -20,7 +20,7 @@ public abstract class SpaceShipService {
     protected Shield shield;
 
     private Mission currentMission;
-    protected SpaceShipService(String name, Color color) {
+    protected SpaceShipManager(String name, Color color) {
         this.name = name;
         this.color = color;
         engine = new Engine();
@@ -61,12 +61,12 @@ public abstract class SpaceShipService {
         currentMission = null;
     }
 
-    public int getShieldEnergy() {
-        return shield.getCurrentEnergy();
+    public int getShieldEnergy(SpaceShip spaceShip) {
+        return spaceShip.getShieldEnergy();
     }
 
-    public int getShieldMaxEnergy() {
-        return shield.getMaxEnergy();
+    public int getShieldMaxEnergy(SpaceShip spaceShip) {
+        return spaceShip.getEngineLevel();
     }
 
     public void repairShield(int amount) {
