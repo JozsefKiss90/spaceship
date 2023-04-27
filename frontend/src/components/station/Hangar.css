@@ -1,0 +1,29 @@
+.hangar {
+    width: -moz-available;
+    height: 43%;
+    background-image: -webkit-linear-gradient(#001700, #002300, #001700);
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    font-family: Garamond, serif;
+    font-size: 15px;
+    border: #000000 solid 4px;
+    box-shadow:  0 0 5px 5px rgba(0, 23, 0, 0.85);
+}
+
+.menu {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+.button {
+    margin: 0;
+    padding: 4px;
+    font-size: 12px;
+    border: black solid 2px;
+    border-radius: 5px;
+    background-color: forestgreen;
+    width: 70px;
+    text-align: center;
+}
