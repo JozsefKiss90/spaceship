@@ -11,14 +11,14 @@ const Storage = () => {
     const [storage, setStorage] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/base/storage')
+        fetch('http://localhost:8080/base/1/storage')
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.error(err));
     }, [update,updateStorage]);
 
     const getUpgrade = () => {
-        fetch("http://localhost:8080/base/storage/upgrade")
+        fetch("http://localhost:8080/base/1/storage/upgrade")
             .then(res => res.json())
             .then(data => setUpgradeCost(data))
             .then(err => console.log(err));

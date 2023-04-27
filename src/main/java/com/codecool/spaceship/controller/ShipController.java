@@ -20,6 +20,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/ship")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ShipController {
 
     private final ShipService shipService;

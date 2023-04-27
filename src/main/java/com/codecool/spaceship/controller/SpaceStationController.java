@@ -19,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/base")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SpaceStationController {
 
     private final StationService stationService;
@@ -28,12 +29,12 @@ public class SpaceStationController {
         this.stationService = stationService;
     }
 
-    @GetMapping({"{baseId}"})
+    @GetMapping({"/{baseId}"})
     public ResponseEntity<SpaceStationDTO> getBaseById(@PathVariable long baseId) {
         return ResponseEntity.ok(stationService.getBaseById(baseId).get());
     }
 
-    @PostMapping("{baseId}/add/resources")
+    @PostMapping("/{baseId}/add/resources")
     public ResponseEntity<Boolean> addResource(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
         for (ResourceType resource : resources.keySet()) {
             try {
@@ -45,7 +46,7 @@ public class SpaceStationController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("{baseId}/add/ship")
+    @PostMapping("/{baseId}/add/ship")
     public ResponseEntity<Boolean> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
         try {
             return ResponseEntity.ok(stationService.addShip(baseId,
@@ -57,12 +58,12 @@ public class SpaceStationController {
         }
     }
 
-    @GetMapping("{baseId}/storage")
+    @GetMapping("/{baseId}/storage")
     public ResponseEntity<SpaceStationStorageDTO> getStationStorage(@PathVariable long baseId) {
         return ResponseEntity.ok(stationService.getStationStorage(baseId));
     }
 
-    @GetMapping("{baseId}/storage/resources")
+    @GetMapping("/{baseId}/storage/resources")
     public ResponseEntity<Map<ResourceType, Integer>> getStoredResources(@PathVariable long baseId) {
         return ResponseEntity.ok(stationService.getStoredResources(baseId));
     }
@@ -76,7 +77,7 @@ public class SpaceStationController {
         }
     }
 
-    @PostMapping("{baseId}/storage/upgrade")
+    @PostMapping("/{baseId}/storage/upgrade")
     public ResponseEntity<Boolean> upgradeStorage(@PathVariable long baseId) {
         try {
             return ResponseEntity.ok(stationService.upgradeStorage(baseId));
@@ -85,7 +86,7 @@ public class SpaceStationController {
         }
     }
 
-    @GetMapping("{baseId}/hangar")
+    @GetMapping("/{baseId}/hangar")
     public ResponseEntity<HangarDTO> getStationHangar(@PathVariable long baseId) {
         return ResponseEntity.ok(stationService.getStationHangar(baseId));
     }

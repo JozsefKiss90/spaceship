@@ -13,7 +13,7 @@ function Hangar() {
 
 
     useEffect(() => {
-        fetch('http://localhost:8080/base/hangar')
+        fetch('http://localhost:8080/base/1/hangar')
             .then(res => res.json())
             .then(data => setHangar(data))
             .catch(err => console.error(err));
@@ -23,12 +23,12 @@ function Hangar() {
     function getShipCost() {
         fetch("http://localhost:8080/ship/cost/miner")
             .then(res => res.json())
-            .then(data => setMinerCost(data.cost))
+            .then(data => setMinerCost(data))
             .catch(err => console.log(err));
     }
 
     function getHangarUpgradeCost() {
-        fetch("http://localhost:8080/base/hangar/upgrade")
+        fetch("http://localhost:8080/base/1/hangar/upgrade")
             .then(res => res.json())
             .then(data => setUpgradeCost(data))
             .catch(err => console.log(err));
@@ -36,7 +36,7 @@ function Hangar() {
 
     function getStorage() {
 
-        fetch("http://localhost:8080/base/storage/resources")
+        fetch("http://localhost:8080/base/1/storage/resources")
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.log(err));
@@ -79,7 +79,7 @@ function Hangar() {
             </div>
             <div className="ship-list">
                 {Object.keys(hangar.ships).length === 0 ? (<p>No ships yet</p>) : (hangar.ships.map((ship) => {
-                    return <p key={ship.id}>{ship.name} - {ship.type}</p>;
+                    return <p key={ship.id}>{ship.name} </p>;
                 }))}
             </div>
             <div className="add ship">
