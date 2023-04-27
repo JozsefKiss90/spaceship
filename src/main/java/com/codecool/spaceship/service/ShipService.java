@@ -5,6 +5,8 @@ import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.resource.ResourceType;
+import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,6 +72,14 @@ public class ShipService {
             spaceShipRepository.save(ship);
         }
         return true;
+    }
+
+    public Map<ResourceType, Integer>getShipCost(ShipType shipType) {
+        if(shipType != null) {
+            return shipType.getCost();
+        } else {
+            return null;
+        }
     }
 
     /*

@@ -1,14 +1,16 @@
 package com.codecool.spaceship.model.station;
 
 import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.exception.InvalidLevelException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.SpaceShipManager;
+import com.codecool.spaceship.model.ship.SpaceShip;
 
 import java.util.*;
 
-public class HangarService implements Upgradeable {
+public class HangarManager implements Upgradeable {
 
     private static final List<Level<Integer>> UPGRADE_LEVELS = new ArrayList<>() {{
         add(new Level<>(1, 2, null));
@@ -34,11 +36,22 @@ public class HangarService implements Upgradeable {
     private static final int MAX_LEVEL_INDEX = UPGRADE_LEVELS.size() - 1;
 
     private int currentLevelIndex;
-    private final Set<SpaceShipManager> shipSet;
 
-    public HangarService() {
+    private final Set<SpaceShip> shipSet;
+
+    public HangarManager() {
         currentLevelIndex = 0;
         shipSet = new HashSet<>();
+    }
+
+    public HangarManager(int currentLevelIndex, Set<SpaceShip> shipSet) {
+        if (currentLevelIndex < 0) {
+            throw new InvalidLevelException("Level index can't be lower than 0");
+        }else if (currentLevelIndex > MAX_LEVEL_INDEX) {
+            throw new InvalidLevelException("Level index can't be higher than %d".formatted(MAX_LEVEL_INDEX));
+        }
+        this.currentLevelIndex = currentLevelIndex;
+        this.shipSet = shipSet;
     }
 
     public int getCurrentCapacity() {
@@ -49,17 +62,17 @@ public class HangarService implements Upgradeable {
         return getCurrentCapacity() - shipSet.size();
     }
 
-    public boolean addShip(SpaceShipManager ship) throws StorageException {
+    public boolean addShip(SpaceShip ship) throws StorageException {
         if (getCurrentAvailableDocks() > 0) {
             return shipSet.add(ship);
         } throw new StorageException("No more docks available");
     }
 
-    public boolean removeShip(SpaceShipManager ship) {
-        return shipSet.contains(ship);
+    public boolean removeShip(SpaceShip ship) {
+        return shipSet.remove(ship);
     }
 
-    public Set<SpaceShipManager> getAllShips() {
+    public Set<SpaceShip> getAllShips() {
         return new HashSet<>(shipSet);
     }
 

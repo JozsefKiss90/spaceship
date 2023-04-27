@@ -1,12 +1,10 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.resource.ShipResource;
 import com.codecool.spaceship.model.resource.StationResource;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,12 +18,12 @@ public class SpaceStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int storageLevel;
-    private int hangarLevel;
-    @OneToMany
+    private int storageLevelIndex;
+    private int hangarLevelIndex;
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="ship_id")
-    private List<SpaceShip> hangar;
-    @OneToMany
+    private Set<SpaceShip> hangar;
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="station_id")
     private Set<StationResource> resources;
 
