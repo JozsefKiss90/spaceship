@@ -1,9 +1,6 @@
 package com.codecool.spaceship.model.dto;
 
-import com.codecool.spaceship.model.station.HangarService;
-
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public record HangarDTO(Set<ShipDTO> ships, int level, int capacity, int freeDocks) {
 /*
