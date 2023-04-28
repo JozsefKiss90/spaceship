@@ -23,8 +23,9 @@ import java.util.stream.Collectors;
 @Service
 public class ShipService {
 
-    private MinerShipRepository minerShipRepository;
-    private SpaceShipRepository spaceShipRepository;
+    private final MinerShipRepository minerShipRepository;
+    private final SpaceShipRepository spaceShipRepository;
+
     @Autowired
     public ShipService( MinerShipRepository minerShipRepository, SpaceShipRepository spaceShipRepository) {
 
@@ -32,18 +33,15 @@ public class ShipService {
         this.spaceShipRepository = spaceShipRepository;
     }
 
-    public List<ShipDTO> getShips() {
-        return spaceShipRepository.findAll().stream()
+    public List<ShipDTO> getShipsByStation(long stationId) {
+        return spaceShipRepository.getSpaceShipsByStationId(stationId).stream()
                 .map(ShipDTO::new)
                 .collect(Collectors.toList());
     }
 
     public Optional<ShipDTO> getShipByID(long id) {
-
-        return spaceShipRepository.findById(id).stream()
-                .filter(ship -> ship.getId() == id)
-                .map(ShipDTO::new)
-                .findFirst();
+        return spaceShipRepository.findById(id)
+                .map(ShipDTO::new);
     }
 
     public SpaceShip upgradeShip(Long id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {

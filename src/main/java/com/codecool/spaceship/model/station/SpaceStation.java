@@ -21,7 +21,7 @@ public class SpaceStation {
     private int storageLevelIndex;
     private int hangarLevelIndex;
     @OneToMany(cascade = CascadeType.MERGE)
-    @JoinColumn(name ="ship_id")
+    @JoinColumn(name ="station_id")
     private Set<SpaceShip> hangar;
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="station_id")

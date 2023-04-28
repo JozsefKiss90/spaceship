@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.ship.shipparts.Color;
+import com.codecool.spaceship.model.station.SpaceStation;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -22,4 +23,6 @@ public abstract class SpaceShip {
     private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SpaceStation station;
 }
