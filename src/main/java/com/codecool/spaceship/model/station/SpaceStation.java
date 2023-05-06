@@ -18,8 +18,8 @@ public class SpaceStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int storageLevelIndex;
-    private int hangarLevelIndex;
+    private int storageLevel;
+    private int hangarLevel;
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="station_id")
     private Set<SpaceShip> hangar;
