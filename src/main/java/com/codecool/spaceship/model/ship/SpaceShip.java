@@ -23,6 +23,7 @@ public abstract class SpaceShip {
     private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
+    private boolean onMission;
     @ManyToOne(fetch = FetchType.LAZY)
     private SpaceStation station;
 }

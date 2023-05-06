@@ -45,7 +45,8 @@ public class ShieldManager implements Upgradeable {
         currentEnergy = LEVELS.get(0).effect();
     }
 
-    public ShieldManager(int currentLevelIndex, int currentEnergy) {
+    public ShieldManager(int currentLevel, int currentEnergy) {
+        int currentLevelIndex = currentLevel - 1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         } else if (currentLevelIndex > MAX_LEVEL_INDEX) {
@@ -73,6 +74,7 @@ public class ShieldManager implements Upgradeable {
     public void upgrade() {
         if (getCurrentLevel() < LEVELS.size()) {
             currentLevelIndex++;
+            currentEnergy = getMaxEnergy();
         }
     }
 

@@ -53,15 +53,12 @@ public class SpaceStationManager {
         return new HashSet<>(station.getHangar());
     }
 
-//    public boolean upgradeShipPart(SpaceShipService ship, ShipPart shipPart) throws NoSuchPartException, UpgradeNotAvailableException, StorageException {
-//        if (!hangarService.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
-//        if (!ship.isAvailable()) throw new UpgradeNotAvailableException("Ship is on a mission");
-//        Upgradeable part = ship.getPart(shipPart);
-//        Map<ResourceType, Integer> cost = part.getUpgradeCost();
-//        removeResources(cost);
-//        part.upgrade();
-//        return true;
-//    }
+    public boolean removeShipUpgradeResourcesFromStation(SpaceShip ship, Map<ResourceType, Integer> cost) throws StorageException {
+        HangarManager hangar = new HangarManager(station.getHangarLevelIndex(), station.getHangar());
+        if (!hangar.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
+        removeResources(cost);
+        return true;
+    }
 //
     public boolean addResource(ResourceType resourceType, int quantity) throws StorageException {
         StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());

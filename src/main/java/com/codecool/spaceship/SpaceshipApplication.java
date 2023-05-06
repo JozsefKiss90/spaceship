@@ -22,9 +22,9 @@ public class SpaceshipApplication {
         SpaceStationRepository spaceStationRepository = applicationContext.getBean(SpaceStationRepository.class);
 
         MinerShip minerShip = new MinerShip();
-        minerShip.setName("minership");
+        minerShip.setName("Built2Mine");
         minerShip.setColor(Color.DIAMOND);
-        minerShip.setEngineLevel(2);
+        minerShip.setEngineLevel(1);
         minerShip.setShieldLevel(3);
         minerShip.setShieldEnergy(100);
         minerShip.setDrillLevel(2);

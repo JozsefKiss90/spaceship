@@ -42,7 +42,8 @@ public class EngineManager implements Upgradeable {
         currentLevelIndex = 0;
     }
 
-    public EngineManager(int currentLevelIndex) {
+    public EngineManager(int currentLevel) {
+        int currentLevelIndex = currentLevel - 1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         } else if (currentLevelIndex > MAX_LEVEL_INDEX) {

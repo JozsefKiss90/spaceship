@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.Upgradeable;
@@ -58,22 +59,52 @@ public class MinerShipManager extends SpaceShipManager {
     }
 
     @Override
-    public Upgradeable getPart(ShipPart part) throws NoSuchPartException {
+    public Map<ResourceType, Integer> getUpgradeCost(ShipPart part) throws UpgradeNotAvailableException, NoSuchPartException {
         switch (part) {
             case ENGINE -> {
-                return new EngineManager(spaceShip.getEngineLevel());
+                return new EngineManager(spaceShip.getEngineLevel()).getUpgradeCost();
             }
             case SHIELD -> {
-                return new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+                return new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy()).getUpgradeCost();
             }
             case DRILL -> {
-                return new DrillManager(((MinerShip) spaceShip).getDrillLevel());
+                return new DrillManager(((MinerShip) spaceShip).getDrillLevel()).getUpgradeCost();
             }
             case STORAGE -> {
-                return new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+                return new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources()).getUpgradeCost();
             }
             default -> throw new NoSuchPartException("No such part on this ship");
         }
+    }
+
+    @Override
+    public boolean upgradePart(ShipPart part) throws NoSuchPartException {
+        MinerShip minerShip = (MinerShip) spaceShip;
+        switch (part) {
+            case ENGINE -> {
+                EngineManager engine = new EngineManager(spaceShip.getEngineLevel());
+                engine.upgrade();
+                minerShip.setEngineLevel(engine.getCurrentLevel());
+            }
+            case SHIELD -> {
+                ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+                shield.upgrade();
+                minerShip.setShieldLevel(shield.getCurrentLevel());
+                minerShip.setShieldEnergy(shield.getCurrentEnergy());
+            }
+            case DRILL -> {
+                DrillManager drill = new DrillManager((minerShip).getDrillLevel());
+                drill.upgrade();
+                minerShip.setDrillLevel(drill.getCurrentLevel());
+            }
+            case STORAGE -> {
+                ShipStorageManager storage = new ShipStorageManager((minerShip).getStorageLevel(), (minerShip).getResources());
+                storage.upgrade();
+                minerShip.setStorageLevel(storage.getCurrentLevel());
+            }
+            default -> throw new NoSuchPartException("No such part on this ship");
+        }
+        return true;
     }
 
     @Override
