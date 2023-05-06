@@ -1,13 +1,13 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.exception.NoSuchPartException;
+import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.Upgradeable;
-import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.ship.shipparts.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +22,19 @@ public class MinerShipManager extends SpaceShipManager {
 
     public MinerShipManager(MinerShip minerShip) {
         super(minerShip);
+    }
+
+    public static MinerShip createNewMinerShip(String name, Color color) {
+        MinerShip ship = new MinerShip();
+        ship.setName(name);
+        ship.setColor(color);
+        ship.setEngineLevel(1);
+        ship.setShieldLevel(1);
+        ship.setShieldEnergy(new ShieldManager(1, 0).getMaxEnergy());
+        ship.setDrillLevel(1);
+        ship.setStorageLevel(1);
+        ship.setResources(new HashSet<>());
+        return ship;
     }
 
     public int getDrillEfficiency() {
