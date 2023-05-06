@@ -21,6 +21,16 @@ public class SpaceStationManager {
         this.station = station;
     }
 
+    public static SpaceStation createNewSpaceStation(String name) {
+        SpaceStation station = new SpaceStation();
+        station.setName(name);
+        station.setHangarLevel(1);
+        station.setHangar(new HashSet<>());
+        station.setStorageLevel(1);
+        station.setResources(new HashSet<>());
+        return station;
+    }
+
     private boolean hasEnoughResource(Map<ResourceType, Integer> cost) {
         StationStorageManager storage = new StationStorageManager(station.getStorageLevel(), station.getResources());
         return cost.entrySet().stream()
@@ -80,7 +90,7 @@ public class SpaceStationManager {
         Map<ResourceType, Integer> cost = storage.getUpgradeCost();
         removeResources(cost);
         storage.upgrade();
-        station.setStorageLevel(storage.getCurrentLevel() - 1);
+        station.setStorageLevel(storage.getCurrentLevel());
         return true;
     }
 
@@ -89,7 +99,7 @@ public class SpaceStationManager {
         Map<ResourceType, Integer> cost = hangar.getUpgradeCost();
         removeResources(cost);
         hangar.upgrade();
-        station.setHangarLevel(hangar.getCurrentLevel() - 1);
+        station.setHangarLevel(hangar.getCurrentLevel());
         return true;
     }
 
