@@ -37,13 +37,25 @@ public class MissionService {
                 .toList();
     }
 
+    public List<MissionDTO> getAllArchivedMissions() {
+        return missionRepository.getMissionsByCurrentStatus(MissionStatus.ARCHIVED).stream()
+                .map(this::updateAndConvert)
+                .toList();
+    }
+
+    public MissionDTO getMissionById(Long id) throws DataNotFoundException {
+        return missionRepository.findById(id)
+                .map(MissionDTO::new)
+                .orElseThrow(() -> new DataNotFoundException("No mission found with id %d".formatted(id)));
+    }
+
     public MissionDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
         SpaceShip spaceShip = spaceShipRepository.findById(shipId).orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(shipId)));
         MinerShip minerShip;
         if (spaceShip instanceof MinerShip) {
             minerShip = (MinerShip) spaceShip;
         } else {
-            throw new IllegalArgumentException("Ship is not a miner ship.");
+            throw new IllegalArgumentException("Ship is not a miner ship");
         }
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new DataNotFoundException("No location found with id %d".formatted(locationId)));
         Mission mission = MissionManager.startMiningMission(minerShip, location, activityDurationInSecs);
@@ -52,6 +64,17 @@ public class MissionService {
         missionManager.updateStatus();
         mission = missionRepository.save(mission);
         return new MissionDTO(mission);
+    }
+
+    public boolean archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
+        Mission mission = missionRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("No mission found with id %d".formatted(id)));
+        MissionManager missionManager = new MissionManager(mission);
+        if(missionManager.archiveMission()) {
+            missionRepository.save(mission);
+            return true;
+        }
+        return false;
     }
 
     private MissionDTO updateAndConvert(Mission mission) {

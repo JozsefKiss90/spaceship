@@ -9,4 +9,5 @@ import java.util.List;
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     List<Mission> getMissionsByCurrentStatusNot(MissionStatus missionStatus);
+    List<Mission> getMissionsByCurrentStatus(MissionStatus missionStatus);
 }

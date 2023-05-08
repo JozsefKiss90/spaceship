@@ -24,7 +24,7 @@ public class MissionManager {
     public static Mission startMiningMission(MinerShip minerShip, Location location, long activityDurationInSecs) throws IllegalOperationException {
         MinerShipManager minerShipManager = new MinerShipManager(minerShip);
         if (!minerShipManager.isAvailable()) {
-            throw new IllegalOperationException("This ship is already on mission");
+            throw new IllegalOperationException("This ship is already on a mission");
         }
         LocalDateTime startTime = LocalDateTime.now();
         long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location);
@@ -92,6 +92,17 @@ public class MissionManager {
         }
         pushNewEvent(abortEvent);
         startReturnTravel();
+    }
+
+    public boolean archiveMission() throws IllegalOperationException {
+        if (mission.getCurrentStatus() == MissionStatus.ARCHIVED) {
+            throw new IllegalOperationException("Mission is already archived");
+        } else  if (mission.getCurrentStatus() != MissionStatus.OVER) {
+            throw new IllegalOperationException("Mission can't be archived until its over'");
+        } else {
+            mission.setCurrentStatus(MissionStatus.ARCHIVED);
+            return true;
+        }
     }
 
     private void addStartEvent() {
@@ -208,7 +219,6 @@ public class MissionManager {
             double hoursNeededToFillStorage = (double) emptyStorageSpace / resourceMinedPerHour;
             return (long) Math.ceil(hoursNeededToFillStorage * 60 * 60);
         }
-
     }
 
     private static int calculateMinedResources(MinerShipManager minerShip, long activityDurationInSecs) {

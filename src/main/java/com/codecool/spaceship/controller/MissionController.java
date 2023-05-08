@@ -28,6 +28,20 @@ public class MissionController {
         return ResponseEntity.ok(missionService.getAllActiveMissions());
     }
 
+    @GetMapping("/archived")
+    public ResponseEntity<List<MissionDTO>> getAllArchivedMissions() {
+        return ResponseEntity.ok(missionService.getAllArchivedMissions());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MissionDTO> getMissionById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(missionService.getMissionById(id));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
+        }
+    }
+
     @PostMapping("/")
     public ResponseEntity<MissionDTO> startNewMission(@RequestBody ObjectNode objectNode) {
         try {
@@ -36,6 +50,17 @@ public class MissionController {
                     objectNode.get("locationId").asLong(),
                     objectNode.get("activityDuration").asLong()
             ));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
+
+    @PutMapping("/{id}/archive")
+    public ResponseEntity<Boolean> archiveMission(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(missionService.archiveMission(id));
         } catch (DataNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         } catch (Exception e) {
