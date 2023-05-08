@@ -6,6 +6,7 @@ import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,9 +23,7 @@ class SpaceStationManagerStorageTest {
 
     @Test
     void getCurrentCapacityTestLevel3() {
-        StationStorageManager stationStorageManager = new StationStorageManager();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
+        StationStorageManager stationStorageManager = new StationStorageManager(3, new HashSet<>());
         int expected = 100;
         assertEquals(expected, stationStorageManager.getCurrentCapacity());
     }
@@ -119,11 +118,7 @@ class SpaceStationManagerStorageTest {
 
     @Test
     void getUpgradeCostError() {
-        StationStorageManager stationStorageManager = new StationStorageManager();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
+        StationStorageManager stationStorageManager = new StationStorageManager(5, new HashSet<>());
         assertThrows(UpgradeNotAvailableException.class, stationStorageManager::getUpgradeCost);
     }
 
@@ -137,15 +132,7 @@ class SpaceStationManagerStorageTest {
 
     @Test
     void upgradeMaxLevelCannotBeExceeded() {
-        StationStorageManager stationStorageManager = new StationStorageManager();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
-        stationStorageManager.upgrade();
+        StationStorageManager stationStorageManager = new StationStorageManager(5, new HashSet<>());
         int expected = 5;
         assertEquals(expected, stationStorageManager.getCurrentLevel());
     }

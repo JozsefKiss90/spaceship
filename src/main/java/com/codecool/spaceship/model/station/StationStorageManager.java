@@ -39,7 +39,8 @@ public class StationStorageManager implements Upgradeable {
         storedItems = new HashSet<>();
     }
 
-    public StationStorageManager(int currentLevelIndex, Set<StationResource> storedItems) {
+    public StationStorageManager(int currentLevel, Set<StationResource> storedItems) {
+        int currentLevelIndex = currentLevel - 1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         } else if (currentLevelIndex > MAX_LEVEL_INDEX) {

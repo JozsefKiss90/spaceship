@@ -1,10 +1,8 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.ship.MinerShipManager;
-import com.codecool.spaceship.model.ship.SpaceShipManager;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import org.junit.jupiter.api.Test;
@@ -84,9 +82,7 @@ class HangarManagerTest {
 
     @Test
     void getUpgradeCostLevel3() {
-        HangarManager hangarManager = new HangarManager();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
+        HangarManager hangarManager = new HangarManager(3, new HashSet<>());
         Map<ResourceType, Integer> expected = new HashMap<>() {{
             put(ResourceType.METAL, 100);
             put(ResourceType.SILICONE, 100);
@@ -102,11 +98,7 @@ class HangarManagerTest {
 
     @Test
     void getUpgradeCostThrows() {
-        HangarManager hangarManager = new HangarManager();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
+        HangarManager hangarManager = new HangarManager(5, new HashSet<>());
         assertThrows(UpgradeNotAvailableException.class, hangarManager::getUpgradeCost);
     }
 
@@ -120,12 +112,7 @@ class HangarManagerTest {
 
     @Test
     void upgradeMaxLevelExceeded() {
-        HangarManager hangarManager = new HangarManager();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
-        hangarManager.upgrade();
+        HangarManager hangarManager = new HangarManager(5, new HashSet<>());
         hangarManager.upgrade();
         int expected = 5;
         assertEquals(expected, hangarManager.getCurrentLevel());

@@ -42,7 +42,8 @@ public class DrillManager implements Upgradeable {
         currentLevelIndex = 0;
     }
 
-    public DrillManager(int currentLevelIndex) {
+    public DrillManager(int currentLevel) {
+        int currentLevelIndex = currentLevel -1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         } else if (currentLevelIndex > MAX_LEVEL_INDEX) {
