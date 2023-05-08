@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Stack;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -33,7 +33,6 @@ class MissionManagerTest {
     void missionCreationTest() {
         when(minerShipMock.getEngineLevel()).thenReturn(2);
         when(locationMock.getDistanceFromStation()).thenReturn(5);
-        when(locationMock.getName()).thenReturn("Test planet");
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -45,14 +44,8 @@ class MissionManagerTest {
                 .ship(minerShipMock)
                 .travelDurationInSecs(7200L)
                 .activityDurationInSecs(1800L)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
-        Event expectedEvent1 = Event.builder()
-                .eventType(EventType.START)
-                .endTime(now)
-                .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now))
-                .build();
-        expected.getEvents().push(expectedEvent1);
 
         Mission actual = MissionManager.startMiningMission(minerShipMock, locationMock, 1800L);
 
@@ -62,9 +55,9 @@ class MissionManagerTest {
     @Test
     void noUpdateStatusBeforeNextUpdateTest() {
         Mission mission = Mission.builder()
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
-        mission.getEvents().push(eventMock);
+        mission.getEvents().add(eventMock);
         when(eventMock.getEndTime()).thenReturn(LocalDateTime.now().plusSeconds(1));
 
         MissionManager missionManager = new MissionManager(mission);
@@ -77,9 +70,9 @@ class MissionManagerTest {
     void noUpdateStatusWhenMissionIsOverTest() {
         Mission mission = Mission.builder()
                 .currentStatus(MissionStatus.OVER)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
-        mission.getEvents().push(eventMock);
+        mission.getEvents().add(eventMock);
 
         MissionManager missionManager = new MissionManager(mission);
         missionManager.updateStatus();
@@ -94,25 +87,25 @@ class MissionManagerTest {
         Mission expected = Mission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.plusSeconds(5))
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event event1 = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now.minusSeconds(5))
                 .build();
-        expected.getEvents().push(event1);
+        expected.getEvents().add(event1);
         Event event2 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.plusSeconds(5))
                 .build();
-        expected.getEvents().push(event2);
+        expected.getEvents().add(event2);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.plusSeconds(5))
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
-        actual.getEvents().push(event1);
+        actual.getEvents().add(event1);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.updateStatus();
@@ -134,19 +127,19 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
                 .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(5)))
                 .build();
-        expected.getEvents().push(expectedEvent1);
+        expected.getEvents().add(expectedEvent1);
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.plusSeconds(5755))
                 .build();
-        expected.getEvents().push(expectedEvent2);
+        expected.getEvents().add(expectedEvent2);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
@@ -155,13 +148,13 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);
@@ -184,19 +177,19 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
                 .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(5)))
                 .build();
-        expected.getEvents().push(expectedEvent1);
+        expected.getEvents().add(expectedEvent1);
         Event expectedEvent2  = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.plusSeconds(7195))
                 .build();
-        expected.getEvents().push(expectedEvent2);
+        expected.getEvents().add(expectedEvent2);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
@@ -205,13 +198,13 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(5))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);
@@ -233,19 +226,19 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .eventMessage("<%tF %<tT> Storage is full. Mined 8 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(4)))
                 .build();
-        expected.getEvents().push(expectedEvent1);
+        expected.getEvents().add(expectedEvent1);
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.plusSeconds(7196))
                 .build();
-        expected.getEvents().push(expectedEvent2);
+        expected.getEvents().add(expectedEvent2);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
@@ -254,13 +247,13 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);
@@ -285,19 +278,19 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .eventMessage("<%tF %<tT> Mining complete. Mined 2 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(4)))
                 .build();
-        expected.getEvents().push(expectedEvent1);
+        expected.getEvents().add(expectedEvent1);
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.plusSeconds(7196))
                 .build();
-        expected.getEvents().push(expectedEvent2);
+        expected.getEvents().add(expectedEvent2);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
@@ -307,13 +300,13 @@ class MissionManagerTest {
                 .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);
@@ -330,25 +323,25 @@ class MissionManagerTest {
         Mission expected = Mission.builder()
                 .currentStatus(MissionStatus.OVER)
                 .currentObjectiveTime(now.minusSeconds(5))
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.minusSeconds(5))
                 .eventMessage("<%tF %<tT> Returned to station.".formatted(now.minusSeconds(5)))
                 .build();
-        expected.getEvents().push(expectedEvent);
+        expected.getEvents().add(expectedEvent);
 
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.RETURNING)
                 .currentObjectiveTime(now.minusSeconds(5))
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.minusSeconds(5))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);
@@ -374,32 +367,32 @@ class MissionManagerTest {
                 .ship(minerShipMock)
                 .travelDurationInSecs(5400L)
                 .activityDurationInSecs(6300L)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now.minusSeconds(20000))
                 .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now.minusSeconds(20000)))
                 .build();
-        expected.getEvents().push(expectedEvent1);
+        expected.getEvents().add(expectedEvent1);
         Event expectedEvent2 = Event.builder()
                 .eventType(EventType.ARRIVAL_AT_LOCATION)
                 .endTime(now.minusSeconds(14600))
                 .eventMessage("<%tF %<tT> Arrived on Test Planet. Starting mining operation.".formatted(now.minusSeconds(14600)))
                 .build();
-        expected.getEvents().push(expectedEvent2);
+        expected.getEvents().add(expectedEvent2);
         Event expectedEvent3 = Event.builder()
                 .eventType(EventType.MINING_COMPLETE)
                 .endTime(now.minusSeconds(8300))
                 .eventMessage("<%tF %<tT> Mining complete. Mined 8 CRYSTAL(s). Returning to station.".formatted(now.minusSeconds(8300)))
                 .build();
-        expected.getEvents().push(expectedEvent3);
+        expected.getEvents().add(expectedEvent3);
         Event expectedEvent4 = Event.builder()
                 .eventType(EventType.RETURNED_TO_STATION)
                 .endTime(now.minusSeconds(2900))
                 .eventMessage("<%tF %<tT> Returned to station.".formatted(now.minusSeconds(2900)))
                 .build();
-        expected.getEvents().push(expectedEvent4);
+        expected.getEvents().add(expectedEvent4);
 
 
         Mission actual = Mission.builder()
@@ -411,14 +404,14 @@ class MissionManagerTest {
                 .ship(minerShipMock)
                 .travelDurationInSecs(5400L)
                 .activityDurationInSecs(6300L)
-                .events(new Stack<>())
+                .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
                 .eventType(EventType.START)
                 .endTime(now.minusSeconds(20000))
                 .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now.minusSeconds(20000)))
                 .build();
-        actual.getEvents().push(actualEvent);
+        actual.getEvents().add(actualEvent);
 
         MissionManager missionManager = new MissionManager(actual);
         missionManager.setMinerShipManager(minerShipManagerMock);

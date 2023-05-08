@@ -9,7 +9,7 @@ import com.codecool.spaceship.model.ship.SpaceShipManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Stack;
+import java.util.*;
 
 public class MissionManager {
 
@@ -24,34 +24,28 @@ public class MissionManager {
         LocalDateTime startTime = LocalDateTime.now();
         long travelDurationInSecs = calculateTravelDurationInSecs(new MinerShipManager(minerShip), location);
 
-
-        Mission mission = Mission.builder()
+        return Mission.builder()
                 .startTime(startTime)
                 .activityDurationInSecs(activityDurationInSecs)
                 .travelDurationInSecs(travelDurationInSecs)
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(startTime.plusSeconds(travelDurationInSecs))
-                .events(new Stack<>())
                 .missionType(MissionType.MINING)
                 .ship(minerShip)
                 .location(location)
+                .events(new ArrayList<>())
                 .build();
-
-        Event startEvent = Event.builder()
-                .endTime(startTime)
-                .eventType(EventType.START)
-                .eventMessage("<%tF %<tT> Left station for mining mission on %s.".formatted(startTime, location.getName()))
-                .build();
-        mission.getEvents().push(startEvent);
-
-        return mission;
     }
 
-    public void updateStatus() {
-        Event lastEvent = mission.getEvents().peek();
+    public boolean updateStatus() {
+        if (mission.getEvents().isEmpty()) {
+            addStartEvent();
+        }
+        Event lastEvent = peekLastEvent();
         if (mission.getCurrentStatus() == MissionStatus.OVER
+                || mission.getCurrentStatus() == MissionStatus.ARCHIVED
                 || lastEvent.getEndTime().isAfter(LocalDateTime.now())) {
-            return;
+            return false;
         }
         switch (lastEvent.getEventType()) {
             case START -> generateEnRouteEvents();
@@ -62,6 +56,7 @@ public class MissionManager {
             case METEOR_STORM -> simulateMeteorStorm();
         }
         updateStatus();
+        return true;
     }
 
     public void abortMission() {
@@ -70,7 +65,7 @@ public class MissionManager {
             return;
         }
         LocalDateTime now = LocalDateTime.now();
-        Event abortedEvent = mission.getEvents().pop();
+        Event abortedEvent = popLastEvent();
         Event abortEvent = Event.builder()
                 .eventType(EventType.ABORT)
                 .endTime(now)
@@ -79,7 +74,7 @@ public class MissionManager {
 
         if (abortedEvent.getEventType() == EventType.MINING_COMPLETE) {
             setMinerShipManagerIfNull();
-            long abortedEventProgressInSecs = Duration.between(mission.getEvents().peek().getEndTime(), now).getSeconds();
+            long abortedEventProgressInSecs = Duration.between(peekLastEvent().getEndTime(), now).getSeconds();
             int minedResources = calculateMinedResources(minerShip, abortedEventProgressInSecs);
             ResourceType resourceType = mission.getLocation().getResourceType();
             try {
@@ -88,8 +83,17 @@ public class MissionManager {
                 throw new RuntimeException(e);
             }
         }
-        mission.getEvents().push(abortEvent);
+        pushNewEvent(abortEvent);
         startReturnTravel();
+    }
+
+    private void addStartEvent() {
+        Event startEvent = Event.builder()
+                .endTime(mission.getStartTime())
+                .eventType(EventType.START)
+                .eventMessage("<%tF %<tT> Left station for mining mission on %s.".formatted(mission.getStartTime(), mission.getLocation().getName()))
+                .build();
+        pushNewEvent(startEvent);
     }
 
     private void generateEnRouteEvents() {
@@ -102,23 +106,23 @@ public class MissionManager {
                 .endTime(mission.getCurrentObjectiveTime())
                 .eventType(travelEventType)
                 .build();
-        mission.getEvents().push(travelEvent);
+        pushNewEvent(travelEvent);
     }
 
     private void startActivity() {
         mission.setCurrentStatus(MissionStatus.IN_PROGRESS);
 
-        LocalDateTime lastEventTime = mission.getLastEventTime();
+        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(mission.getActivityDurationInSecs()));
         if (mission.getMissionType() == MissionType.MINING) {
-            mission.getEvents().peek().setEventMessage("<%tF %<tT> Arrived on %s. Starting mining operation.".formatted(lastEventTime, mission.getLocation().getName()));
+            peekLastEvent().setEventMessage("<%tF %<tT> Arrived on %s. Starting mining operation.".formatted(lastEventTime, mission.getLocation().getName()));
             setMinerShipManagerIfNull();
             long miningDurationInSecs = calculateMiningDurationInSecs(minerShip, mission.getActivityDurationInSecs());
             Event miningEvent = Event.builder()
                     .eventType(EventType.MINING_COMPLETE)
                     .endTime(lastEventTime.plusSeconds(miningDurationInSecs))
                     .build();
-            mission.getEvents().push(miningEvent);
+            pushNewEvent(miningEvent);
         } else {
             throw new RuntimeException("Unknown mission type");
         }
@@ -127,7 +131,7 @@ public class MissionManager {
     private void finishMining() {
         setMinerShipManagerIfNull();
         int minedResources;
-        LocalDateTime lastEventTime = mission.getLastEventTime();
+        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         if (mission.getCurrentObjectiveTime().isEqual(lastEventTime)) {
             minedResources = calculateMinedResources(minerShip, mission.getActivityDurationInSecs());
         } else {
@@ -141,16 +145,16 @@ public class MissionManager {
             throw new RuntimeException(e);
         }
         if (minerShip.getEmptyStorageSpace() > 0) {
-            mission.getEvents().peek().setEventMessage("<%tF %<tT> Mining complete. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
+            peekLastEvent().setEventMessage("<%tF %<tT> Mining complete. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
         } else {
-            mission.getEvents().peek().setEventMessage("<%tF %<tT> Storage is full. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
+            peekLastEvent().setEventMessage("<%tF %<tT> Storage is full. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
         }
 
         startReturnTravel();
     }
 
     private void startReturnTravel() {
-        LocalDateTime lastEventTime = mission.getLastEventTime();
+        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         long returnDurationInSecs;
         if (mission.getCurrentStatus() == MissionStatus.EN_ROUTE) {
             returnDurationInSecs = Duration.between(mission.getStartTime(), lastEventTime).getSeconds();
@@ -163,7 +167,7 @@ public class MissionManager {
     }
 
     private void endMission() {
-        mission.getEvents().peek().setEventMessage("<%tF %<tT> Returned to station.".formatted(mission.getLastEventTime()));
+        peekLastEvent().setEventMessage("<%tF %<tT> Returned to station.".formatted(peekLastEvent().getEndTime()));
         mission.setCurrentStatus(MissionStatus.OVER);
     }
 
@@ -212,5 +216,22 @@ public class MissionManager {
 
     protected void setMinerShipManager(MinerShipManager minerShip) {
         this.minerShip = minerShip;
+    }
+
+    private Event peekLastEvent() {
+        List<Event> events = mission.getEvents();
+        return events.get(events.size()-1);
+    }
+
+    private boolean pushNewEvent(Event event) {
+        List<Event> events = mission.getEvents();
+        return events.add(event);
+    }
+
+    private Event popLastEvent() {
+        List<Event> events = mission.getEvents();
+        Event event = events.get(events.size() - 1);
+        events.remove(event);
+        return event;
     }
 }
