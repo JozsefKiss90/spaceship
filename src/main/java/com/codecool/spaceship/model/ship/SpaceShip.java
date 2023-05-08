@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import jakarta.persistence.*;
@@ -23,7 +24,9 @@ public abstract class SpaceShip {
     private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
-    private boolean onMission;
     @ManyToOne(fetch = FetchType.LAZY)
     private SpaceStation station;
+    @OneToOne
+    @JoinColumn(name = "current_mission_id")
+    private Mission currentMission;
 }

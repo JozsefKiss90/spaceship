@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.mission;
 
 import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
@@ -30,7 +31,7 @@ class MissionManagerTest {
     Event eventMock;
 
     @Test
-    void missionCreationTest() {
+    void missionCreationTest() throws IllegalOperationException {
         when(minerShipMock.getEngineLevel()).thenReturn(2);
         when(locationMock.getDistanceFromStation()).thenReturn(5);
         LocalDateTime now = LocalDateTime.now();

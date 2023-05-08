@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.mission;
 
 import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
@@ -20,11 +21,15 @@ public class MissionManager {
         this.mission = mission;
     }
 
-    public static Mission startMiningMission(MinerShip minerShip, Location location, long activityDurationInSecs) {
+    public static Mission startMiningMission(MinerShip minerShip, Location location, long activityDurationInSecs) throws IllegalOperationException {
+        MinerShipManager minerShipManager = new MinerShipManager(minerShip);
+        if (!minerShipManager.isAvailable()) {
+            throw new IllegalOperationException("This ship is already on mission");
+        }
         LocalDateTime startTime = LocalDateTime.now();
-        long travelDurationInSecs = calculateTravelDurationInSecs(new MinerShipManager(minerShip), location);
+        long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location);
 
-        return Mission.builder()
+        Mission mission = Mission.builder()
                 .startTime(startTime)
                 .activityDurationInSecs(activityDurationInSecs)
                 .travelDurationInSecs(travelDurationInSecs)
@@ -35,6 +40,8 @@ public class MissionManager {
                 .location(location)
                 .events(new ArrayList<>())
                 .build();
+        minerShipManager.setCurrentMission(mission);
+        return mission;
     }
 
     public boolean updateStatus() {
@@ -169,6 +176,8 @@ public class MissionManager {
     private void endMission() {
         peekLastEvent().setEventMessage("<%tF %<tT> Returned to station.".formatted(peekLastEvent().getEndTime()));
         mission.setCurrentStatus(MissionStatus.OVER);
+        setMinerShipManagerIfNull();
+        minerShip.endMission();
     }
 
     private void simulatePirateAttack() {

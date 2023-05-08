@@ -80,7 +80,7 @@ public class HangarManager implements Upgradeable {
     public boolean hasShipAvailable(SpaceShip ship) throws StorageException {
         if (!shipSet.contains(ship)) {
             throw new StorageException("No such ship in storage");
-        } else if (ship.isOnMission()) {
+        } else if (ship.getCurrentMission() != null) {
             throw new StorageException("Ship is on a mission");
         } else {
             return true;

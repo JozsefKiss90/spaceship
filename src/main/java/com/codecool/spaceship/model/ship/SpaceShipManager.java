@@ -21,15 +21,15 @@ public abstract class SpaceShipManager {
     }
 
     public boolean isAvailable() {
-        return !spaceShip.isOnMission();
+        return spaceShip.getCurrentMission() == null;
     }
 
     public void setCurrentMission(Mission mission) {
-        //TODO
+        spaceShip.setCurrentMission(mission);
     }
 
     public void endMission() {
-        //TODO
+        spaceShip.setCurrentMission(null);
     }
 
     public int getShieldEnergy() {

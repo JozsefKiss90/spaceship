@@ -2,10 +2,7 @@ package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.exception.DataNotFoundException;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.exception.*;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
@@ -93,11 +90,11 @@ public class ShipService {
         }
     }
 
-    public boolean deleteShipById(Long id) throws DataNotFoundException, StorageException {
+    public boolean deleteShipById(Long id) throws DataNotFoundException, IllegalOperationException {
         SpaceShip ship = spaceShipRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
-        if (ship.isOnMission()) {
-            throw new StorageException("Ship can't be deleted while on mission");
+        if (ship.getCurrentMission() != null) {
+            throw new IllegalOperationException("Ship can't be deleted while on mission");
         }
         spaceShipRepository.delete(ship);
         return true;

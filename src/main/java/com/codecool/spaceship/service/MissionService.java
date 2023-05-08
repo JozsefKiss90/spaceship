@@ -3,6 +3,7 @@ package com.codecool.spaceship.service;
 import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.dto.MissionDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
+import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.mission.MissionManager;
 import com.codecool.spaceship.model.mission.MissionStatus;
@@ -36,7 +37,7 @@ public class MissionService {
                 .toList();
     }
 
-    public MissionDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException {
+    public MissionDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
         SpaceShip spaceShip = spaceShipRepository.findById(shipId).orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(shipId)));
         MinerShip minerShip;
         if (spaceShip instanceof MinerShip) {
