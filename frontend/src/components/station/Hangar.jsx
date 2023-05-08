@@ -13,9 +13,12 @@ function Hangar() {
 
 
     useEffect(() => {
-        fetch('http://localhost:8080/base/hangar')
+        fetch('http://localhost:8080/base/1/hangar')
             .then(res => res.json())
-            .then(data => setHangar(data))
+            .then(data => {
+                setHangar(data);
+                storageSetter({type: 'update'});
+            })
             .catch(err => console.error(err));
     }, [update]);
 
@@ -23,23 +26,32 @@ function Hangar() {
     function getShipCost() {
         fetch("http://localhost:8080/ship/cost/miner")
             .then(res => res.json())
-            .then(data => setMinerCost(data.cost))
-            .catch(err => console.log(err));
+            .then(async data => {
+                setMinerCost(data);
+                await getStorage()
+            })
+            .catch(err => console.error(err));
     }
 
     function getHangarUpgradeCost() {
-        fetch("http://localhost:8080/base/hangar/upgrade")
+        fetch("http://localhost:8080/base/1/hangar/upgrade")
             .then(res => res.json())
-            .then(data => setUpgradeCost(data))
-            .catch(err => console.log(err));
+            .then(async data => {
+                setUpgradeCost(data);
+                await getStorage()
+            })
+            .catch(err => console.error(err));
     }
 
     function getStorage() {
 
-        fetch("http://localhost:8080/base/storage/resources")
+        fetch("http://localhost:8080/base/1/storage/resources")
             .then(res => res.json())
-            .then(data => setStorage(data))
-            .catch(err => console.log(err));
+            .then(data => {
+                setStorage(data);
+                storageSetter({type: 'update'});
+            })
+            .catch(err => console.error(err));
     }
 
     useEffect(() => {
@@ -71,20 +83,20 @@ function Hangar() {
         {!hangar ? <div>Loading...</div> : (<>
             <div className="menu">
                 <div>{"HANGAR | " + hangar.level + " | " + (hangar.capacity - hangar.freeDocks) + " / " + hangar.capacity}</div>
-                <div className="button" onClick={() => {
-                    if (!storage) getStorage();
+                <div className="button" onClick={async () => {
+                    await getStorage();
                     getHangarUpgradeCost();
                 }}>Upgrade
                 </div>
             </div>
             <div className="ship-list">
                 {Object.keys(hangar.ships).length === 0 ? (<p>No ships yet</p>) : (hangar.ships.map((ship) => {
-                    return <p key={ship.id}>{ship.name} - {ship.type}</p>;
+                    return <p key={ship.id}>{ship.name} </p>;
                 }))}
             </div>
             <div className="add ship">
                 <div className="button" onClick={() => {
-                    if (!storage) getStorage();
+                    getStorage();
                     getShipCost();
                 }}>Add ship
                 </div>

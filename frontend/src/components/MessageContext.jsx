@@ -12,7 +12,11 @@ export function useMessageDispatchContext() {
 }
 
 export function StationContext({children}) {
-    const [message, dispatch] = useReducer(messageReducer, null, (e) => <div>{e}</div>);
+    const [message, dispatch] = useReducer(
+        messageReducer,
+        null,
+        (e) => <div>{e}</div>
+    );
     return (<>
         <MessageContext.Provider value={message}>
             <MessageDispatchContext.Provider value={dispatch}>
@@ -25,25 +29,15 @@ export function StationContext({children}) {
 const messageReducer = (message, action) => {
     switch (action.type) {
         case 'miner cost':
-            console.log("miner");
-
         case 'storage upgrade':
-            console.log("storage")
-            return {
-                type: action.type,
-                data: action.data,
-                storage: action.storage
-            };
         case 'hangar upgrade':
-            console.log("hangar")
             return {
                 type: action.type,
                 data: action.data,
                 storage: action.storage
             };
         default:
-            return {type:null};
-
+            return {type: null};
     }
 }
 

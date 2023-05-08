@@ -6,7 +6,7 @@ import {useMessageDispatchContext} from "../MessageContext";
 const Storage = () => {
     const update = useStorageContext();
     const dispatch = useMessageDispatchContext();
-    const [updateStorage,setUpdateStorage] = useState(null)
+    const [updateStorage, setUpdateStorage] = useState(null)
     const [upgradeCost, setUpgradeCost] = useState(null);
     const [storage, setStorage] = useState(null);
 
@@ -15,7 +15,9 @@ const Storage = () => {
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.error(err));
-    }, [update,updateStorage]);
+    }, [update, updateStorage]);
+
+
 
     const getUpgrade = () => {
         fetch("http://localhost:8080/base/storage/upgrade")
@@ -39,8 +41,8 @@ const Storage = () => {
             <div className="menu">
                 <div>{"STORAGE | " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
                 <div className="button" onClick={() => {
-                    getUpgrade();
                     setUpdateStorage(!updateStorage);
+                    getUpgrade();
                 }}>Upgrade
                 </div>
             </div>
