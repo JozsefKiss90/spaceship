@@ -72,7 +72,7 @@ public class ShipService {
         }
     }
 
-    public boolean updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
+    public ShipDTO updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
         SpaceShip ship = spaceShipRepository.findById(id)
                 .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
         if (name != null && !name.equals("")) {
@@ -81,8 +81,8 @@ public class ShipService {
         if (color != null) {
             ship.setColor(color);
         }
-        spaceShipRepository.save(ship);
-        return true;
+        ship = spaceShipRepository.save(ship);
+        return new ShipDTO(ship);
     }
 
     public Map<ResourceType, Integer> getShipCost(ShipType shipType) {

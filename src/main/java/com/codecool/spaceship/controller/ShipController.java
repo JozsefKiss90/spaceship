@@ -65,7 +65,7 @@ public class ShipController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Boolean> updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
+    public ResponseEntity<ShipDTO> updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
         try {
             return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
         } catch (ShipNotFoundException e) {
