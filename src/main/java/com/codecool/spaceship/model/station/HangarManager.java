@@ -1,11 +1,11 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.InvalidLevelException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.SpaceShipManager;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
 import java.util.*;
@@ -44,7 +44,8 @@ public class HangarManager implements Upgradeable {
         shipSet = new HashSet<>();
     }
 
-    public HangarManager(int currentLevelIndex, Set<SpaceShip> shipSet) {
+    public HangarManager(int currentLevel, Set<SpaceShip> shipSet) {
+        int currentLevelIndex = currentLevel - 1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         }else if (currentLevelIndex > MAX_LEVEL_INDEX) {
@@ -74,6 +75,16 @@ public class HangarManager implements Upgradeable {
 
     public Set<SpaceShip> getAllShips() {
         return new HashSet<>(shipSet);
+    }
+
+    public boolean hasShipAvailable(SpaceShip ship) throws StorageException {
+        if (!shipSet.contains(ship)) {
+            throw new StorageException("No such ship in storage");
+        } else if (ship.isOnMission()) {
+            throw new StorageException("Ship is on a mission");
+        } else {
+            return true;
+        }
     }
 
     @Override

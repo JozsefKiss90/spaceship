@@ -2,9 +2,11 @@ package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.Mission;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.Upgradeable;
+import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.shipparts.*;
+import com.codecool.spaceship.model.ship.shipparts.EngineManager;
+import com.codecool.spaceship.model.ship.shipparts.ShieldManager;
+import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +21,7 @@ public abstract class SpaceShipManager {
     }
 
     public boolean isAvailable() {
-        //TODO add mission
-        return true;
+        return !spaceShip.isOnMission();
     }
 
     public void setCurrentMission(Mission mission) {
@@ -55,6 +56,8 @@ public abstract class SpaceShipManager {
     }
     public abstract List<ShipPart> getPartTypes();
 
-    public abstract Upgradeable getPart(ShipPart part) throws NoSuchPartException;
+    public abstract boolean upgradePart(ShipPart part) throws NoSuchPartException;
     public abstract Map<ResourceType, Integer> getCost();
+
+    public abstract Map<ResourceType, Integer> getUpgradeCost(ShipPart part) throws UpgradeNotAvailableException, NoSuchPartException;
 }

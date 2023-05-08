@@ -6,7 +6,7 @@ import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -59,7 +59,7 @@ public class StationService {
 
         SpaceShip ship;
         if (shipType == ShipType.MINER) {
-            ship = new MinerShip(name, color);
+            ship = MinerShipManager.createNewMinerShip(name, color);
         } else {
             return false;
         }

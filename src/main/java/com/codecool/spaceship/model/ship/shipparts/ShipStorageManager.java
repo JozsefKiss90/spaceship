@@ -45,7 +45,8 @@ public class ShipStorageManager implements Upgradeable {
         storedResources = new HashSet<>();
     }
 
-    public ShipStorageManager(int currentLevelIndex, Set<ShipResource> storedResources) {
+    public ShipStorageManager(int currentLevel, Set<ShipResource> storedResources) {
+        int currentLevelIndex = currentLevel - 1;
         if (currentLevelIndex < 0) {
             throw new InvalidLevelException("Level index can't be lower than 0");
         } else if (currentLevelIndex > MAX_LEVEL_INDEX) {

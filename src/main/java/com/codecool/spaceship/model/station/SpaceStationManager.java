@@ -16,19 +16,31 @@ import java.util.Set;
 public class SpaceStationManager {
 
     private final SpaceStation station;
+    private HangarManager hangar;
+    private StationStorageManager storage;
 
     public SpaceStationManager(SpaceStation station) {
         this.station = station;
     }
 
+    public static SpaceStation createNewSpaceStation(String name) {
+        SpaceStation station = new SpaceStation();
+        station.setName(name);
+        station.setHangarLevel(1);
+        station.setHangar(new HashSet<>());
+        station.setStorageLevel(1);
+        station.setResources(new HashSet<>());
+        return station;
+    }
+
     private boolean hasEnoughResource(Map<ResourceType, Integer> cost) {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        createStorageIfNotExists();
         return cost.entrySet().stream()
                 .allMatch(entry -> storage.hasResource(entry.getKey(), entry.getValue()));
     }
 
-    private boolean removeResources(Map<ResourceType, Integer> cost) throws StorageException {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+    public boolean removeResources(Map<ResourceType, Integer> cost) throws StorageException {
+        createStorageIfNotExists();
         if (hasEnoughResource(cost)) {
             for (ResourceType resource : cost.keySet()) {
                 storage.removeResource(resource, cost.get(resource));
@@ -40,12 +52,18 @@ public class SpaceStationManager {
 
     public boolean addNewShip(SpaceShip ship, ShipType shipType) throws StorageException {
         Map<ResourceType, Integer> cost = shipType.getCost();
-        HangarManager hangar = new HangarManager(station.getHangarLevelIndex(), station.getHangar());
-        return hangar.addShip(ship) && removeResources(cost); //throws storage exception if not enough resource or docks
+        createHangarIfNotExists();
+        if (!hasEnoughResource(cost)) {
+            throw new StorageException("Not enough resource");
+        } else if (hangar.getCurrentAvailableDocks() == 0) {
+            throw new StorageException("No more docks available");
+        } else {
+            return hangar.addShip(ship) && removeResources(cost); //throws storage exception if not enough resource or docks
+        }
     }
 
-    public boolean removeShip(SpaceShip ship){
-        HangarManager hangar = new HangarManager(station.getHangarLevelIndex(), station.getHangar());
+    public boolean removeShip(SpaceShip ship) {
+        createHangarIfNotExists();
         return hangar.removeShip(ship);
     }
 
@@ -53,46 +71,42 @@ public class SpaceStationManager {
         return new HashSet<>(station.getHangar());
     }
 
-//    public boolean upgradeShipPart(SpaceShipService ship, ShipPart shipPart) throws NoSuchPartException, UpgradeNotAvailableException, StorageException {
-//        if (!hangarService.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
-//        if (!ship.isAvailable()) throw new UpgradeNotAvailableException("Ship is on a mission");
-//        Upgradeable part = ship.getPart(shipPart);
-//        Map<ResourceType, Integer> cost = part.getUpgradeCost();
-//        removeResources(cost);
-//        part.upgrade();
-//        return true;
-//    }
-//
+    public boolean hasShipAvailable(SpaceShip ship) throws StorageException {
+        createHangarIfNotExists();
+        return hangar.hasShipAvailable(ship);
+    }
+
+    //
     public boolean addResource(ResourceType resourceType, int quantity) throws StorageException {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        createStorageIfNotExists();
         return storage.addResource(resourceType, quantity);
     }
 
     public Map<ResourceType, Integer> getStorageUpgradeCost() throws UpgradeNotAvailableException {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        createStorageIfNotExists();
         return storage.getUpgradeCost();
     }
 
     public Map<ResourceType, Integer> getHangarUpgradeCost() throws UpgradeNotAvailableException {
-        HangarManager hangar = new HangarManager(station.getHangarLevelIndex(), station.getHangar());
+        createHangarIfNotExists();
         return hangar.getUpgradeCost();
     }
 
     public boolean upgradeStorage() throws UpgradeNotAvailableException, StorageException {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        createStorageIfNotExists();
         Map<ResourceType, Integer> cost = storage.getUpgradeCost();
         removeResources(cost);
         storage.upgrade();
-        station.setStorageLevelIndex(storage.getCurrentLevel() - 1);
+        station.setStorageLevel(storage.getCurrentLevel());
         return true;
     }
 
     public boolean upgradeHangar() throws UpgradeNotAvailableException, StorageException {
-        HangarManager hangar = new HangarManager(station.getHangarLevelIndex(), station.getHangar());
+        createHangarIfNotExists();
         Map<ResourceType, Integer> cost = hangar.getUpgradeCost();
         removeResources(cost);
         hangar.upgrade();
-        station.setHangarLevelIndex(hangar.getCurrentLevel() - 1);
+        station.setHangarLevel(hangar.getCurrentLevel());
         return true;
     }
 
@@ -101,15 +115,29 @@ public class SpaceStationManager {
     }
 
     public SpaceStationStorageDTO getStorageDTO() {
-        return new SpaceStationStorageDTO(new StationStorageManager(station.getStorageLevelIndex(), station.getResources()));
+        createStorageIfNotExists();
+        return new SpaceStationStorageDTO(storage);
     }
 
     public HangarDTO getHangarDTO() {
-        return new HangarDTO(new HangarManager(station.getHangarLevelIndex(), station.getHangar()));
+        createHangarIfNotExists();
+        return new HangarDTO(hangar);
     }
 
     public Map<ResourceType, Integer> getStoredResources() {
-        StationStorageManager storage = new StationStorageManager(station.getStorageLevelIndex(), station.getResources());
+        createStorageIfNotExists();
         return storage.getStoredItems();
+    }
+
+    private void createHangarIfNotExists() {
+        if (hangar == null) {
+            hangar = new HangarManager(station.getHangarLevel(), station.getHangar());
+        }
+    }
+
+    private void createStorageIfNotExists() {
+        if (storage == null) {
+            storage = new StationStorageManager(station.getStorageLevel(), station.getResources());
+        }
     }
 }
