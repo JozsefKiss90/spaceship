@@ -77,6 +77,16 @@ public class HangarManager implements Upgradeable {
         return new HashSet<>(shipSet);
     }
 
+    public boolean hasShipAvailable(SpaceShip ship) throws StorageException {
+        if (!shipSet.contains(ship)) {
+            throw new StorageException("No such ship in storage");
+        } else if (ship.isOnMission()) {
+            throw new StorageException("Ship is on a mission");
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public Map<ResourceType, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex + 1).cost());

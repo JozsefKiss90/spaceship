@@ -39,7 +39,7 @@ public class SpaceStationManager {
                 .allMatch(entry -> storage.hasResource(entry.getKey(), entry.getValue()));
     }
 
-    private boolean removeResources(Map<ResourceType, Integer> cost) throws StorageException {
+    public boolean removeResources(Map<ResourceType, Integer> cost) throws StorageException {
         createStorageIfNotExists();
         if (hasEnoughResource(cost)) {
             for (ResourceType resource : cost.keySet()) {
@@ -71,11 +71,9 @@ public class SpaceStationManager {
         return new HashSet<>(station.getHangar());
     }
 
-    public boolean removeShipUpgradeResourcesFromStation(SpaceShip ship, Map<ResourceType, Integer> cost) throws StorageException {
+    public boolean hasShipAvailable(SpaceShip ship) throws StorageException {
         createHangarIfNotExists();
-        if (!hangar.getAllShips().contains(ship)) throw new StorageException("No such ship in storage");
-        removeResources(cost);
-        return true;
+        return hangar.hasShipAvailable(ship);
     }
 
     //

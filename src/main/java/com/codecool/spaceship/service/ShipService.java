@@ -59,15 +59,13 @@ public class ShipService {
 
         if (ship instanceof MinerShip) {
             MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
-            if (!minerShipManager.isAvailable()) {
-                throw new UpgradeNotAvailableException("Ship is on a mission");
-            }
 
             SpaceStationManager stationManager = new SpaceStationManager(ship.getStation());
-            stationManager.removeShipUpgradeResourcesFromStation(ship, minerShipManager.getUpgradeCost(part));
-            minerShipManager.upgradePart(part);
-
-            ship = spaceShipRepository.save(ship);
+            if (stationManager.hasShipAvailable(ship)) {
+                stationManager.removeResources(minerShipManager.getUpgradeCost(part));
+                minerShipManager.upgradePart(part);
+                ship = spaceShipRepository.save(ship);
+            }
             return new MinerShipDTO((MinerShip) ship);
         } else {
             throw new IllegalArgumentException("Ship is not a miner ship");
