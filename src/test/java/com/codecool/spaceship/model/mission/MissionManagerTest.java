@@ -1,9 +1,10 @@
 package com.codecool.spaceship.model.mission;
 
 import com.codecool.spaceship.model.Location;
-import com.codecool.spaceship.model.Resource;
 import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,14 +22,16 @@ class MissionManagerTest {
     @Mock
     MinerShip minerShipMock;
     @Mock
+    MinerShipManager minerShipManagerMock;
+
+    @Mock
     Location locationMock;
     @Mock
     Event eventMock;
-    MissionManager missionManager = new MissionManager();
 
     @Test
     void missionCreationTest() {
-        when(minerShipMock.getSpeed()).thenReturn(2.5);
+        when(minerShipMock.getEngineLevel()).thenReturn(2);
         when(locationMock.getDistanceFromStation()).thenReturn(5);
         when(locationMock.getName()).thenReturn("Test planet");
         LocalDateTime now = LocalDateTime.now();
@@ -49,14 +52,9 @@ class MissionManagerTest {
                 .endTime(now)
                 .eventMessage("<%tF %<tT> Left station for mining mission on Test planet.".formatted(now))
                 .build();
-        Event expectedEvent2 = Event.builder()
-                .eventType(EventType.ARRIVAL_AT_LOCATION)
-                .endTime(now.plusSeconds(7200L))
-                .build();
         expected.getEvents().push(expectedEvent1);
-        expected.getEvents().push(expectedEvent2);
 
-        Mission actual = missionManager.startMiningMission(minerShipMock, locationMock, 1800L);
+        Mission actual = MissionManager.startMiningMission(minerShipMock, locationMock, 1800L);
 
         assertEquals(expected, actual);
     }
@@ -69,7 +67,8 @@ class MissionManagerTest {
         mission.getEvents().push(eventMock);
         when(eventMock.getEndTime()).thenReturn(LocalDateTime.now().plusSeconds(1));
 
-        missionManager.updateStatus(mission);
+        MissionManager missionManager = new MissionManager(mission);
+        missionManager.updateStatus();
 
         verify(eventMock, never()).getEventType();
     }
@@ -82,7 +81,8 @@ class MissionManagerTest {
                 .build();
         mission.getEvents().push(eventMock);
 
-        missionManager.updateStatus(mission);
+        MissionManager missionManager = new MissionManager(mission);
+        missionManager.updateStatus();
 
         verify(eventMock, never()).getEventType();
     }
@@ -114,7 +114,8 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(event1);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.updateStatus();
 
         assertEquals(expected, actual);
     }
@@ -122,8 +123,8 @@ class MissionManagerTest {
     @Test
     void updateStatusArriveAtLocationWithTimeToFillTest() {
         when(locationMock.getName()).thenReturn("Test Planet");
-        when(minerShipMock.getDrillEfficiency()).thenReturn(5);
-        when(minerShipMock.getEmptyStorageSpace()).thenReturn(8);
+        when(minerShipManagerMock.getDrillEfficiency()).thenReturn(5);
+        when(minerShipManagerMock.getEmptyStorageSpace()).thenReturn(8);
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -162,7 +163,9 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
         assertEquals(expected, actual);
     }
@@ -170,8 +173,8 @@ class MissionManagerTest {
     @Test
     void updateStatusArriveAtLocationWithNoTimeToFillTest() {
         when(locationMock.getName()).thenReturn("Test Planet");
-        when(minerShipMock.getDrillEfficiency()).thenReturn(1);
-        when(minerShipMock.getEmptyStorageSpace()).thenReturn(8);
+        when(minerShipManagerMock.getDrillEfficiency()).thenReturn(1);
+        when(minerShipManagerMock.getEmptyStorageSpace()).thenReturn(8);
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -210,15 +213,17 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
         assertEquals(expected, actual);
     }
 
     @Test
     void finishMiningWithTimeToFillTest() throws StorageException {
-        when(locationMock.getResourceType()).thenReturn(Resource.CRYSTAL);
-        when(minerShipMock.getEmptyStorageSpace()).thenReturn(8, 0);
+        when(locationMock.getResourceType()).thenReturn(ResourceType.CRYSTAL);
+        when(minerShipManagerMock.getEmptyStorageSpace()).thenReturn(8, 0);
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -257,17 +262,19 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
-        verify(minerShipMock, times(1)).addResourceToStorage(Resource.CRYSTAL, 8);
+        verify(minerShipManagerMock, times(1)).addResourceToStorage(ResourceType.CRYSTAL, 8);
         assertEquals(expected, actual);
     }
 
     @Test
     void finishMiningWithNoTimeToFillTest() throws StorageException {
-        when(locationMock.getResourceType()).thenReturn(Resource.CRYSTAL);
-        when(minerShipMock.getDrillEfficiency()).thenReturn(1);
-        when(minerShipMock.getEmptyStorageSpace()).thenReturn(8, 6);
+        when(locationMock.getResourceType()).thenReturn(ResourceType.CRYSTAL);
+        when(minerShipManagerMock.getDrillEfficiency()).thenReturn(1);
+        when(minerShipManagerMock.getEmptyStorageSpace()).thenReturn(8, 6);
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -308,9 +315,11 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
-        verify(minerShipMock, times(1)).addResourceToStorage(Resource.CRYSTAL, 2);
+        verify(minerShipManagerMock, times(1)).addResourceToStorage(ResourceType.CRYSTAL, 2);
         assertEquals(expected, actual);
     }
 
@@ -341,7 +350,9 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
         assertEquals(expected, actual);
     }
@@ -349,9 +360,9 @@ class MissionManagerTest {
     @Test
     void updateStatusStartToFinishTest() throws StorageException {
         when(locationMock.getName()).thenReturn("Test Planet");
-        when(locationMock.getResourceType()).thenReturn(Resource.CRYSTAL);
-        when(minerShipMock.getDrillEfficiency()).thenReturn(5);
-        when(minerShipMock.getEmptyStorageSpace()).thenReturn(20,20, 12);
+        when(locationMock.getResourceType()).thenReturn(ResourceType.CRYSTAL);
+        when(minerShipManagerMock.getDrillEfficiency()).thenReturn(5);
+        when(minerShipManagerMock.getEmptyStorageSpace()).thenReturn(20,20, 12);
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
@@ -409,9 +420,11 @@ class MissionManagerTest {
                 .build();
         actual.getEvents().push(actualEvent);
 
-        missionManager.updateStatus(actual);
+        MissionManager missionManager = new MissionManager(actual);
+        missionManager.setMinerShipManager(minerShipManagerMock);
+        missionManager.updateStatus();
 
-        verify(minerShipMock, times(1)).addResourceToStorage(Resource.CRYSTAL, 8);
+        verify(minerShipManagerMock, times(1)).addResourceToStorage(ResourceType.CRYSTAL, 8);
         assertEquals(expected, actual);
     }
 

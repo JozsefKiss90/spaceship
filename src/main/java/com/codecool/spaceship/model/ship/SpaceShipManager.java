@@ -1,8 +1,8 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.Mission;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
+import com.codecool.spaceship.model.mission.Mission;
+import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.shipparts.EngineManager;
 import com.codecool.spaceship.model.ship.shipparts.ShieldManager;
@@ -37,7 +37,8 @@ public abstract class SpaceShipManager {
     }
 
     public int getShieldMaxEnergy() {
-        return spaceShip.getShieldEnergy();
+        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+        return shield.getMaxEnergy();
     }
 
     public void repairShield(int amount) {
