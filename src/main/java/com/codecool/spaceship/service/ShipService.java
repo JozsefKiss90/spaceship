@@ -3,7 +3,7 @@ package com.codecool.spaceship.service;
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
@@ -37,15 +37,15 @@ public class ShipService {
                 .collect(Collectors.toList());
     }
 
-    public ShipDTO getShipByID(long id) throws ShipNotFoundException {
+    public ShipDTO getShipByID(long id) throws DataNotFoundException {
         return spaceShipRepository.findById(id)
                 .map(ShipDTO::new)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
     }
 
-    public MinerShipDTO getMinerShipById(long id) throws ShipNotFoundException, IllegalArgumentException {
+    public MinerShipDTO getMinerShipById(long id) throws DataNotFoundException, IllegalArgumentException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         if (ship instanceof MinerShip) {
             return new MinerShipDTO((MinerShip) ship);
         } else {
@@ -53,9 +53,9 @@ public class ShipService {
         }
     }
 
-    public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
+    public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
 
         if (ship instanceof MinerShip) {
             MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
@@ -72,9 +72,9 @@ public class ShipService {
         }
     }
 
-    public ShipDTO updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
+    public ShipDTO updateShipAttributes(Long id, String name, Color color) throws DataNotFoundException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         if (name != null && !name.equals("")) {
             ship.setName(name);
         }
@@ -93,9 +93,9 @@ public class ShipService {
         }
     }
 
-    public boolean deleteShipById(Long id) throws ShipNotFoundException, StorageException {
+    public boolean deleteShipById(Long id) throws DataNotFoundException, StorageException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         if (ship.isOnMission()) {
             throw new StorageException("Ship can't be deleted while on mission");
         }
