@@ -17,7 +17,7 @@ function Hangar() {
             .then(res => res.json())
             .then(data => {
                 setHangar(data);
-                storageSetter({type: 'update'});
+
             })
             .catch(err => console.error(err));
     }, [update]);
@@ -28,7 +28,7 @@ function Hangar() {
             .then(res => res.json())
             .then(async data => {
                 setMinerCost(data);
-                await getStorage()
+
             })
             .catch(err => console.error(err));
     }
@@ -38,7 +38,7 @@ function Hangar() {
             .then(res => res.json())
             .then(async data => {
                 setUpgradeCost(data);
-                await getStorage()
+
             })
             .catch(err => console.error(err));
     }
@@ -49,7 +49,7 @@ function Hangar() {
             .then(res => res.json())
             .then(data => {
                 setStorage(data);
-                storageSetter({type: 'update'});
+
             })
             .catch(err => console.error(err));
     }
@@ -64,7 +64,7 @@ function Hangar() {
             setUpgradeCost(null);
             setStorage(null);
         }
-    }, [upgradeCost,storage])
+    }, [upgradeCost,storage,dispatch])
 
     useEffect(() => {
         if (minerCost && storage) {
@@ -76,7 +76,7 @@ function Hangar() {
             setMinerCost(null);
             setStorage(null)
         }
-    }, [minerCost,storage])
+    }, [minerCost,storage,dispatch])
 
 
     return (<div className="hangar">

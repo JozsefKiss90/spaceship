@@ -1,9 +1,5 @@
-import {useReducer} from "react";
-import {useMessageDispatchContext} from "../MessageContext";
-
 
 export function ResourceNeeded({message, checkStorage, func}) {
-    const messageSetter = useMessageDispatchContext();
     function setText()  {
         switch (message.type) {
             case 'miner cost':

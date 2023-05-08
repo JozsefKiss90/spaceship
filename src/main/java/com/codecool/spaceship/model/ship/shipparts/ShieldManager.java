@@ -2,49 +2,67 @@ package com.codecool.spaceship.model.ship.shipparts;
 
 
 import com.codecool.spaceship.model.Level;
-import com.codecool.spaceship.model.Resource;
+import com.codecool.spaceship.model.exception.InvalidLevelException;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.Upgradeable;
 
 import java.util.List;
 import java.util.Map;
 
-public class Shield implements Upgradeable {
+public class ShieldManager implements Upgradeable {
 
     private static final List<Level<Integer>> LEVELS = List.of(
             new Level<>(1, 20, Map.of()),
             new Level<>(2, 50,
                     Map.of(
-                            Resource.CRYSTAL, 20
+                            ResourceType.CRYSTAL, 20
                     )),
             new Level<>(3, 100,
                     Map.of(
-                            Resource.CRYSTAL, 40,
-                            Resource.SILICONE, 10
+                            ResourceType.CRYSTAL, 40,
+                            ResourceType.SILICONE, 10
                     )),
             new Level<>(4, 150,
                     Map.of(
-                            Resource.CRYSTAL, 100,
-                            Resource.SILICONE, 20
+                            ResourceType.CRYSTAL, 100,
+                            ResourceType.SILICONE, 20
                     )),
             new Level<>(
                     5, 200,
                     Map.of(
-                            Resource.CRYSTAL, 150,
-                            Resource.SILICONE, 40,
-                            Resource.PLUTONIUM, 5
+                            ResourceType.CRYSTAL, 150,
+                            ResourceType.SILICONE, 40,
+                            ResourceType.PLUTONIUM, 5
                     ))
     );
+    private static final int MAX_LEVEL_INDEX = LEVELS.size() - 1;
     private int currentLevelIndex;
     private int currentEnergy;
 
-    public Shield() {
+    public ShieldManager() {
         currentLevelIndex = 0;
         currentEnergy = LEVELS.get(0).effect();
     }
 
+    public ShieldManager(int currentLevel, int currentEnergy) {
+        int currentLevelIndex = currentLevel - 1;
+        if (currentLevelIndex < 0) {
+            throw new InvalidLevelException("Level index can't be lower than 0");
+        } else if (currentLevelIndex > MAX_LEVEL_INDEX) {
+            throw new InvalidLevelException("Level index can't be higher than %d".formatted(MAX_LEVEL_INDEX));
+        }
+        this.currentLevelIndex = currentLevelIndex;
+        if (currentEnergy < 0) {
+            throw new IllegalArgumentException("Shield energy can't be lower than 0");
+        } else if (currentEnergy > LEVELS.get(currentLevelIndex).effect()) {
+            throw new InvalidLevelException("Shiled energy can't be higher than %d at this level".formatted(LEVELS.get(currentLevelIndex).effect()));
+        }
+        this.currentEnergy = currentEnergy;
+    }
+
     @Override
-    public Map<Resource, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
+    public Map<ResourceType, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (getCurrentLevel() == LEVELS.size()) {
             throw new UpgradeNotAvailableException("Already at max level");
         } else {
@@ -56,6 +74,7 @@ public class Shield implements Upgradeable {
     public void upgrade() {
         if (getCurrentLevel() < LEVELS.size()) {
             currentLevelIndex++;
+            currentEnergy = getMaxEnergy();
         }
     }
 

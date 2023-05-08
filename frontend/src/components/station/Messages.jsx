@@ -20,10 +20,10 @@ const Messages = () => {
     }
 
     const addShip = async () => {
-        const response = await fetch("http://localhost:8080/base/hangar/add", {
+        await fetch("http://localhost:8080/base/1/add/ship", {
             method: "POST", headers: {
                 "Content-Type": "application/json",
-            }, body: JSON.stringify({name: "pju-pju", color: "EMERALD"})
+            }, body: JSON.stringify({name: "pju-pju", color: "EMERALD", type: "miner"})
         });
         messageSetter({type: null});
         storageSetter({type: "update"});
@@ -31,7 +31,7 @@ const Messages = () => {
 
     }
     const upgradeStorage = async () => {
-        const response = await fetch("http://localhost:8080/base/upgrade/storage", {
+        await fetch("http://localhost:8080/base/1/storage/upgrade", {
             method: "POST", headers: {
                 "Content-Type": "application/json",
             }, body: JSON.stringify({})
@@ -42,7 +42,7 @@ const Messages = () => {
     }
 
     const upgradeHangar = async () => {
-        const response = await fetch("http://localhost:8080/base/upgrade/hangar", {
+        await fetch("http://localhost:8080/base/1/hangar/upgrade", {
             method: "POST", headers: {
                 "Content-Type": "application/json",
             }, body: JSON.stringify({})
@@ -73,6 +73,5 @@ const Messages = () => {
         <div className="messages">{setElement()}</div>
     </div>);
 }
-
 
 export default Messages;
