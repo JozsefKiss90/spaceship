@@ -51,10 +51,16 @@ public class SpaceStationManager {
     public boolean addNewShip(SpaceShip ship, ShipType shipType) throws StorageException {
         Map<ResourceType, Integer> cost = shipType.getCost();
         HangarManager hangar = new HangarManager(station.getHangarLevel(), station.getHangar());
-        return hangar.addShip(ship) && removeResources(cost); //throws storage exception if not enough resource or docks
+        if (!hasEnoughResource(cost)) {
+            throw new StorageException("Not enough resource");
+        } else if (hangar.getCurrentAvailableDocks() == 0) {
+            throw new StorageException("No more docks available");
+        } else {
+            return hangar.addShip(ship) && removeResources(cost); //throws storage exception if not enough resource or docks
+        }
     }
 
-    public boolean removeShip(SpaceShip ship){
+    public boolean removeShip(SpaceShip ship) {
         HangarManager hangar = new HangarManager(station.getHangarLevel(), station.getHangar());
         return hangar.removeShip(ship);
     }
@@ -69,7 +75,8 @@ public class SpaceStationManager {
         removeResources(cost);
         return true;
     }
-//
+
+    //
     public boolean addResource(ResourceType resourceType, int quantity) throws StorageException {
         StationStorageManager storage = new StationStorageManager(station.getStorageLevel(), station.getResources());
         return storage.addResource(resourceType, quantity);
