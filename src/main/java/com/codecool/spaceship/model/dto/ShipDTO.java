@@ -1,20 +1,16 @@
 package com.codecool.spaceship.model.dto;
 
 
-import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-public record ShipDTO(int id, String name, String type, Color color, Set<PartDTO> parts, boolean available) {
+public record ShipDTO(Long id, String name, Color color, int engineLevel, int shieldLevel, int shieldEnergy) {
 
     public ShipDTO(SpaceShip ship) {
-        this(ship.getId(), ship.getName(), getShipType(ship), ship.getColor(),getShipParts(ship), ship.isAvailable());
+        this(ship.getId(), ship.getName(), ship.getColor(), ship.getEngineLevel(), ship.getShieldLevel(), ship.getEngineLevel());
     }
 
-    private static String getShipType(SpaceShip ship) {
+    /*private static String getShipType(SpaceShipService ship) {
         switch (ship.getClass().getSimpleName()) {
             case "MinerShip" -> {
                 return "Miner ship";
@@ -25,7 +21,7 @@ public record ShipDTO(int id, String name, String type, Color color, Set<PartDTO
         }
     }
 
-    private static Set<PartDTO> getShipParts(SpaceShip ship) {
+    private static Set<PartDTO> getShipParts(SpaceShipService ship) {
         return ship.getPartTypes().stream()
                 .map(shipPart -> {
                     try {
@@ -35,5 +31,5 @@ public record ShipDTO(int id, String name, String type, Color color, Set<PartDTO
                     }
                 })
                 .collect(Collectors.toSet());
-    }
+    }*/
 }
