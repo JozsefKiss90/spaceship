@@ -1,4 +1,8 @@
 .station {
     display: flex;
     flex-flow: row;
+    font-size: 18px;
+    width: 70vw;
+    margin: auto;
+    min-width: 1200px;
 }

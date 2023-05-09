@@ -52,6 +52,16 @@ public class ShipController {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
     }
+    @GetMapping("/miner/{id}/upgrade")
+    public ResponseEntity<Map<ResourceType, Integer>> getMinderShipShipPartUpgradeCost(@PathVariable Long id, @RequestParam ShipPart part) {
+        try {
+            return ResponseEntity.ok(shipService.getShipPartUpgradeCost(id,part));
+        } catch (ShipNotFoundException e){
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
+        } catch (Exception e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+        }
+    }
 
     @PatchMapping("/miner/{id}/upgrade")
     public ResponseEntity<MinerShipDTO> upgradeMinerShipShipPart(@PathVariable Long id, @RequestParam ShipPart part) {

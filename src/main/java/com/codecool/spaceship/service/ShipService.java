@@ -15,6 +15,7 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.SpaceShipRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,6 +92,13 @@ public class ShipService {
         } else {
             return null;
         }
+    }
+
+    public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
+        SpaceShip ship = spaceShipRepository.findById(id)
+                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
+        return minerShipManager.getUpgradeCost(shipPart);
     }
 
     public boolean deleteShipById(Long id) throws ShipNotFoundException, StorageException {

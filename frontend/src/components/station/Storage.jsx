@@ -47,11 +47,11 @@ const Storage = () => {
                 </div>
             </div>
             {Object.keys(storage.resources).length === 0 ? (
-                <div>No resources yet</div>) : (Object.keys(storage.resources).map(key => {
+                <div className="resource-row">No resources yet</div>) : (Object.keys(storage.resources).map(key => {
                 return (<div className="resource-row" key={key}>
                     <img style={{width: "25px", height: "25px"}} src={key.toLowerCase() + '.png'}
                          alt={key}/>
-                    <p style={{marginLeft: "5px"}} key={key}>{key}: {storage.resources[key]}</p>
+                    <div style={{marginLeft: "5px"}} key={key}>{key}: {storage.resources[key]}</div>
                 </div>);
             }))}
         </div>)}

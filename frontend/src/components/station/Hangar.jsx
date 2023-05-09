@@ -17,7 +17,6 @@ function Hangar() {
             .then(res => res.json())
             .then(data => {
                 setHangar(data);
-
             })
             .catch(err => console.error(err));
     }, [update]);
@@ -60,7 +59,6 @@ function Hangar() {
             .then(res => res.json())
             .then(data => {
                 setStorage(data);
-
             })
             .catch(err => console.error(err));
     }
@@ -102,9 +100,9 @@ function Hangar() {
             </div>
             <div className="ship-list">
                 {Object.keys(hangar.ships).length === 0 ? (<p>No ships yet</p>) : (hangar.ships.map((ship) => {
-                    return <p onClick={() => {
+                    return <div onClick={() => {
                         getShip(ship.id);
-                    }} key={ship.id}>{ship.name} - {ship.type} </p>;
+                    }} key={ship.id}>{ship.name} - {ship.type} </div>;
                 }))}
             </div>
             <div className="add ship">

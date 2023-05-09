@@ -28,7 +28,6 @@ export function ResourceNeeded({message, checkStorage}) {
         messageSetter({type: null});
         storageSetter({type: "update"});
         hangarSetter({type: "update"});
-
     }
 
     const upgradeStorage = async () => {
@@ -39,7 +38,6 @@ export function ResourceNeeded({message, checkStorage}) {
         });
         messageSetter({type: null});
         storageSetter({type: "update"});
-
     }
 
     const upgradeHangar = async () => {
@@ -51,7 +49,15 @@ export function ResourceNeeded({message, checkStorage}) {
         messageSetter({type: null});
         storageSetter({type: "update"});
         hangarSetter({type: "update"});
+    }
 
+    const upgradePart = async (id, part) => {
+        await fetch(`http://localhost:8080/ship/miner/${id}/upgrade?part=${part}`, {
+            method: "PATCH", headers: {
+                "Content-Type": "application/json",
+            }, body: JSON.stringify({})
+        });
+        storageSetter({type: "update"});
     }
 
     function setText() {
@@ -62,6 +68,14 @@ export function ResourceNeeded({message, checkStorage}) {
                 return "to upgrade storage";
             case 'hangar upgrade':
                 return "to upgrade hangar";
+            case 'drill upgrade':
+                return "to upgrade ship drill";
+            case 'engine upgrade':
+                return "to upgrade ship engine";
+            case 'ship storage upgrade':
+                return "to upgrade ship storage";
+            case 'shield upgrade':
+                return "to upgrade ship shield";
         }
     }
 
@@ -74,6 +88,11 @@ export function ResourceNeeded({message, checkStorage}) {
                 return upgradeStorage();
             case 'hangar upgrade':
                 return upgradeHangar();
+            case 'drill upgrade':
+            case 'engine upgrade':
+            case 'ship storage upgrade':
+            case 'shield upgrade':
+                return upgradePart(message.id,message.part);
         }
     }
 

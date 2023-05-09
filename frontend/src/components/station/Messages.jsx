@@ -33,7 +33,6 @@ const Messages = () => {
         } else return "Howdy, Commander! Command something...";
     }
 
-
     return (<div className="message-log">
         <div className="messages">{setElement()}</div>
     </div>);

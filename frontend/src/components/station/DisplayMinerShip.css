@@ -1,4 +1,23 @@
-.container>div {
-    padding: 3px;
+.container > div {
     margin: 2px;
+    height: 45px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    justify-items: center;
+}
+
+.ship-name {
+    height: 65px !important;
+}
+
+.container {
+    width: 50%;
+    min-width: max-content;
+}
+
+.row {
+    display: flex !important;
+    flex-flow: row !important; ;
+    justify-content: space-between !important;
 }
