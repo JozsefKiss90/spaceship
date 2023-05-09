@@ -24,6 +24,6 @@ public class UserEntity {
    private String password;
    @ManyToMany
    private Set<UserRole> roles;
-   @OneToOne(mappedBy = "user")
+   @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE)
    private SpaceStation spaceStation;
 }
