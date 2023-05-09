@@ -31,6 +31,7 @@ const messageReducer = (message, action) => {
         case 'miner cost':
         case 'storage upgrade':
         case 'hangar upgrade':
+        case 'display ship':
             return {
                 type: action.type,
                 data: action.data,

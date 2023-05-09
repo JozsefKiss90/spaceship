@@ -1,14 +1,11 @@
 import "./Messages.css";
-import {useMessageContext, useMessageDispatchContext} from "../MessageContext";
-import {useStorageDispatchContext} from "../StorageContext";
-import {useHangarDispatchContext} from "../HangarContext";
+import {useMessageContext} from "../MessageContext";
+
 import {ResourceNeeded} from "./ResourceNeeded";
+import {DisplayMinerShip} from "./DisplayMinerShip";
 
 const Messages = () => {
     const message = useMessageContext();
-    const messageSetter = useMessageDispatchContext();
-    const storageSetter = useStorageDispatchContext();
-    const hangarSetter = useHangarDispatchContext();
 
     const checkStorage = (need, have) => {
         for (const resource of Object.keys(need)) {
@@ -19,49 +16,17 @@ const Messages = () => {
         return true;
     }
 
-    const addShip = async () => {
-        await fetch("http://localhost:8080/base/1/add/ship", {
-            method: "POST", headers: {
-                "Content-Type": "application/json",
-            }, body: JSON.stringify({name: "pju-pju", color: "EMERALD", type: "miner"})
-        });
-        messageSetter({type: null});
-        storageSetter({type: "update"});
-        hangarSetter({type: "update"});
-
-    }
-    const upgradeStorage = async () => {
-        await fetch("http://localhost:8080/base/1/storage/upgrade", {
-            method: "POST", headers: {
-                "Content-Type": "application/json",
-            }, body: JSON.stringify({})
-        });
-        messageSetter({type: null});
-        storageSetter({type: "update"});
-
-    }
-
-    const upgradeHangar = async () => {
-        await fetch("http://localhost:8080/base/1/hangar/upgrade", {
-            method: "POST", headers: {
-                "Content-Type": "application/json",
-            }, body: JSON.stringify({})
-        });
-        messageSetter({type: null});
-        storageSetter({type: "update"});
-        hangarSetter({type: "update"});
-
-    }
-
     const setElement = () => {
         if (message.type) {
             switch (message.type) {
                 case "miner cost":
-                    return (<ResourceNeeded message={message} checkStorage={checkStorage} func={addShip}/>);
+                    return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
                 case "storage upgrade":
-                    return (<ResourceNeeded message={message} checkStorage={checkStorage} func={upgradeStorage}/>);
+                    return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
                 case "hangar upgrade":
-                    return (<ResourceNeeded message={message} checkStorage={checkStorage} func={upgradeHangar}/>);
+                    return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
+                case "display ship":
+                    return (<DisplayMinerShip message={message} checkStorage={checkStorage}/>);
                 default:
                     return "Howdy, Commander! Command something...";
             }

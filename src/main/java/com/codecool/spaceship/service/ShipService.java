@@ -47,7 +47,7 @@ public class ShipService {
         SpaceShip ship = spaceShipRepository.findById(id)
                 .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
         if (ship instanceof MinerShip) {
-            return new MinerShipDTO((MinerShip) ship);
+            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
         } else {
             throw new IllegalArgumentException("Ship is not a miner ship.");
         }
@@ -66,7 +66,7 @@ public class ShipService {
                 minerShipManager.upgradePart(part);
                 ship = spaceShipRepository.save(ship);
             }
-            return new MinerShipDTO((MinerShip) ship);
+            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
         } else {
             throw new IllegalArgumentException("Ship is not a miner ship");
         }

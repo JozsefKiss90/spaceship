@@ -23,7 +23,7 @@ const Storage = () => {
         fetch("http://localhost:8080/base/1/storage/upgrade")
             .then(res => res.json())
             .then(data => setUpgradeCost(data))
-            .then(err => console.log(err));
+            .then(err => console.error(err));
     }
 
     useEffect(() => {
@@ -34,12 +34,12 @@ const Storage = () => {
                 storage: storage.resources
             })
         }
-    }, [upgradeCost,dispatch])
+    }, [upgradeCost])
 
     return (<>
         {!storage ? "Loading..." : (<div className="storage">
             <div className="menu">
-                <div>{"STORAGE | " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
+                <div>{"STORAGE | " + "lvl: " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
                 <div className="button" onClick={() => {
                     setUpdateStorage(!updateStorage);
                     getUpgrade();

@@ -26,9 +26,8 @@ function Hangar() {
     function getShipCost() {
         fetch("http://localhost:8080/ship/cost/miner")
             .then(res => res.json())
-            .then(async data => {
+            .then(data => {
                 setMinerCost(data);
-
             })
             .catch(err => console.error(err));
     }
@@ -36,9 +35,21 @@ function Hangar() {
     function getHangarUpgradeCost() {
         fetch("http://localhost:8080/base/1/hangar/upgrade")
             .then(res => res.json())
-            .then(async data => {
+            .then(data => {
                 setUpgradeCost(data);
+            })
+            .catch(err => console.error(err));
+    }
 
+    function getShip(id) {
+        fetch(`http://localhost:8080/ship/miner/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                dispatch({
+                    type: "display ship",
+                    data: data,
+                    storage: storage
+                })
             })
             .catch(err => console.error(err));
     }
@@ -64,7 +75,7 @@ function Hangar() {
             setUpgradeCost(null);
             setStorage(null);
         }
-    }, [upgradeCost,storage,dispatch])
+    }, [upgradeCost, storage])
 
     useEffect(() => {
         if (minerCost && storage) {
@@ -76,13 +87,13 @@ function Hangar() {
             setMinerCost(null);
             setStorage(null)
         }
-    }, [minerCost,storage,dispatch])
+    }, [minerCost, storage])
 
 
     return (<div className="hangar">
         {!hangar ? <div>Loading...</div> : (<>
             <div className="menu">
-                <div>{"HANGAR | " + hangar.level + " | " + (hangar.capacity - hangar.freeDocks) + " / " + hangar.capacity}</div>
+                <div>{"HANGAR | " + "lvl: " + hangar.level + " | " + (hangar.capacity - hangar.freeDocks) + " / " + hangar.capacity}</div>
                 <div className="button" onClick={async () => {
                     await getStorage();
                     getHangarUpgradeCost();
@@ -91,7 +102,9 @@ function Hangar() {
             </div>
             <div className="ship-list">
                 {Object.keys(hangar.ships).length === 0 ? (<p>No ships yet</p>) : (hangar.ships.map((ship) => {
-                    return <p key={ship.id}>{ship.name} </p>;
+                    return <p onClick={() => {
+                        getShip(ship.id);
+                    }} key={ship.id}>{ship.name} - {ship.type} </p>;
                 }))}
             </div>
             <div className="add ship">
