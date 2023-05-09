@@ -39,13 +39,13 @@ public class MissionService {
 
     public List<MissionDTO> getAllArchivedMissions() {
         return missionRepository.getMissionsByCurrentStatus(MissionStatus.ARCHIVED).stream()
-                .map(this::updateAndConvert)
+                .map(MissionDTO::new)
                 .toList();
     }
 
     public MissionDTO getMissionById(Long id) throws DataNotFoundException {
         return missionRepository.findById(id)
-                .map(MissionDTO::new)
+                .map(this::updateAndConvert)
                 .orElseThrow(() -> new DataNotFoundException("No mission found with id %d".formatted(id)));
     }
 
