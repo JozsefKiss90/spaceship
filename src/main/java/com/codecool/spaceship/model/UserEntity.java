@@ -24,6 +24,6 @@ public class UserEntity {
    private String password;
    @ManyToMany
    private Set<UserRole> roles;
-   @OneToOne
+   @OneToOne(mappedBy = "user")
    private SpaceStation spaceStation;
 }

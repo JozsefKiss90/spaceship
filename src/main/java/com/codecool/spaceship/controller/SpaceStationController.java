@@ -3,7 +3,7 @@ package com.codecool.spaceship.controller;
 import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
-import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -31,41 +31,50 @@ public class SpaceStationController {
 
     @GetMapping({"/{baseId}"})
     public ResponseEntity<SpaceStationDTO> getBaseById(@PathVariable long baseId) {
-        return ResponseEntity.ok(stationService.getBaseById(baseId).get());
+        try {
+            return ResponseEntity.ok(stationService.getBaseById(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(getProblemDetail(e)).build();
+        }
     }
 
     @PostMapping("/{baseId}/add/resources")
-    public ResponseEntity<Boolean> addResource(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
-        for (ResourceType resource : resources.keySet()) {
-            try {
-                stationService.addResource(baseId, resource, resources.get(resource));
-            } catch (StorageException e) {
-                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
-            }
+    public ResponseEntity<Boolean> addResources(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
+        try {
+            return ResponseEntity.ok(stationService.addResources(baseId, resources));
+        } catch (Exception e) {
+            return ResponseEntity.of(getProblemDetail(e)).build();
         }
-        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/{baseId}/add/ship")
     public ResponseEntity<Boolean> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
         try {
             return ResponseEntity.ok(stationService.addShip(baseId,
-                            objectNode.get("name").asText(),
-                            Color.valueOf(objectNode.get("color").asText().toUpperCase()),
+                    objectNode.get("name").asText(),
+                    Color.valueOf(objectNode.get("color").asText().toUpperCase()),
                     ShipType.valueOf(objectNode.get("type").asText().toUpperCase())));
         } catch (Exception e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            return ResponseEntity.of(getProblemDetail(e)).build();
         }
     }
 
     @GetMapping("/{baseId}/storage")
     public ResponseEntity<SpaceStationStorageDTO> getStationStorage(@PathVariable long baseId) {
-        return ResponseEntity.ok(stationService.getStationStorage(baseId));
+        try {
+            return ResponseEntity.ok(stationService.getStationStorage(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(getProblemDetail(e)).build();
+        }
     }
 
     @GetMapping("/{baseId}/storage/resources")
     public ResponseEntity<Map<ResourceType, Integer>> getStoredResources(@PathVariable long baseId) {
-        return ResponseEntity.ok(stationService.getStoredResources(baseId));
+        try {
+            return ResponseEntity.ok(stationService.getStoredResources(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(getProblemDetail(e)).build();
+        }
     }
 
     @GetMapping("/{baseId}/storage/upgrade")
@@ -73,7 +82,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getStorageUpgradeCost(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            return ResponseEntity.of(getProblemDetail(e)).build();
         }
     }
 
@@ -82,13 +91,17 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.upgradeStorage(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            return ResponseEntity.of(getProblemDetail(e)).build();
         }
     }
 
     @GetMapping("/{baseId}/hangar")
     public ResponseEntity<HangarDTO> getStationHangar(@PathVariable long baseId) {
-        return ResponseEntity.ok(stationService.getStationHangar(baseId));
+        try {
+            return ResponseEntity.ok(stationService.getStationHangar(baseId));
+        } catch (Exception e) {
+            return ResponseEntity.of(getProblemDetail(e)).build();
+        }
     }
 
     @GetMapping("/{baseId}/hangar/upgrade")
@@ -96,7 +109,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getHangarUpgradeCost(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            return ResponseEntity.of(getProblemDetail(e)).build();
         }
     }
 
@@ -105,7 +118,17 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.upgradeHangar(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
+            return ResponseEntity.of(getProblemDetail(e)).build();
+        }
+    }
+
+    private ProblemDetail getProblemDetail(Exception e) {
+        if (e instanceof SecurityException) {
+            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), e.getMessage());
+        } else if (e instanceof ShipNotFoundException){
+            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage());
+        } else {
+            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage());
         }
     }
 

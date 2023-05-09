@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.station;
 
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.resource.StationResource;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import jakarta.persistence.*;
@@ -25,5 +26,8 @@ public class SpaceStation {
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="station_id")
     private Set<StationResource> resources;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
 }
