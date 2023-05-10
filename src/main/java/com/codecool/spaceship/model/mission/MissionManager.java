@@ -28,6 +28,7 @@ public class MissionManager {
         }
         LocalDateTime startTime = LocalDateTime.now();
         long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location);
+        long approxMissionDurationInSecs = travelDurationInSecs * 2 + activityDurationInSecs;
 
         Mission mission = Mission.builder()
                 .startTime(startTime)
@@ -35,6 +36,7 @@ public class MissionManager {
                 .travelDurationInSecs(travelDurationInSecs)
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(startTime.plusSeconds(travelDurationInSecs))
+                .approxEndTime(startTime.plusSeconds(approxMissionDurationInSecs))
                 .missionType(MissionType.MINING)
                 .ship(minerShip)
                 .location(location)
@@ -91,6 +93,7 @@ public class MissionManager {
             }
         }
         pushNewEvent(abortEvent);
+        mission.setApproxEndTime(now.plusSeconds(mission.getTravelDurationInSecs()));
         startReturnTravel();
     }
 
@@ -98,7 +101,7 @@ public class MissionManager {
         if (mission.getCurrentStatus() == MissionStatus.ARCHIVED) {
             throw new IllegalOperationException("Mission is already archived");
         } else  if (mission.getCurrentStatus() != MissionStatus.OVER) {
-            throw new IllegalOperationException("Mission can't be archived until its over'");
+            throw new IllegalOperationException("Mission can't be archived until its over");
         } else {
             mission.setCurrentStatus(MissionStatus.ARCHIVED);
             return true;
@@ -166,6 +169,7 @@ public class MissionManager {
             peekLastEvent().setEventMessage("<%tF %<tT> Mining complete. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
         } else {
             peekLastEvent().setEventMessage("<%tF %<tT> Storage is full. Mined %d %s(s). Returning to station.".formatted(lastEventTime, minedResources, resourceType));
+            mission.setApproxEndTime(LocalDateTime.now().plusSeconds(mission.getTravelDurationInSecs()));
         }
 
         startReturnTravel();

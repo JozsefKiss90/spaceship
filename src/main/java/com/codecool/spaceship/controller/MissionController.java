@@ -23,14 +23,14 @@ public class MissionController {
         this.missionService = missionService;
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<List<MissionDTO>> getAllActiveMissions() {
-        return ResponseEntity.ok(missionService.getAllActiveMissions());
+    @GetMapping("/all/{userId}/active")
+    public ResponseEntity<List<MissionDTO>> getAllActiveMissionsByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(missionService.getAllActiveMissionsByUserId(userId));
     }
 
-    @GetMapping("/archived")
-    public ResponseEntity<List<MissionDTO>> getAllArchivedMissions() {
-        return ResponseEntity.ok(missionService.getAllArchivedMissions());
+    @GetMapping("/all/{userId}/archived")
+    public ResponseEntity<List<MissionDTO>> getAllArchivedMissionsByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(missionService.getAllArchivedMissionsByUserId(userId));
     }
 
     @GetMapping("/{id}")

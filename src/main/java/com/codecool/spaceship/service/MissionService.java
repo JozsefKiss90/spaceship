@@ -31,13 +31,13 @@ public class MissionService {
         this.locationRepository = locationRepository;
     }
 
-    public List<MissionDTO> getAllActiveMissions() {
+    public List<MissionDTO> getAllActiveMissionsByUserId(Long userId) {
         return missionRepository.getMissionsByCurrentStatusNot(MissionStatus.ARCHIVED).stream()
                 .map(this::updateAndConvert)
                 .toList();
     }
 
-    public List<MissionDTO> getAllArchivedMissions() {
+    public List<MissionDTO> getAllArchivedMissionsByUserId(Long userId) {
         return missionRepository.getMissionsByCurrentStatus(MissionStatus.ARCHIVED).stream()
                 .map(MissionDTO::new)
                 .toList();

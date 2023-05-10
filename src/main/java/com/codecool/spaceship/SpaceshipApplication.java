@@ -46,7 +46,6 @@ public class SpaceshipApplication {
                 .build();
         locationRepository.save(morpheus);
 
-
     }
 
 

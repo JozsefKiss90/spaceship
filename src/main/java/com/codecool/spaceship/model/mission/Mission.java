@@ -25,6 +25,7 @@ public class Mission {
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime currentObjectiveTime;
+    private LocalDateTime approxEndTime;
     private MissionStatus currentStatus;
     private MissionType missionType;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,6 +55,10 @@ public class Mission {
                     && (ChronoUnit.SECONDS.between(currentObjectiveTime, mission.currentObjectiveTime) < 0.5
                         && ChronoUnit.SECONDS.between(currentObjectiveTime, mission.currentObjectiveTime) > -0.5))
                     || currentObjectiveTime == null && mission.currentObjectiveTime == null)
+                && ((approxEndTime != null && mission.approxEndTime != null
+                && (ChronoUnit.SECONDS.between(approxEndTime, mission.approxEndTime) < 0.5
+                && ChronoUnit.SECONDS.between(approxEndTime, mission.approxEndTime) > -0.5))
+                || approxEndTime == null && mission.approxEndTime == null)
                 && currentStatus == mission.currentStatus
                 && missionType == mission.missionType
                 && Objects.equals(location, mission.location)
@@ -63,6 +68,6 @@ public class Mission {
 
     @Override
     public int hashCode() {
-        return Objects.hash(startTime, currentObjectiveTime, currentStatus, missionType, location, ship, travelDurationInSecs, activityDurationInSecs, events);
+        return Objects.hash(startTime, currentObjectiveTime, approxEndTime, currentStatus, missionType, location, ship, travelDurationInSecs, activityDurationInSecs, events);
     }
 }
