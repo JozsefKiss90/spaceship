@@ -6,14 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Set;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
-public class UserEntity {
+@Table(name = "_user")
+public class UserEntity implements UserDetails {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
@@ -22,8 +24,34 @@ public class UserEntity {
    @Column(unique = true)
    private String email;
    private String password;
-   @ManyToMany
-   private Set<UserRole> roles;
    @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE)
    private SpaceStation spaceStation;
+
+   @Enumerated(EnumType.STRING)
+   private Role role;
+
+   @Override
+   public Collection<? extends GrantedAuthority> getAuthorities() {
+      return role.getAuthorities();
+   }
+
+   @Override
+   public boolean isAccountNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isAccountNonLocked() {
+      return true;
+   }
+
+   @Override
+   public boolean isCredentialsNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isEnabled() {
+      return true;
+   }
 }

@@ -2,6 +2,8 @@ package com.codecool.spaceship;
 
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.UserRole;
+import com.codecool.spaceship.model.Role;
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -10,11 +12,12 @@ import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.SpaceStationRepository;
 import com.codecool.spaceship.repository.UserRepository;
 import com.codecool.spaceship.repository.UserRoleRepository;
+import com.codecool.spaceship.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
@@ -23,13 +26,9 @@ public class SpaceshipApplication {
     public static void main(String[] args) {
 
         ApplicationContext applicationContext = SpringApplication.run(SpaceshipApplication.class, args);
-        UserRoleRepository userRoleRepository = applicationContext.getBean(UserRoleRepository.class);
-        UserRepository userRepository = applicationContext.getBean(UserRepository.class);
         SpaceStationRepository spaceStationRepository = applicationContext.getBean(SpaceStationRepository.class);
-
-        UserRole roleAdmin = UserRole.builder().role("ROLE_ADMIN").build();
-        UserRole roleUser = UserRole.builder().role("ROLE_USER").build();
-        userRoleRepository.saveAll(List.of(roleAdmin, roleUser));
+        UserRepository userRepository = applicationContext.getBean(UserRepository.class);
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         UserEntity user = UserEntity.builder()
                 .email("test@testmail.tst")
@@ -51,6 +50,13 @@ public class SpaceshipApplication {
         spaceStation.setHangar(Set.of(minerShip));
         spaceStationRepository.save(spaceStation);
 
+        UserEntity admin = UserEntity.builder()
+                .username("Mr. Admin")
+                .email("admin@admail.min")
+                .password(passwordEncoder.encode("password"))
+                .role(Role.ADMIN)
+                .build();
+        userRepository.save(admin);
     }
 
 
