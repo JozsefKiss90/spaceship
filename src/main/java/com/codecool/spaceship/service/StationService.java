@@ -1,5 +1,6 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
@@ -17,10 +18,10 @@ import com.codecool.spaceship.repository.SpaceStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class StationService {
@@ -128,10 +129,10 @@ public class StationService {
 
     private SpaceStation getStationByIdAndCheckAccess(long stationId) throws ShipNotFoundException {
         SpaceStation station = spaceStationRepository.findById(stationId).orElseThrow(() -> new ShipNotFoundException("No station found with id %d".formatted(stationId)));
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                || user.getUsername().equals(station.getUser().getUsername())) {
+                || Objects.equals(user.getId(), station.getUser().getId())) {
             return station;
         } else {
             throw new SecurityException("You don't have authority to access this station");

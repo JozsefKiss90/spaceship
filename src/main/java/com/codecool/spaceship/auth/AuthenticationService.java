@@ -27,6 +27,7 @@ public class AuthenticationService {
                 .build();
         user = userRepository.save(user);
         user.setSpaceStation(SpaceStationManager.createNewSpaceStation("%s's Space Station".formatted(request.getUsername())));
+        user.getSpaceStation().setUser(user);
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
