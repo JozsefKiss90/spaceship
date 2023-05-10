@@ -3,7 +3,7 @@ package com.codecool.spaceship.auth;
 import com.codecool.spaceship.config.JwtService;
 import com.codecool.spaceship.model.Role;
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.repository.SpaceStationRepository;
+import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SpaceStationRepository spaceStationRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest request){
@@ -24,9 +23,10 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .spaceStation(spaceStationRepository.getSpaceStationById(request.getSpace_station_id()))
                 .role(Role.USER)
                 .build();
+        user = userRepository.save(user);
+        user.setSpaceStation(SpaceStationManager.createNewSpaceStation("%s's Space Station".formatted(request.getUsername())));
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

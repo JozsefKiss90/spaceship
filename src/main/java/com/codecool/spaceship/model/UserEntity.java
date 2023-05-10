@@ -22,28 +22,15 @@ public class UserEntity implements UserDetails {
    private String username;
    private String email;
    private String password;
-   @OneToOne
+   @OneToOne(cascade = CascadeType.MERGE)
    private SpaceStation spaceStation;
 
    @Enumerated(EnumType.STRING)
    private Role role;
 
-   /*@OneToMany(mappedBy = "user")
-   private List<Token> tokens;*/
-
    @Override
    public Collection<? extends GrantedAuthority> getAuthorities() {
       return role.getAuthorities();
-   }
-
-   @Override
-   public String getPassword() {
-      return password;
-   }
-
-   @Override
-   public String getUsername() {
-      return email;
    }
 
    @Override
