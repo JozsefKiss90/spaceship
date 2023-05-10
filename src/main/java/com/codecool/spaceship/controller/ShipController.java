@@ -5,6 +5,7 @@ import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
+import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/ship")
@@ -72,6 +74,11 @@ public class ShipController {
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
         }
+    }
+
+    @GetMapping("/color")
+    public ResponseEntity<Color[]> getAvailableColors() {
+        return ResponseEntity.ok(shipService.getColors());
     }
 
     @PatchMapping("/{id}")

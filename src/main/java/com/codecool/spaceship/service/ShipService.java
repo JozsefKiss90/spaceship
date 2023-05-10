@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,6 +93,10 @@ public class ShipService {
         } else {
             return null;
         }
+    }
+
+    public Color[] getColors() {
+        return Color.values();
     }
 
     public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
