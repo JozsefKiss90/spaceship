@@ -3,15 +3,12 @@ package com.codecool.spaceship.controller;
 import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.StationService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +31,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getBaseById(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -43,7 +40,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.addResources(baseId, resources));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -55,7 +52,7 @@ public class SpaceStationController {
                     Color.valueOf(objectNode.get("color").asText().toUpperCase()),
                     ShipType.valueOf(objectNode.get("type").asText().toUpperCase())));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -64,7 +61,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getStationStorage(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -73,7 +70,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getStoredResources(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -82,7 +79,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getStorageUpgradeCost(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -91,7 +88,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.upgradeStorage(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -100,7 +97,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getStationHangar(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -109,7 +106,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.getHangarUpgradeCost(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
@@ -118,17 +115,7 @@ public class SpaceStationController {
         try {
             return ResponseEntity.ok(stationService.upgradeHangar(baseId));
         } catch (Exception e) {
-            return ResponseEntity.of(getProblemDetail(e)).build();
-        }
-    }
-
-    private ProblemDetail getProblemDetail(Exception e) {
-        if (e instanceof SecurityException) {
-            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), e.getMessage());
-        } else if (e instanceof ShipNotFoundException){
-            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage());
-        } else {
-            return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage());
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
     }
 
