@@ -2,7 +2,7 @@ package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
@@ -37,7 +37,7 @@ public class ShipController {
     public ResponseEntity<ShipDTO> getShipById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(shipService.getShipByID(id));
-        } catch (ShipNotFoundException e){
+        } catch (DataNotFoundException e){
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         }
     }
@@ -46,7 +46,7 @@ public class ShipController {
     public ResponseEntity<MinerShipDTO> getMinerShipById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(shipService.getMinerShipById(id));
-        } catch (ShipNotFoundException e){
+        } catch (DataNotFoundException e){
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
@@ -57,7 +57,7 @@ public class ShipController {
     public ResponseEntity<MinerShipDTO> upgradeMinerShipShipPart(@PathVariable Long id, @RequestParam ShipPart part) {
         try {
             return ResponseEntity.ok(shipService.upgradeMinerShip(id, part));
-        } catch (ShipNotFoundException e){
+        } catch (DataNotFoundException e){
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
@@ -68,7 +68,7 @@ public class ShipController {
     public ResponseEntity<ShipDTO> updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
         try {
             return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
-        } catch (ShipNotFoundException e) {
+        } catch (DataNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         }
     }
@@ -77,7 +77,7 @@ public class ShipController {
     public ResponseEntity<Boolean> deleteShipById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(shipService.deleteShipById(id));
-        } catch (ShipNotFoundException e){
+        } catch (DataNotFoundException e){
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), e.getMessage())).build();
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage())).build();
