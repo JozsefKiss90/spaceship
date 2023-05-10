@@ -24,7 +24,7 @@ public class UserEntity implements UserDetails {
    @Column(unique = true)
    private String email;
    private String password;
-   @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE)
+   @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    private SpaceStation spaceStation;
 
    @Enumerated(EnumType.STRING)

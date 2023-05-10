@@ -7,7 +7,6 @@ import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
-import com.codecool.spaceship.repository.SpaceStationRepository;
 import com.codecool.spaceship.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,7 +21,6 @@ public class SpaceshipApplication {
     public static void main(String[] args) {
 
         ApplicationContext applicationContext = SpringApplication.run(SpaceshipApplication.class, args);
-        SpaceStationRepository spaceStationRepository = applicationContext.getBean(SpaceStationRepository.class);
         UserRepository userRepository = applicationContext.getBean(UserRepository.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
@@ -40,7 +38,6 @@ public class SpaceshipApplication {
                 .password(passwordEncoder.encode("password"))
                 .role(Role.USER)
                 .build();
-        user = userRepository.save(user);
 
         MinerShip minerShip = MinerShipManager.createNewMinerShip("Built2Mine", Color.DIAMOND);
         minerShip.setShieldLevel(3);
@@ -48,11 +45,16 @@ public class SpaceshipApplication {
         minerShip.setDrillLevel(2);
 
         SpaceStation spaceStation = SpaceStationManager.createNewSpaceStation("Station ONE");
-        spaceStation.setUser(user);
-        spaceStationRepository.save(spaceStation);
-        spaceStation.setHangar(Set.of(minerShip));
-        spaceStationRepository.save(spaceStation);
 
+        minerShip.setUser(user);
+        minerShip.setStation(spaceStation);
+
+        spaceStation.setHangar(Set.of(minerShip));
+        spaceStation.setUser(user);
+
+        user.setSpaceStation(spaceStation);
+
+        userRepository.save(user);
     }
 
 

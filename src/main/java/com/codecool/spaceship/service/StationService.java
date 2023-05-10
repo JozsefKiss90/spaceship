@@ -57,6 +57,7 @@ public class StationService {
         SpaceShip ship;
         if (shipType == ShipType.MINER) {
             ship = MinerShipManager.createNewMinerShip(name, color);
+            ship.setUser(station.getUser());
         } else {
             return false;
         }

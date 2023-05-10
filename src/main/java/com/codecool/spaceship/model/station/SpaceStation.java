@@ -20,13 +20,13 @@ public class SpaceStation {
     private String name;
     private int storageLevel;
     private int hangarLevel;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name ="station_id")
     private Set<SpaceShip> hangar;
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name ="station_id")
     private Set<StationResource> resources;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
