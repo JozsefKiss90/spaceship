@@ -1,5 +1,6 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
@@ -16,10 +17,13 @@ import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.SpaceShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,20 +36,23 @@ public class ShipService {
     }
 
     public List<ShipDTO> getShipsByStation(long stationId) {
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && user.getSpaceStation().getId() != stationId) {
+            throw new SecurityException("You don't have authority to access these ships");
+        }
         return spaceShipRepository.getSpaceShipsByStationId(stationId).stream()
                 .map(ShipDTO::new)
                 .collect(Collectors.toList());
     }
 
     public ShipDTO getShipByID(long id) throws ShipNotFoundException {
-        return spaceShipRepository.findById(id)
-                .map(ShipDTO::new)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        return new ShipDTO(getShipByIdAndCheckAccess(id));
     }
 
     public MinerShipDTO getMinerShipById(long id) throws ShipNotFoundException, IllegalArgumentException {
-        SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        SpaceShip ship = getShipByIdAndCheckAccess(id);
+
         if (ship instanceof MinerShip) {
             return new MinerShipDTO((MinerShip) ship);
         } else {
@@ -54,8 +61,7 @@ public class ShipService {
     }
 
     public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
-        SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        SpaceShip ship = getShipByIdAndCheckAccess(id);
 
         if (ship instanceof MinerShip) {
             MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
@@ -73,8 +79,8 @@ public class ShipService {
     }
 
     public ShipDTO updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
-        SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        SpaceShip ship = getShipByIdAndCheckAccess(id);
+
         if (name != null && !name.equals("")) {
             ship.setName(name);
         }
@@ -94,13 +100,26 @@ public class ShipService {
     }
 
     public boolean deleteShipById(Long id) throws ShipNotFoundException, StorageException {
-        SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        SpaceShip ship = getShipByIdAndCheckAccess(id);
+
         if (ship.isOnMission()) {
             throw new StorageException("Ship can't be deleted while on mission");
         }
         spaceShipRepository.delete(ship);
         return true;
+    }
+
+    private SpaceShip getShipByIdAndCheckAccess(Long id) throws ShipNotFoundException {
+        SpaceShip ship = spaceShipRepository.findById(id)
+                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                || Objects.equals(user.getId(), ship.getUser().getId())) {
+            return ship;
+        } else {
+            throw new SecurityException("You don't have authority to access this ship");
+        }
     }
 
 }
