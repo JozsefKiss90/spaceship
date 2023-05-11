@@ -4,6 +4,7 @@ import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.Role;
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.resource.ResourceType;
+import com.codecool.spaceship.model.resource.StationResource;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -44,21 +45,47 @@ public class SpaceshipApplication {
                 .build();
 
         MinerShip minerShip = MinerShipManager.createNewMinerShip("Built2Mine", Color.DIAMOND);
-        minerShip.setShieldLevel(3);
-        minerShip.setShieldEnergy(100);
+        minerShip.setEngineLevel(2);
+        minerShip.setShieldEnergy(20);
         minerShip.setDrillLevel(2);
 
         SpaceStation spaceStation = SpaceStationManager.createNewSpaceStation("Station ONE");
+        spaceStation.setStorageLevel(5);
+
+        StationResource metal = StationResource.builder()
+                .resourceType(ResourceType.METAL)
+                .quantity(10000)
+                .build();
+
+        StationResource crystal = StationResource.builder()
+                .resourceType(ResourceType.CRYSTAL)
+                .quantity(10000)
+                .build();
+
+        StationResource plutonium = StationResource.builder()
+                .resourceType(ResourceType.PLUTONIUM)
+                .quantity(10000)
+                .build();
+
+        StationResource silicone = StationResource.builder()
+                .resourceType(ResourceType.SILICONE)
+                .quantity(10000)
+                .build();
 
         minerShip.setUser(user);
         minerShip.setStation(spaceStation);
 
         spaceStation.setHangar(Set.of(minerShip));
+        spaceStation.setResources(Set.of(metal, crystal, silicone, plutonium));
         spaceStation.setUser(user);
 
         user.setSpaceStation(spaceStation);
 
+
+
         userRepository.save(user);
+
+
 
         Location morpheus = Location.builder()
                 .name("Morpheus")

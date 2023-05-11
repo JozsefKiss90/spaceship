@@ -1,6 +1,7 @@
 package com.codecool.spaceship.model.station;
 
-import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.Upgradeable;
 import com.codecool.spaceship.model.exception.InvalidLevelException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
@@ -23,7 +24,7 @@ public class StationStorageManager implements Upgradeable {
             put(ResourceType.METAL, 50);
             put(ResourceType.SILICONE, 20);
         }}));
-        add(new Level<>(5, 1000, new HashMap<>() {{
+        add(new Level<>(5, 50000, new HashMap<>() {{
             put(ResourceType.METAL, 300);
             put(ResourceType.SILICONE, 150);
             put(ResourceType.PLUTONIUM, 20);
@@ -47,6 +48,9 @@ public class StationStorageManager implements Upgradeable {
             throw new InvalidLevelException("Level index can't be higher than %d".formatted(MAX_LEVEL_INDEX));
         }
         this.currentLevelIndex = currentLevelIndex;
+        if (storedItems.stream().mapToInt(StationResource::getQuantity).sum() > UPGRADE_LEVELS.get(currentLevelIndex).effect()) {
+            throw new IllegalArgumentException("Stored resources can't exceed %d at this level".formatted(UPGRADE_LEVELS.get(currentLevelIndex).effect()));
+        }
         this.storedItems = storedItems;
     }
 

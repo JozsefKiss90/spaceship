@@ -23,7 +23,7 @@ public class SpaceStation {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name ="station_id")
     private Set<SpaceShip> hangar;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name ="station_id")
     private Set<StationResource> resources;
     @OneToOne(cascade = CascadeType.MERGE)
