@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
@@ -24,8 +25,10 @@ public abstract class SpaceShip {
     private int engineLevel;
     private int shieldLevel;
     private int shieldEnergy;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private SpaceStation station;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private UserEntity user;
     @OneToOne
     @JoinColumn(name = "current_mission_id")
     private Mission currentMission;
