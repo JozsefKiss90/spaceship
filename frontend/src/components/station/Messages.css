@@ -17,9 +17,12 @@
     border-radius: 5px;
     color: white;
     font-family: Garamond, serif;
-    font-size: 15px;
+    font-size: 18px;
     border: #000000 solid 4px;
     box-shadow: 0 0 5px 5px rgba(0, 23, 0, 0.85);
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
 }
 
 .message-row {
@@ -28,5 +31,14 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.container>div {
+    height: 45px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    justify-items: center;
+}
+
 
 

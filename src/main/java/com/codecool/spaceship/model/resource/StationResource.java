@@ -13,6 +13,7 @@ public class StationResource {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
+    @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
     private int quantity;
 }

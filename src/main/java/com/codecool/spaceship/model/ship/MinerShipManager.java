@@ -1,15 +1,14 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
+import com.codecool.spaceship.model.resource.ShipResource;
 import com.codecool.spaceship.model.ship.shipparts.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MinerShipManager extends SpaceShipManager {
 
@@ -20,8 +19,11 @@ public class MinerShipManager extends SpaceShipManager {
         put(ResourceType.SILICONE, 20);
     }};
 
+    public MinerShip minership;
+
     public MinerShipManager(MinerShip minerShip) {
         super(minerShip);
+        this.minership = minerShip;
     }
 
     public static MinerShip createNewMinerShip(String name, Color color) {
@@ -37,6 +39,26 @@ public class MinerShipManager extends SpaceShipManager {
         return ship;
     }
 
+    public MinerShipDTO getMinerShipDTO() {
+        return new MinerShipDTO(
+                minership.getId(),
+                minership.getName(),
+                minership.getColor(),
+                isAvailable() ? "In dock" : "On mission",
+                minership.getEngineLevel(),
+                getSpeed(),
+                minership.getShieldLevel(),
+                getShieldEnergy(),
+                getShieldMaxEnergy(),
+                minership.getDrillLevel(),
+                getDrillEfficiency(),
+                minership.getStorageLevel(),
+                getMaxStorageCapacity(),
+                getStorageContents()
+
+        );
+    }
+
     public int getDrillEfficiency() {
         DrillManager drill = new DrillManager(((MinerShip) spaceShip).getDrillLevel());
         return drill.getEfficiency();
@@ -47,12 +69,17 @@ public class MinerShipManager extends SpaceShipManager {
         return storage.getMaxCapacity();
     }
 
+    public double getSpeed() {
+        EngineManager engine = new EngineManager(((MinerShip) spaceShip).getEngineLevel());
+        return engine.getSpeed();
+    }
+
     public int getEmptyStorageSpace() {
         ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.getEmptySpace();
     }
 
-    public Map<ResourceType, Integer> getStorageContents() {
+    public Set<ShipResource> getStorageContents() {
         ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
         return storage.getStoredResources();
     }

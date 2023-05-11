@@ -44,7 +44,7 @@ public class ShipService {
         SpaceShip ship = spaceShipRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         if (ship instanceof MinerShip) {
-            return new MinerShipDTO((MinerShip) ship);
+            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
         } else {
             throw new IllegalArgumentException("Ship is not a miner ship.");
         }
@@ -63,7 +63,7 @@ public class ShipService {
                 minerShipManager.upgradePart(part);
                 ship = spaceShipRepository.save(ship);
             }
-            return new MinerShipDTO((MinerShip) ship);
+            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
         } else {
             throw new IllegalArgumentException("Ship is not a miner ship");
         }
@@ -88,6 +88,17 @@ public class ShipService {
         } else {
             return null;
         }
+    }
+
+    public Color[] getColors() {
+        return Color.values();
+    }
+
+    public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
+        SpaceShip ship = spaceShipRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
+        MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
+        return minerShipManager.getUpgradeCost(shipPart);
     }
 
     public boolean deleteShipById(Long id) throws DataNotFoundException, IllegalOperationException {
