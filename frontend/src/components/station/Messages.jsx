@@ -3,6 +3,7 @@ import {useMessageContext} from "../MessageContext";
 
 import {ResourceNeeded} from "./ResourceNeeded";
 import {DisplayMinerShip} from "./DisplayMinerShip";
+import Mission from "./Mission";
 
 const Messages = () => {
     const message = useMessageContext();
@@ -27,6 +28,8 @@ const Messages = () => {
                     return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
                 case "display ship":
                     return (<DisplayMinerShip message={message} checkStorage={checkStorage}/>);
+                case 'mission':
+                    return (<Mission message={message}/>);
                 default:
                     return "Howdy, Commander! Command something...";
             }

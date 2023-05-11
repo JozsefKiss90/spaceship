@@ -2,6 +2,7 @@ import "./StationBar.css";
 import Storage from "./Storage";
 import Hangar from "./Hangar";
 import {useEffect, useState} from "react";
+import Mission from "./Mission";
 
 const StationBar = () => {
 
@@ -9,8 +10,8 @@ const StationBar = () => {
 
     return (
         <div className="station-bar">
-            <Storage></Storage>
-            <Hangar></Hangar>
+            <Storage/>
+            <Hangar/>
         </div>
     );
 }

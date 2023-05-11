@@ -24,6 +24,7 @@ public record MinerShipDTO(
         int drillEfficiency,
         int storageLevel,
         int maxStorageCapacity,
+        int amounntOfCurrentlyStoredItems,
         Set<ShipResource> resources) {
 
 }
