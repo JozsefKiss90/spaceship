@@ -94,9 +94,9 @@ public class ShipService {
         return Color.values();
     }
 
-    public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
+    public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
         return minerShipManager.getUpgradeCost(shipPart);
     }
