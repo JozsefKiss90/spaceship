@@ -12,7 +12,7 @@ import java.util.Map;
 public class DrillManager implements Upgradeable {
 
     private static final List<Level<Integer>> LEVELS = List.of(
-            new Level<>(1, 5, Map.of()),
+            new Level<>(1, 1200, Map.of()),
             new Level<>(2, 10,
                     Map.of(
                             ResourceType.METAL, 20,
