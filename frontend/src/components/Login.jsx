@@ -1,49 +1,51 @@
-import React, {useState} from 'react';
-import jwt from 'jwt-decode';
-import {useOutletContext} from "react-router-dom";
+// import jwt_decode from 'jwt-decode';
+// import Cookies from 'js-cookie';
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const Login = () => {
-    const outletContext = useOutletContext();
-    const [, setUser] = outletContext || [];
+    const navigate = useNavigate();
+    const [, setJwt] = useOutletContext();
 
-    /*const handleLogin = (username, password) => {
-        fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({username, password}),
-        })
-            .then(res => {
-                const authorizationHeader = res.headers.get('Authorization');
-                const token = authorizationHeader ? authorizationHeader.split(' ')[1] : null;
+    const onSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const entries = [...formData.entries()];
 
-                if (token) {
-                    try {
-                        const decodedToken = jwt.decode(token);
-                        setUser(decodedToken);
-                        console.log('Decoded Token:', decodedToken);
-                    } catch (error) {
-                        console.error('Failed to decode the token', error);
-                    }
-                } else {
-                    console.error('No token found in the response header');
-                }
-            })
-            .catch(error => {
-                console.error('Login failed', error);
+        const credentials = entries.reduce((acc, entry) => {
+            const [k, v] = entry;
+            acc[k] = v;
+            return acc;
+        }, {});
+        console.log(credentials);
+        handleLogin(credentials);
+    };
+
+    async function handleLogin(formData) {
+        try {
+            await fetch('/api/v1/auth/authenticate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            }).then(response => {
+                return response.json()
+            }).then(data => {
+                setJwt(data.token);
+                // Cookies.set('user', JSON.stringify(data));
+                navigate('/station');
             });
-    };*/
+        } catch (err) {
+            // setMessage('Incorrect email or password.');
+        }
+    }
+
+
 
     return (
         <div>
-            <form action="api/v1/auth/authenticate" method="POST">
-                <input type="text" required placeholder="username">
-
-                </input>
-                <input type="password" required placeholder="password">
-
-                </input>
+            <form onSubmit={onSubmit}>
+                <input name='username' type="text" required placeholder="username"></input>
+                <input name='password' type="password" required placeholder="password"></input>
+                <button type='Submit'>Login</button>
             </form>
         </div>
     );

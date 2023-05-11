@@ -1,10 +1,12 @@
 import './Header.css';
 
-const Header = () => {
+const Header = ({ user }) => {
+
     return (
         <>
             <div className="header">
-               <p>MINUEND SPACESHIP GAME</p>
+                <p>MINUEND SPACESHIP GAME</p>
+                {user !== null && <p>{user.sub}</p>}
             </div>
         </>
     );
