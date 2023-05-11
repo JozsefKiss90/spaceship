@@ -6,19 +6,19 @@ export default function TermsAndConditions() {
       <div className="home-message">
         <h2>Terms & Conditions</h2>
         <div className="code">
-          <span>{"if (condition) {"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>{"} else if (condition) {"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>{"} else {"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>&emsp;{"term;"}</span>
-          <span>{"}"}</span>
+          <div>{"if (condition) {"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>{"} else if (condition) {"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>{"} else {"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>&emsp;&emsp;{"term;"}</div>
+          <div>{"}"}</div>
         </div>
       </div>
     </div>
