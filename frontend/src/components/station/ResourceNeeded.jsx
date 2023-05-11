@@ -2,8 +2,11 @@ import {useMessageDispatchContext} from "../MessageContext";
 import {useStorageDispatchContext} from "../StorageContext";
 import {useHangarDispatchContext} from "../HangarContext";
 import {useState} from "react";
+import {useOutletContext} from "react-router-dom";
 
 export function ResourceNeeded({message, checkStorage}) {
+    const [jwt, , user, , stationId] = useOutletContext();
+
     const messageSetter = useMessageDispatchContext();
     const storageSetter = useStorageDispatchContext();
     const hangarSetter = useHangarDispatchContext();
@@ -19,9 +22,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const addShip = async (name) => {
-        await fetch("http://localhost:8080/base/1/add/ship", {
+        await fetch(`/base/${stationId}/add/ship`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
             }, body: JSON.stringify({name: name, color: "EMERALD", type: "miner"})
         });
         setDisplayInput(false);
@@ -31,9 +35,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradeStorage = async () => {
-        await fetch("http://localhost:8080/base/1/storage/upgrade", {
+        await fetch(`/base/${stationId}/storage/upgrade`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
             }, body: JSON.stringify({})
         });
         messageSetter({type: null});
@@ -41,9 +46,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradeHangar = async () => {
-        await fetch("http://localhost:8080/base/1/hangar/upgrade", {
+        await fetch(`/base/${stationId}/hangar/upgrade`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
             }, body: JSON.stringify({})
         });
         messageSetter({type: null});
@@ -52,9 +58,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradePart = async (id, part) => {
-        await fetch(`http://localhost:8080/ship/miner/${id}/upgrade?part=${part}`, {
+        await fetch(`/ship/miner/${id}/upgrade?part=${part}`, {
             method: "PATCH", headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
             }, body: JSON.stringify({})
         });
         storageSetter({type: "update"});

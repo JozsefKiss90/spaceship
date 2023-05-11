@@ -2,8 +2,11 @@ import "./DisplayMinerShip.css";
 import {ResourceNeeded} from "./ResourceNeeded";
 import {useEffect, useState} from "react";
 import {useHangarDispatchContext} from "../HangarContext";
+import {useOutletContext} from "react-router-dom";
+import station from "../Station";
 
 export function DisplayMinerShip({message, checkStorage}) {
+    const [jwt, , user, , stationId] = useOutletContext();
     const ship = message.data;
     const [resource, setResource] = useState(null);
     const [storage, setStorage] = useState(null);
@@ -23,14 +26,24 @@ export function DisplayMinerShip({message, checkStorage}) {
 
 
     async function getShipPartUpgradeCost(part) {
-        await fetch(`http://localhost:8080/ship/miner/${ship.id}/upgrade?part=${part}`)
+        await fetch(`/ship/miner/${ship.id}/upgrade?part=${part}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }
+        })
             .then(res => res.json())
             .then(data => setResource(data))
             .catch(err => console.error(err));
     }
 
     function getStorage() {
-        fetch("http://localhost:8080/base/1/storage/resources")
+        fetch(`/base/${stationId}/storage/resources`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }
+        })
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.error(err));
@@ -62,16 +75,22 @@ export function DisplayMinerShip({message, checkStorage}) {
     }
 
     async function getShipColors() {
-        await fetch(`http://localhost:8080/ship/color`)
+        await fetch(`/ship/color`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }
+        })
             .then(res => res.json())
             .then(data => setShipColors(data))
             .catch(err => console.error(err))
     }
 
     async function renameShip(name) {
-        await fetch(`http://localhost:8080/ship/${ship.id}`, {
+        await fetch(`/ship/${ship.id}`, {
             method: "PATCH", headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
             }, body: JSON.stringify({
                 name: name
             })
@@ -110,9 +129,10 @@ export function DisplayMinerShip({message, checkStorage}) {
 
     useEffect(()=>{
         if (color != ship.color && triggerColorChange) {
-            fetch(`http://localhost:8080/ship/${ship.id}`, {
+            fetch(`/ship/${ship.id}`, {
                 method: "PATCH", headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${jwt}`
                 }, body: JSON.stringify({
                     color: color.toUpperCase()
                 })

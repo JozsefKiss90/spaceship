@@ -5,7 +5,7 @@ import { useHangarContext } from "../HangarContext";
 import { useOutletContext } from "react-router-dom";
 
 function Hangar() {
-    const [jwt, , , , stationId] = useOutletContext();
+    const [jwt, , user, , stationId] = useOutletContext();
     const [minerCost, setMinerCost] = useState(null);
     const [upgradeCost, setUpgradeCost] = useState(null);
     const [storage, setStorage] = useState(null);
@@ -15,7 +15,7 @@ function Hangar() {
 
 
     useEffect(() => {
-        fetch(`http://localhost:8080/base/${stationId}/hangar`, {
+        fetch(`/base/${stationId}/hangar`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${jwt}`
@@ -30,8 +30,8 @@ function Hangar() {
 
 
     function getShipCost() {
-        fetch("http://localhost:8080/ship/cost/miner", {
-            "headers": {
+        fetch("/ship/cost/miner", {
+            headers: {
                 "Authorization": `Bearer ${jwt}`
             }
         })
@@ -43,7 +43,10 @@ function Hangar() {
     }
 
     function getHangarUpgradeCost() {
-        fetch("http://localhost:8080/base/1/hangar/upgrade")
+        fetch(`/base/${stationId}/hangar/upgrade`, {
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }})
             .then(res => res.json())
             .then(data => {
                 setUpgradeCost(data);
@@ -52,7 +55,10 @@ function Hangar() {
     }
 
     function getShip(id) {
-        fetch(`http://localhost:8080/ship/miner/${id}`)
+        fetch(`/ship/miner/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }})
             .then(res => res.json())
             .then(data => {
                 dispatch({
@@ -66,7 +72,10 @@ function Hangar() {
 
     function getStorage() {
 
-        fetch("http://localhost:8080/base/1/storage/resources")
+        fetch(`/base/${stationId}/storage/resources`, {
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }})
             .then(res => res.json())
             .then(data => {
                 setStorage(data);
