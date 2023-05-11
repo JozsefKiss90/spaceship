@@ -1,17 +1,16 @@
 package com.codecool.spaceship;
 
+import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.Role;
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
-import com.codecool.spaceship.repository.UserRepository;
 import com.codecool.spaceship.repository.LocationRepository;
-import com.codecool.spaceship.repository.SpaceStationRepository;
+import com.codecool.spaceship.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;

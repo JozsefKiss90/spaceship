@@ -43,11 +43,11 @@ public class ShipService {
                 .collect(Collectors.toList());
     }
 
-    public ShipDTO getShipByID(long id) throws ShipNotFoundException {
+    public ShipDTO getShipByID(long id) throws DataNotFoundException {
         return new ShipDTO(getShipByIdAndCheckAccess(id));
     }
 
-    public MinerShipDTO getMinerShipById(long id) throws ShipNotFoundException, IllegalArgumentException {
+    public MinerShipDTO getMinerShipById(long id) throws DataNotFoundException, IllegalArgumentException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
 
         if (ship instanceof MinerShip) {
@@ -57,7 +57,7 @@ public class ShipService {
         }
     }
 
-    public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws ShipNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
+    public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
 
         if (ship instanceof MinerShip) {
@@ -75,7 +75,7 @@ public class ShipService {
         }
     }
 
-    public ShipDTO updateShipAttributes(Long id, String name, Color color) throws ShipNotFoundException {
+    public ShipDTO updateShipAttributes(Long id, String name, Color color) throws DataNotFoundException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
 
         if (name != null && !name.equals("")) {
@@ -96,19 +96,19 @@ public class ShipService {
         }
     }
 
-    public boolean deleteShipById(Long id) throws ShipNotFoundException, StorageException {
+    public boolean deleteShipById(Long id) throws StorageException, DataNotFoundException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
 
-        if (ship.isOnMission()) {
+        if (ship.getCurrentMission() != null) {
             throw new StorageException("Ship can't be deleted while on mission");
         }
         spaceShipRepository.delete(ship);
         return true;
     }
 
-    private SpaceShip getShipByIdAndCheckAccess(Long id) throws ShipNotFoundException {
+    private SpaceShip getShipByIdAndCheckAccess(Long id) throws DataNotFoundException {
         SpaceShip ship = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ShipNotFoundException("No ship found with id %d".formatted(id)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(id)));
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))

@@ -4,7 +4,7 @@ import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
-import com.codecool.spaceship.model.exception.ShipNotFoundException;
+import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
@@ -33,14 +33,14 @@ public class StationService {
         this.spaceStationRepository = spaceStationRepository;
     }
 
-    public SpaceStationDTO getBaseById(long stationId) throws ShipNotFoundException {
+    public SpaceStationDTO getBaseById(long stationId) throws DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getStationDTO();
     }
 
-    public boolean addResources(long stationId, Map<ResourceType, Integer> resources) throws StorageException, ShipNotFoundException {
+    public boolean addResources(long stationId, Map<ResourceType, Integer> resources) throws StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
@@ -51,7 +51,7 @@ public class StationService {
         return true;
     }
 
-    public boolean addShip(long stationId, String name, Color color, ShipType shipType) throws StorageException, ShipNotFoundException {
+    public boolean addShip(long stationId, String name, Color color, ShipType shipType) throws StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceShip ship;
@@ -69,35 +69,35 @@ public class StationService {
         return true;
     }
 
-    public SpaceStationStorageDTO getStationStorage(long stationId) throws ShipNotFoundException {
+    public SpaceStationStorageDTO getStationStorage(long stationId) throws DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getStorageDTO();
     }
 
-    public HangarDTO getStationHangar(long stationId) throws ShipNotFoundException {
+    public HangarDTO getStationHangar(long stationId) throws DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getHangarDTO();
     }
 
-    public Map<ResourceType, Integer> getStoredResources(long stationId) throws ShipNotFoundException {
+    public Map<ResourceType, Integer> getStoredResources(long stationId) throws DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getStoredResources();
     }
 
-    public Map<ResourceType, Integer> getStorageUpgradeCost(long stationId) throws UpgradeNotAvailableException, ShipNotFoundException {
+    public Map<ResourceType, Integer> getStorageUpgradeCost(long stationId) throws UpgradeNotAvailableException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getStorageUpgradeCost();
     }
 
-    public boolean upgradeStorage(long stationId) throws UpgradeNotAvailableException, StorageException, ShipNotFoundException {
+    public boolean upgradeStorage(long stationId) throws UpgradeNotAvailableException, StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
@@ -109,14 +109,14 @@ public class StationService {
         }
     }
 
-    public Map<ResourceType, Integer> getHangarUpgradeCost(long stationId) throws UpgradeNotAvailableException, ShipNotFoundException {
+    public Map<ResourceType, Integer> getHangarUpgradeCost(long stationId) throws UpgradeNotAvailableException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         return stationManager.getHangarUpgradeCost();
     }
 
-    public boolean upgradeHangar(long stationId) throws UpgradeNotAvailableException, StorageException, ShipNotFoundException {
+    public boolean upgradeHangar(long stationId) throws UpgradeNotAvailableException, StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
@@ -128,8 +128,9 @@ public class StationService {
         }
     }
 
-    private SpaceStation getStationByIdAndCheckAccess(long stationId) throws ShipNotFoundException {
-        SpaceStation station = spaceStationRepository.findById(stationId).orElseThrow(() -> new ShipNotFoundException("No station found with id %d".formatted(stationId)));
+    private SpaceStation getStationByIdAndCheckAccess(long stationId) throws DataNotFoundException {
+        SpaceStation station = spaceStationRepository.findById(stationId)
+                .orElseThrow(() -> new DataNotFoundException("No station found with id %d".formatted(stationId)));
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
