@@ -16,7 +16,6 @@ const Login = () => {
             acc[k] = v;
             return acc;
         }, {});
-        console.log(credentials);
         handleLogin(credentials);
     };
 

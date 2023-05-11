@@ -1,5 +1,6 @@
 package com.codecool.spaceship.config;
 
+import com.codecool.spaceship.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,13 +26,14 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    public String generateToken( UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
-    public String generateToken(Map<String,Object> extractClaims,
+    public String generateToken(Map<String,Object> extraClaims,
     UserDetails userDetails){
+        extraClaims.putIfAbsent("userId", ((UserEntity) userDetails).getId());
         return Jwts.builder()
-                .setClaims(extractClaims)
+                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
