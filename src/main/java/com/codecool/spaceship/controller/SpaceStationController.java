@@ -35,6 +35,15 @@ public class SpaceStationController {
         }
     }
 
+    @GetMapping({"/user/{userId}"})
+    public ResponseEntity<SpaceStationDTO> getBaseByUserId(@PathVariable long userId) {
+        try {
+            return ResponseEntity.ok(stationService.getBaseByUserId(userId));
+        } catch (Exception e) {
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
+        }
+    }
+
     @PostMapping("/{baseId}/add/resources")
     public ResponseEntity<Boolean> addResources(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
         try {

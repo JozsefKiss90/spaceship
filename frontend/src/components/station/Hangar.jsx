@@ -1,9 +1,11 @@
 import "./Hangar.css";
-import {useEffect, useState} from "react";
-import {useMessageDispatchContext} from "../MessageContext";
-import {useHangarContext} from "../HangarContext";
+import { useEffect, useState } from "react";
+import { useMessageDispatchContext } from "../MessageContext";
+import { useHangarContext } from "../HangarContext";
+import { useOutletContext } from "react-router-dom";
 
 function Hangar() {
+    const [jwt, , , , stationId] = useOutletContext();
     const [minerCost, setMinerCost] = useState(null);
     const [upgradeCost, setUpgradeCost] = useState(null);
     const [storage, setStorage] = useState(null);
@@ -13,17 +15,26 @@ function Hangar() {
 
 
     useEffect(() => {
-        fetch('http://localhost:8080/base/1/hangar')
+        fetch(`http://localhost:8080/base/${stationId}/hangar`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${jwt}`
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 setHangar(data);
             })
             .catch(err => console.error(err));
-    }, [update]);
+    }, [update, jwt, stationId]);
 
 
     function getShipCost() {
-        fetch("http://localhost:8080/ship/cost/miner")
+        fetch("http://localhost:8080/ship/cost/miner", {
+            "headers": {
+                "Authorization": `Bearer ${jwt}`
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 setMinerCost(data);

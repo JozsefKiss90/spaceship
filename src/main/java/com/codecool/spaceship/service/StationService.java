@@ -40,6 +40,20 @@ public class StationService {
         return stationManager.getStationDTO();
     }
 
+    public SpaceStationDTO getBaseByUserId(long userId) throws DataNotFoundException {
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                || Objects.equals(user.getId(), userId)) {
+            SpaceStation station = spaceStationRepository.getSpaceStationByUserId(userId)
+                    .orElseThrow(() -> new DataNotFoundException("No station found with user id %d".formatted(userId)));
+            SpaceStationManager stationManager = new SpaceStationManager(station);
+            return stationManager.getStationDTO();
+        } else {
+            throw new SecurityException("You don't have authority to access this station");
+        }
+
+    }
+
     public boolean addResources(long stationId, Map<ResourceType, Integer> resources) throws StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 

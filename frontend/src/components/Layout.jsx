@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode';
 const Layout = () => {
     const [jwt, setJwt] = useState(null);
     const [user, setUser] = useState(null);
+    const [stationId, setStationId] = useState(null);
 
     useEffect(() => {
         if (jwt === null) {
@@ -16,10 +17,26 @@ const Layout = () => {
         }
     }, [jwt]);
 
+    useEffect(() => {
+        if (user !== null) {
+            fetch(`/base/user/${user.userId}`, {
+                "headers": {
+                    "Authorization": `Bearer ${jwt}`
+                }
+            })
+                .then((res) => res.json())
+                .then((data) => setStationId(data.id))
+                .catch((err) => console.error(err));
+        }
+    }, [user, jwt]);
+
+    console.log(user);
+    console.log(stationId);
+
     return (
         <>
             <Header user={user} />
-            <Outlet context={[jwt, setJwt, user, setUser]} />
+            <Outlet context={[jwt, setJwt, user, setUser, stationId]} />
             <Footer />
         </>
     );
