@@ -35,7 +35,7 @@ export default function Register() {
           navigate("/station");
         });
     } catch (err) {
-      setMessage("Incorrect username or password.");
+      setMessage("Username or email already used by someone else.");
     }
   }
 
