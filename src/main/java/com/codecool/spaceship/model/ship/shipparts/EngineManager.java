@@ -12,7 +12,7 @@ import java.util.Map;
 public class EngineManager implements Upgradeable {
 
     private static final List<Level<Double>> LEVELS = List.of(
-            new Level<>(1, 1.0, Map.of()),
+            new Level<>(1, 400.0, Map.of()),
             new Level<>(2, 2.5,
                     Map.of(
                             ResourceType.SILICONE, 10,

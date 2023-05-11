@@ -54,6 +54,7 @@ public class MinerShipManager extends SpaceShipManager {
                 getDrillEfficiency(),
                 minership.getStorageLevel(),
                 getMaxStorageCapacity(),
+                getMaxStorageCapacity()-getEmptyStorageSpace(),
                 getStorageContents()
 
         );

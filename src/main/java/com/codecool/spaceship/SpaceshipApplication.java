@@ -62,7 +62,7 @@ public class SpaceshipApplication {
 
         Location morpheus = Location.builder()
                 .name("Morpheus")
-                .distanceFromStation(0)
+                .distanceFromStation(1)
                 .resourceType(ResourceType.METAL)
                 .build();
         locationRepository.save(morpheus);

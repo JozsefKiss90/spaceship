@@ -37,6 +37,11 @@ const messageReducer = (message, action) => {
                 data: action.data,
                 storage: action.storage
             };
+        case 'mission':
+            return {
+                type: action.type,
+                data: action.data
+            }
         default:
             return {type: null};
     }
