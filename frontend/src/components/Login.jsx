@@ -3,7 +3,8 @@ import jwt from 'jwt-decode';
 import {useOutletContext} from "react-router-dom";
 
 const Login = () => {
-    const [, setUser] = useOutletContext()
+    const outletContext = useOutletContext();
+    const [, setUser] = outletContext || [];
 
     /*const handleLogin = (username, password) => {
         fetch('/login', {
