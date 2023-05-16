@@ -15,12 +15,10 @@ const Layout = () => {
   useEffect(() => {
     if (jwtCookie) {
       const token = JSON.parse(jwtCookie);
-      console.log(token);
       setJwt(token);
       setUser(jwt_decode(token));
     } else {
-      setUser(null);
-      setJwt(null);
+
     }
   }, [jwtCookie, jwt]);
 
@@ -31,24 +29,25 @@ const Layout = () => {
           Authorization: `Bearer ${jwt}`,
         },
       })
-        .then((res) => res.json())
-        .then((data) => setStationId(data.id))
-        .catch((err) => console.error(err));
+        .then(res => res.json())
+        .then(data => setStationId(data.id))
+        .catch(err => console.error(err));
     }
   }, [user, jwt]);
 
   function logout() {
     Cookies.remove("jwt");
+    // setTriggerLogout(!triggerLogout);
+    setUser(null);
+    setJwt(null);
+    setStationId(null);
     navigate("/");
   }
-
-  console.log(user);
-  console.log(stationId);
 
   return (
     <>
       <Header user={user} logout={logout} />
-      <Outlet context={[jwt, setJwt, user, setUser, stationId]} />
+      <Outlet context={{"jwt":jwt, "setJwt":setJwt, "user":user, "setUser":setUser, "stationId":stationId}} />
       <Footer />
     </>
   );

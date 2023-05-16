@@ -16,16 +16,8 @@
   text-align: center;
   box-shadow: 0 0 4px 4px rgba(29, 52, 0, 0.741);
 }
-.home-message>span {
+.home-message>div {
   padding-top: 5px;
-}
-
-.home-message a {
-  color: rgb(221, 227, 37);
-}
-
-.home-message a:visited {
-  color: rgb(186, 197, 153);
 }
 
 .code {

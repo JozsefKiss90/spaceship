@@ -11,7 +11,6 @@ const Login = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const entries = [...formData.entries()];
-
     const credentials = entries.reduce((acc, entry) => {
       const [k, v] = entry;
       acc[k] = v;
@@ -56,7 +55,7 @@ const Login = () => {
           required
           placeholder="Password"
         ></input>
-        <button className="button" type="Submit">
+        <button className="button" type="submit">
           Login
         </button>
       </form>

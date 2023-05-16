@@ -2,7 +2,7 @@ import "./StationBar.css";
 import Storage from "./Storage";
 import Hangar from "./Hangar";
 import {useEffect, useState} from "react";
-import Mission from "./Mission";
+import Mission from "../messages/Mission";
 
 const StationBar = () => {
 

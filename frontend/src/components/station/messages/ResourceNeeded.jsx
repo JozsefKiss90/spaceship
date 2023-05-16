@@ -1,11 +1,14 @@
 import {useMessageDispatchContext} from "../MessageContext";
 import {useStorageDispatchContext} from "../StorageContext";
 import {useHangarDispatchContext} from "../HangarContext";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useOutletContext} from "react-router-dom";
+import {getSpaceUntilMaxLength} from "@testing-library/user-event/dist/utils";
 
 export function ResourceNeeded({message, checkStorage}) {
-    const [jwt, , user, , stationId] = useOutletContext();
+    const context = useOutletContext();
+    const jwt = context.jwt;
+    const stationId = context.stationId;
 
     const messageSetter = useMessageDispatchContext();
     const storageSetter = useStorageDispatchContext();
@@ -71,15 +74,15 @@ export function ResourceNeeded({message, checkStorage}) {
         switch (message.type) {
             case 'miner cost':
                 return "to add ship";
-            case 'storage upgrade':
+            case 'base storage upgrade':
                 return "to upgrade storage";
-            case 'hangar upgrade':
+            case 'base hangar upgrade':
                 return "to upgrade hangar";
             case 'drill upgrade':
                 return "to upgrade ship drill";
             case 'engine upgrade':
                 return "to upgrade ship engine";
-            case 'ship storage upgrade':
+            case 'storage upgrade':
                 return "to upgrade ship storage";
             case 'shield upgrade':
                 return "to upgrade ship shield";
@@ -91,15 +94,16 @@ export function ResourceNeeded({message, checkStorage}) {
             case 'miner cost':
                 setDisplayInput(true);
                 break;
-            case 'storage upgrade':
+            case 'base storage upgrade':
                 return upgradeStorage();
-            case 'hangar upgrade':
+            case 'base hangar upgrade':
                 return upgradeHangar();
             case 'drill upgrade':
             case 'engine upgrade':
-            case 'ship storage upgrade':
+            case 'storage upgrade':
             case 'shield upgrade':
-                return upgradePart(message.id,message.part);
+                console.log(message.type);
+                return upgradePart(message.id, message.part);
         }
     }
 

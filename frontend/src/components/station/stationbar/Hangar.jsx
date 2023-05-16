@@ -5,7 +5,9 @@ import { useHangarContext } from "../HangarContext";
 import { useOutletContext } from "react-router-dom";
 
 function Hangar() {
-  const [jwt, , , , stationId] = useOutletContext();
+  const context = useOutletContext();
+  const jwt = context.jwt;
+  const stationId = context.stationId;
   const [minerCost, setMinerCost] = useState(null);
   const [upgradeCost, setUpgradeCost] = useState(null);
   const [storage, setStorage] = useState(null);
@@ -23,6 +25,7 @@ function Hangar() {
       .then((res) => res.json())
       .then((data) => {
         setHangar(data);
+
       })
       .catch((err) => console.error(err));
   }, [update, jwt, stationId]);
@@ -86,7 +89,7 @@ function Hangar() {
   useEffect(() => {
     if (upgradeCost && storage) {
       dispatch({
-        type: "hangar upgrade",
+        type: "base hangar upgrade",
         data: upgradeCost,
         storage: storage,
       });
@@ -139,13 +142,13 @@ function Hangar() {
             ) : (
               hangar.ships.map((ship) => {
                 return (
-                  <div
+                  <div className="shiplist"
                     onClick={() => {
                       getShip(ship.id);
                     }}
                     key={ship.id}
                   >
-                    {ship.name} - {ship.type}{" "}
+                    {ship.name} - {ship.type}
                   </div>
                 );
               })

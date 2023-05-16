@@ -1,56 +1,57 @@
-import { useOutletContext } from "react-router";
+import {useNavigate, useOutletContext} from "react-router";
 import "./Home.css";
 
 export default function Home() {
-  const [, , user] = useOutletContext();
-  return (
-    <div className="home-container">
-      <div className="home-message">
-        {user === null ? (
-          <h2>Welcome, stranger!</h2>
-        ) : (
-          <h2>{`Welcome, ${user.sub}!`}</h2>
-        )}
-        <span>
-          Are you ready to be the best Commander in the Minuend Galaxy?
-        </span>
-        <br />
-        <span>Start with a basic space station with one miner ship.</span>
-        <span>Send ships on missions to gather resources.</span>
-        <span>Spend your resources on storage and hangar upgrades.</span>
-        <span>
-          Add more ships and upgrade their parts to improve efficiency.
-        </span>
-        <span>
-          Get on top of the Minuend Galaxy Space Station Commander Leaderboard!
-        </span>
-        <br />
-        {user === null ? (
-          <>
-            <span>
-              <a href="/register">Register</a> now to join the fun!
-            </span>
-            <br />
-            <span>
-              If you already are a Commander, <a href="/login">log in.</a>
-            </span>
-            <br />
-            <span>
-              If you have issues logging in, click <a href="/issues">here.</a>
-            </span>
-          </>
-        ) : (
-          <span>
-            So what are you waiting for? Head to your{" "}
-            <a href="/station">station</a>, Commander!
-          </span>
-        )}
-        <br />
-        <span>
-          If you are bored, read our <a href="/terms">Terms and Conditions</a>{" "}
-          and <a href="/privacy">Privacy Policy.</a>
-        </span>
-      </div>
-    </div>
-  );
+    const context = useOutletContext();
+    const user = context.user;
+    const navigate = useNavigate();
+    return (
+        <div className="home-container">
+            <div className="home-message">
+                {user === null ? (
+                    <h2>Welcome, stranger!</h2>
+                ) : (
+                    <h2>{`Welcome, ${user.sub}!`}</h2>
+                )}
+                <div>
+                    Are you ready to be the best Commander in the Minuend Galaxy?
+                </div>
+                <br/>
+                <div>Start with a basic space station with one miner ship.</div>
+                <div>Send ships on missions to gather resources.</div>
+                <div>Spend your resources on storage and hangar upgrades.</div>
+                <div>
+                    Add more ships and upgrade their parts to improve efficiency.
+                </div>
+                <div>
+                    Get on top of the Minuend Galaxy Space Station Commander Leaderboard!
+                </div>
+                <br/>
+                {user === null ? (
+                    <>
+                        <div><span className="clickable" onClick={() => navigate("/register")}>Register</span> now to
+                            join the fun!
+                        </div>
+                        <br/>
+                        <div> If you already are a Commander, <span className="clickable"
+                                                                    onClick={() => navigate("/login")}>log in</span>.
+                        </div>
+                        <br/>
+                        <div> If you have issues logging in, click <span className="clickable"
+                                                                         onClick={() => navigate("/issues")}>here.</span>
+                        </div>
+                    </>
+                ) : (
+                    <div> So what are you waiting for? Head to your{" "}
+                        <span className="clickable" onClick={() => navigate("/station")}>station</span>, Commander!
+                    </div>
+                )}
+                <br/>
+                <div>
+                    If you are bored, read our <span className="clickable" onClick={() => navigate("/terms")}>Terms and Conditions</span>{" "}
+                    and <span className="clickable" onClick={() => navigate("privacy")}>Privacy Policy.</span>
+                </div>
+            </div>
+        </div>
+    );
 }

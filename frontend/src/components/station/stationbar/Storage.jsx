@@ -5,7 +5,9 @@ import {useMessageDispatchContext} from "../MessageContext";
 import {useOutletContext} from "react-router-dom";
 
 const Storage = () => {
-    const [jwt, , user, , stationId] = useOutletContext();
+    const context = useOutletContext();
+    const jwt = context.jwt;
+    const stationId = context.stationId;
     const update = useStorageContext();
     const dispatch = useMessageDispatchContext();
     const [updateStorage, setUpdateStorage] = useState(null)
@@ -41,7 +43,7 @@ const Storage = () => {
     useEffect(() => {
         if (upgradeCost) {
             dispatch({
-                type: "storage upgrade",
+                type: "base storage upgrade",
                 data: upgradeCost,
                 storage: storage.resources
             })

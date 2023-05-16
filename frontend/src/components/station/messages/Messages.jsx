@@ -22,9 +22,9 @@ const Messages = () => {
             switch (message.type) {
                 case "miner cost":
                     return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
-                case "storage upgrade":
+                case "base storage upgrade":
                     return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
-                case "hangar upgrade":
+                case "base hangar upgrade":
                     return (<ResourceNeeded message={message} checkStorage={checkStorage}/>);
                 case "display ship":
                     return (<DisplayMinerShip message={message} checkStorage={checkStorage}/>);
