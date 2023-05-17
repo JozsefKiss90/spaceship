@@ -56,7 +56,6 @@ public class MinerShipManager extends SpaceShipManager {
                 getMaxStorageCapacity(),
                 getMaxStorageCapacity()-getEmptyStorageSpace(),
                 getStorageContents()
-
         );
     }
 

@@ -1,7 +1,7 @@
 import "./ShipName.css";
 import {useOutletContext} from "react-router-dom";
 import {useHangarDispatchContext} from "../HangarContext";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export function ShipName({message}) {
     const context = useOutletContext();
@@ -24,6 +24,10 @@ export function ShipName({message}) {
         setNameInputDisplay(false);
         hangarSetter({type: "update"});
     }
+
+    useEffect(()=>{
+        setShipName(message.data.name);
+    }, [message])
 
 
     return (<>

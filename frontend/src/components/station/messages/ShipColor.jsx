@@ -40,26 +40,30 @@ export function ShipColor({message}) {
         setColorListDisplay(true);
     }
 
+    useEffect(()=>{
+        setColor(message.data.color);
+    },[message])
+
     function ColorList() {
         return (
-        <div className="ship-color">
-            <select name="colors" defaultValue={color} onChange={(e) => {
-                setColor(e.target.value);
-            }}>
-                {allShipColors.map((colorM) => (
-                    <option key={colorM} value={colorM}>
-                        {colorM}
-                    </option>
-                ))}
-            </select>
-            <div className="button" onClick={changeColor}> Choose</div>
-        </div> )
+            <div className="ship-color">
+                <select name="colors" defaultValue={color} onChange={(e) => {
+                    setColor(e.target.value);
+                }}>
+                    {allShipColors.map((colorM) => (
+                        <option key={colorM} value={colorM}>
+                            {colorM}
+                        </option>
+                    ))}
+                </select>
+                <div className="button" onClick={changeColor}> Choose</div>
+            </div>)
     }
 
     return (
         <div className="ship-color row">
             {colorListDisplay
-                ? <ColorList />
+                ? <ColorList/>
                 : (<>
                     <div> Color: {color.toLowerCase()}</div>
                     <div className="button" onClick={getAvailableColors}>Change</div>

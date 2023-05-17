@@ -13,12 +13,10 @@ const Layout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (jwtCookie) {
+    if (jwtCookie && !jwt) {
       const token = JSON.parse(jwtCookie);
       setJwt(token);
       setUser(jwt_decode(token));
-    } else {
-
     }
   }, [jwtCookie, jwt]);
 
@@ -37,7 +35,6 @@ const Layout = () => {
 
   function logout() {
     Cookies.remove("jwt");
-    // setTriggerLogout(!triggerLogout);
     setUser(null);
     setJwt(null);
     setStationId(null);
