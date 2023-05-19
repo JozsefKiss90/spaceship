@@ -2,17 +2,17 @@ import {useEffect, useState} from "react";
 import {useOutletContext} from "react-router-dom";
 import "./ShipColor.css";
 
-export function ShipColor({message}) {
+export function ShipColor({ship}) {
     const context = useOutletContext();
     const jwt = context.jwt;
     const [allShipColors, setAllShipColors] = useState(null);
-    const [color, setColor] = useState(message.data.color);
+    const [color, setColor] = useState(ship.color);
     const [colorListDisplay, setColorListDisplay] = useState(false);
 
     function changeColor() {
         setColorListDisplay(false);
-        if (color !== message.data.color) {
-            fetch(`/ship/${message.data.id}`, {
+        if (color !== ship.color) {
+            fetch(`/ship/${ship.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -41,8 +41,8 @@ export function ShipColor({message}) {
     }
 
     useEffect(()=>{
-        setColor(message.data.color);
-    },[message])
+        setColor(ship.color);
+    },[ship])
 
     function ColorList() {
         return (

@@ -94,12 +94,12 @@ export default function DisplayMinerShip({ message, checkStorage }) {
         className="container"
         style={{ display: "flex", flexFlow: "column" }}
       >
-        {/* <ShipName message={message} /> */}
+        <ShipName ship={ship} />
         <div className="ship-type" style={{ fontSize: "13px", height: "15px" }}>
           miner ship
         </div>
-        {/* <ShipColor message={message} />
-        <ShipStatus message={message} /> */}
+         <ShipColor ship={ship} />
+        <ShipStatus ship={ship} />
         <div className="ship-shield row">
           <div>
             Shield | lvl: {ship.shieldLevel} | {ship.shieldEnergy} /{" "}

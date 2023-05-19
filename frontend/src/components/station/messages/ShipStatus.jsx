@@ -2,7 +2,7 @@ import {useMessageDispatchContext} from "../MessageContext";
 import {useOutletContext} from "react-router-dom";
 import {useState} from "react";
 
-export function ShipStatus({message}) {
+export function ShipStatus({ship}) {
     const dispatch = useMessageDispatchContext();
     const context = useOutletContext();
     const [toggleDisplay, setToggleDisplay] = useState(false);
@@ -16,7 +16,7 @@ export function ShipStatus({message}) {
                 Authorization: `Bearer ${jwt}`,
             },
             body: JSON.stringify({
-                shipId: message.data.id,
+                shipId: ship.id,
                 locationId: 1,
                 activityDuration: 40,
             }),
@@ -42,15 +42,15 @@ export function ShipStatus({message}) {
 
 
     return (<div className="ship-status row">
-        <div>Status: {message.data.status}</div>
+        <div>Status: {ship.status}</div>
         <div
             className="button"
             onClick={() => {
-                if (message.data.status === "In dock") sendShipToMission();
+                if (ship.status === "In dock") sendShipToMission();
                 else showMissionDetails();
             }}
         >
-            {message.data.status === "In dock" ? "Send" : "Show"}
+            {ship.status === "In dock" ? "Send" : "Show"}
         </div>
     </div>)
 }

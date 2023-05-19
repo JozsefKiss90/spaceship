@@ -3,15 +3,15 @@ import {useOutletContext} from "react-router-dom";
 import {useHangarDispatchContext} from "../HangarContext";
 import {useEffect, useState} from "react";
 
-export function ShipName({message}) {
+export function ShipName({ship}) {
     const context = useOutletContext();
     const jwt = context.jwt;
     const hangarSetter = useHangarDispatchContext();
     const [nameInputDisplay, setNameInputDisplay] = useState(false);
-    const [shipName, setShipName] = useState(message.data.name);
+    const [shipName, setShipName] = useState(ship.name);
 
     async function renameShip(name) {
-        await fetch(`/ship/${message.data.id}`, {
+        await fetch(`/ship/${ship.id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -26,8 +26,8 @@ export function ShipName({message}) {
     }
 
     useEffect(()=>{
-        setShipName(message.data.name);
-    }, [message])
+        setShipName(ship.name);
+    }, [ship])
 
 
     return (<>
