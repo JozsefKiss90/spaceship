@@ -1,10 +1,8 @@
 package com.codecool.spaceship.model;
 
+import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.resource.ResourceType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +20,8 @@ public class Location {
     private Long id;
     private String name;
     private int distanceFromStation;
+    @Enumerated(value = EnumType.STRING)
     private ResourceType resourceType;
+    @OneToOne
+    private Mission currentMission;
 }

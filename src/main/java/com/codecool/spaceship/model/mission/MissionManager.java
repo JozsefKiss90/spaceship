@@ -43,6 +43,7 @@ public class MissionManager {
                 .events(new ArrayList<>())
                 .build();
         minerShipManager.setCurrentMission(mission);
+        location.setCurrentMission(mission);
         return mission;
     }
 
@@ -193,6 +194,7 @@ public class MissionManager {
         mission.setCurrentStatus(MissionStatus.OVER);
         setMinerShipManagerIfNull();
         minerShip.endMission();
+        mission.getLocation().setCurrentMission(null);
     }
 
     private void simulatePirateAttack() {

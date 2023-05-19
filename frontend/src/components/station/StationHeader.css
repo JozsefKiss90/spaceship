@@ -1,0 +1,6 @@
+.station-header {
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

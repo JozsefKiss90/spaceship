@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mission")
+@RequestMapping("api/mission")
 @CrossOrigin(origins = "http://localhost:3000")
 public class MissionController {
 
@@ -43,7 +43,7 @@ public class MissionController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<MissionDTO> startNewMission(@RequestBody ObjectNode objectNode) {
         try {
             return ResponseEntity.ok(missionService.startNewMission(

@@ -92,7 +92,22 @@ public class SpaceshipApplication {
                 .distanceFromStation(1)
                 .resourceType(ResourceType.METAL)
                 .build();
-        locationRepository.save(morpheus);
+        Location koboh = Location.builder()
+                .name("Koboh")
+                .distanceFromStation(4)
+                .resourceType(ResourceType.CRYSTAL)
+                .build();
+        Location palaven = Location.builder()
+                .name("Palaven")
+                .distanceFromStation(11)
+                .resourceType(ResourceType.SILICONE)
+                .build();
+        Location crosie = Location.builder()
+                .name("Crosie 3W")
+                .distanceFromStation(13)
+                .resourceType(ResourceType.METAL)
+                .build();
+        locationRepository.saveAll(Set.of(morpheus,koboh,palaven, crosie));
     }
 
 

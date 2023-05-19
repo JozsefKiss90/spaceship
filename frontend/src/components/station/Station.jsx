@@ -5,6 +5,7 @@ import { StationContext } from "./MessageContext";
 import { StorageStationContext } from "./StorageContext";
 import { HangarStationContext } from "./HangarContext";
 import { Outlet, useOutletContext } from "react-router-dom";
+import StationHeader from "./StationHeader";
 
 const Station = () => {
   const context = useOutletContext();
@@ -16,20 +17,23 @@ const Station = () => {
   }
 
   return (
-    <div className="station">
-      <StationContext>
-        <StorageStationContext>
-          <HangarStationContext>
-            <StationBar></StationBar>
-            <div className="message-log">
-              <div className="messages">
-                <Outlet context={{...context}}/>
+    <>
+      <StationHeader></StationHeader>
+      <div className="station">
+        <StationContext>
+          <StorageStationContext>
+            <HangarStationContext>
+              <StationBar></StationBar>
+              <div className="message-log">
+                <div className="messages">
+                  <Outlet context={{ ...context }} />
+                </div>
               </div>
-            </div>
-          </HangarStationContext>
-        </StorageStationContext>
-      </StationContext>
-    </div>
+            </HangarStationContext>
+          </StorageStationContext>
+        </StationContext>
+      </div>
+    </>
   );
 };
 

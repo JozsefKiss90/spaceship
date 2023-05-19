@@ -10,6 +10,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Issues from './components/Issues';
 import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
 import Welcome from './components/station/messages/Welcome';
+import LocationList from './components/station/messages/LocationList';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path='/' element={<Home />}></Route>
                     <Route path="/station" element={<Station />}>
                         <Route path='/station/' element={<Welcome />}/>
+                        <Route path='/station/locations' element={<LocationList/>}/>
                         <Route path='/station/ship/:id' element={<DisplayMinerShip />}/>
                     </Route>
                     <Route path="/login" element={<Login />}></Route>

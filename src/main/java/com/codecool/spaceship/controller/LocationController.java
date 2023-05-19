@@ -4,16 +4,13 @@ import com.codecool.spaceship.model.dto.LocationDTO;
 import com.codecool.spaceship.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/location")
+@RequestMapping("api/location")
 public class LocationController {
 
     private final LocationService locationService;
@@ -23,8 +20,8 @@ public class LocationController {
         this.locationService = locationService;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<LocationDTO>> getAllLocations() {
-        return ResponseEntity.ok(locationService.getAllLocations());
+    @GetMapping()
+    public ResponseEntity<List<LocationDTO>> getAllLocationsByUser(@RequestParam Long user) {
+        return ResponseEntity.ok(locationService.getAllLocationsByUser(user));
     }
 }
