@@ -111,7 +111,7 @@ export function ResourceNeeded({message, checkStorage}) {
         <div>Resources needed {setText()}:</div>
         {Object.keys(message.data).map(key => {
             return <div className="message-row" key={key}>
-                <img style={{width: "25px", height: "25px"}} src={key.toLowerCase() + '.png'}
+                <img style={{width: "25px", height: "25px"}} src={'/'+ key.toLowerCase() + '.png'}
                      alt={key}/>
                 <p style={{marginLeft: "5px"}}>{key}: {message.data[key]}</p>
             </div>

@@ -2,7 +2,7 @@ import "./Messages.css";
 import {useMessageContext} from "../MessageContext";
 
 import {ResourceNeeded} from "./ResourceNeeded";
-import {DisplayMinerShip} from "./DisplayMinerShip";
+import DisplayMinerShip from "./DisplayMinerShip";
 import Mission from "./Mission";
 
 const Messages = () => {

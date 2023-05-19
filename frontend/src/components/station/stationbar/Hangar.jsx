@@ -2,12 +2,13 @@ import "./Hangar.css";
 import { useEffect, useState } from "react";
 import { useMessageDispatchContext } from "../MessageContext";
 import { useHangarContext } from "../HangarContext";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 function Hangar() {
   const context = useOutletContext();
   const jwt = context.jwt;
   const stationId = context.stationId;
+  const navigate = useNavigate();
   const [minerCost, setMinerCost] = useState(null);
   const [upgradeCost, setUpgradeCost] = useState(null);
   const [storage, setStorage] = useState(null);
@@ -144,7 +145,7 @@ function Hangar() {
                 return (
                   <div className="shiplist"
                     onClick={() => {
-                      getShip(ship.id);
+                      navigate(`ship/${ship.id}`);
                     }}
                     key={ship.id}
                   >

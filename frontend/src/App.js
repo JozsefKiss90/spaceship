@@ -8,6 +8,8 @@ import Register from './components/Register';
 import TermsAndConditions from './components/TermsAndConditions';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import Issues from './components/Issues';
+import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
+import Welcome from './components/station/messages/Welcome';
 
 function App() {
     return (
@@ -15,7 +17,10 @@ function App() {
             <Routes>
                 <Route path='/' element={<Layout />}>
                     <Route path='/' element={<Home />}></Route>
-                    <Route path="/station" element={<Station />}></Route>
+                    <Route path="/station" element={<Station />}>
+                        <Route path='/station/' element={<Welcome />}/>
+                        <Route path='/station/ship/:id' element={<DisplayMinerShip />}/>
+                    </Route>
                     <Route path="/login" element={<Login />}></Route>
                     <Route path="/register" element={<Register />}></Route>
                     <Route path="/terms" element={<TermsAndConditions />}></Route>
