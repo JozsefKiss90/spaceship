@@ -33,11 +33,3 @@
 .lrform-container span {
   font-size: 15px;
 }
-
-.lrform-container a {
-  color: rgb(221, 227, 37);
-}
-
-.lrform-container a:visited {
-  color: rgb(186, 197, 153);
-}

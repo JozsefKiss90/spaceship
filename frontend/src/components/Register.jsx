@@ -61,16 +61,17 @@ export default function Register() {
         ></input>
         <div>
           <input type="checkbox" required />
-          <div>
+          <span>
             I accept the{" "}
-            <span className="clickable" onClick={() => navigate("/terms")}>
+            <a className="clickable" href="/terms" target="blank">
               Terms and Conditions
-            </span>{" "}
+            </a>{" "}
             &{" "}
-            <span className="clickable" onClick={() => navigate("/privacy")}>
+            <br/>
+            <a className="clickable" href="/privacy" target="blank">
               Privacy Policy
-            </span>
-          </div>
+            </a>
+          </span>
         </div>
         <button className="button" type="Submit">
           Register
