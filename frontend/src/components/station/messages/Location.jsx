@@ -62,7 +62,7 @@ export default function Location({ location }) {
                 Send mission
               </button>
             ) : (
-              <button>Check Mission</button>
+              <button onClick={() => navigate(`/station/mission/${location.missionId}`)}>Check Mission</button>
             )}
           </div>
         )}

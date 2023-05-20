@@ -11,6 +11,7 @@ import Issues from './components/Issues';
 import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
 import Welcome from './components/station/messages/Welcome';
 import LocationList from './components/station/messages/LocationList';
+import Mission from './components/station/messages/Mission';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                         <Route path='/station/' element={<Welcome />}/>
                         <Route path='/station/locations' element={<LocationList/>}/>
                         <Route path='/station/ship/:id' element={<DisplayMinerShip />}/>
+                        <Route path='/station/mission/:id' element={<Mission />}/>
                     </Route>
                     <Route path="/login" element={<Login />}></Route>
                     <Route path="/register" element={<Register />}></Route>
