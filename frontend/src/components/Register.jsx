@@ -1,80 +1,82 @@
 import Cookies from "js-cookie";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Login&Register.css";
-import {useState} from "react";
+import { useState } from "react";
 
 export default function Register() {
-    const navigate = useNavigate();
-    const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
+  const [message, setMessage] = useState(null);
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const entries = [...formData.entries()];
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const entries = [...formData.entries()];
 
-        const credentials = entries.reduce((acc, entry) => {
-            const [k, v] = entry;
-            acc[k] = v;
-            return acc;
-        }, {});
-        handleLogin(credentials);
-    };
+    const credentials = entries.reduce((acc, entry) => {
+      const [k, v] = entry;
+      acc[k] = v;
+      return acc;
+    }, {});
+    handleLogin(credentials);
+  };
 
-    async function handleLogin(formData) {
-        try {
-            await fetch("/api/v1/auth/register", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(formData),
-            })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    Cookies.set("jwt", JSON.stringify(data.token));
-                    navigate("/station");
-                });
-        } catch (err) {
-            setMessage("Username or email already used by someone else.");
+  function handleLogin(formData) {
+    fetch("/api/v1/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error();
         }
-    }
+      })
+      .then((data) => {
+        Cookies.set("jwt", data.token);
+        navigate("/station");
+      })
+      .catch((err) =>
+        setMessage("Username or email already used by someone else.")
+      );
+  }
 
-    return (
-        <div className="lrform-container">
-            <form onSubmit={onSubmit}>
-                <h2>Register</h2>
-                <input name="email" type="email" required placeholder="Email"></input>
-                <input
-                    name="username"
-                    type="text"
-                    required
-                    placeholder="Username"
-                ></input>
-                <input
-                    name="password"
-                    type="Password"
-                    required
-                    placeholder="password"
-                ></input>
-                <div>
-                    <input type="checkbox" required/>
-                    <div>
-                        I accept the{" "}
-                        <span
-                            className="clickable" onClick={() => navigate("/terms")}>
+  return (
+    <div className="lrform-container">
+      <form onSubmit={onSubmit}>
+        <h2>Register</h2>
+        <input name="email" type="email" required placeholder="Email"></input>
+        <input
+          name="username"
+          type="text"
+          required
+          placeholder="Username"
+        ></input>
+        <input
+          name="password"
+          type="Password"
+          required
+          placeholder="password"
+        ></input>
+        <div>
+          <input type="checkbox" required />
+          <div>
+            I accept the{" "}
+            <span className="clickable" onClick={() => navigate("/terms")}>
               Terms and Conditions
             </span>{" "}
-                        &{" "}
-                        <span className="clickable" onClick={() => navigate("/privacy")}>
+            &{" "}
+            <span className="clickable" onClick={() => navigate("/privacy")}>
               Privacy Policy
             </span>
-                    </div>
-                </div>
-                <button className="button" type="Submit">
-                    Register
-                </button>
-            </form>
-            {message && <div className="lrform-message">{message}</div>}
+          </div>
         </div>
-    );
+        <button className="button" type="Submit">
+          Register
+        </button>
+      </form>
+      {message && <div className="lrform-message">{message}</div>}
+    </div>
+  );
 }

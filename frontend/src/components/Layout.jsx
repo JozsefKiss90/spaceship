@@ -14,7 +14,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (jwtCookie && !jwt) {
-      const token = JSON.parse(jwtCookie);
+      const token = jwtCookie;
       setJwt(token);
       setUser(jwt_decode(token));
     }
