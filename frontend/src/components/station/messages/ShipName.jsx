@@ -1,11 +1,8 @@
 import "./ShipName.css";
-import {useOutletContext} from "react-router-dom";
 import {useHangarDispatchContext} from "../HangarContext";
 import {useEffect, useState} from "react";
 
 export function ShipName({ship}) {
-    const context = useOutletContext();
-    const jwt = context.jwt;
     const hangarSetter = useHangarDispatchContext();
     const [nameInputDisplay, setNameInputDisplay] = useState(false);
     const [shipName, setShipName] = useState(ship.name);
@@ -15,7 +12,6 @@ export function ShipName({ship}) {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt}`,
             },
             body: JSON.stringify({
                 name: name,

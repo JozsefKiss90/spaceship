@@ -4,17 +4,14 @@ import "./LocationList.css";
 import Location from "./Location";
 
 export default function LocationList() {
-    const {user, jwt} = useOutletContext();
+    const {user} = useOutletContext();
     const [locations, setLocations] = useState(null);
 
     useEffect(() => {
-        fetch(`/api/location?user=${user.userId}`, {
-            headers: {
-            Authorization: `Bearer ${jwt}`
-          }})
+        fetch(`/api/location?user=${user.userId}`)
           .then(res => res.json())
           .then(data => setLocations(data));
-    },[user, jwt])
+    },[user])
     
     if(locations === null) {
         return <div>Loading...</div>

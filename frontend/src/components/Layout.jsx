@@ -6,37 +6,30 @@ import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 
 const Layout = () => {
-  const [jwt, setJwt] = useState(null);
   const [user, setUser] = useState(null);
   const [stationId, setStationId] = useState(null);
-  const jwtCookie = Cookies.get("jwt");
   const navigate = useNavigate();
+  const jwtCookie = Cookies.get("jwt");
 
   useEffect(() => {
-    if (jwtCookie && !jwt) {
-      const token = jwtCookie;
-      setJwt(token);
-      setUser(jwt_decode(token));
+    if (jwtCookie) {
+      setUser(jwt_decode(jwtCookie));
     }
-  }, [jwtCookie, jwt]);
+  }, [jwtCookie]);
 
   useEffect(() => {
     if (user !== null) {
       fetch(`/base/user/${user.userId}`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
       })
         .then(res => res.json())
         .then(data => setStationId(data.id))
         .catch(err => console.error(err));
     }
-  }, [user, jwt]);
+  }, [user]);
 
   function logout() {
     Cookies.remove("jwt");
     setUser(null);
-    setJwt(null);
     setStationId(null);
     navigate("/");
   }
@@ -44,7 +37,7 @@ const Layout = () => {
   return (
     <>
       <Header user={user} logout={logout} />
-      <Outlet context={{"jwt":jwt, "setJwt":setJwt, "user":user, "setUser":setUser, "stationId":stationId}} />
+      <Outlet context={{user, setUser, stationId}} />
       <Footer />
     </>
   );

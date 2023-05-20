@@ -1,11 +1,10 @@
 import { useState } from "react";
 import "./Location.css";
 import { useHangarContext } from "../HangarContext";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Location({ location }) {
   const [missionMenuToggle, setMissionMenuToggle] = useState(false);
-  const { jwt } = useOutletContext();
   const hangar = useHangarContext();
   const navigate = useNavigate();
 
@@ -27,10 +26,6 @@ export default function Location({ location }) {
   function postMission(details) {
     fetch("/api/mission", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
       body: JSON.stringify(details),
     })
       .then((res) => {

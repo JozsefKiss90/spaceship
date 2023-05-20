@@ -1,10 +1,7 @@
 import {useEffect, useState} from "react";
-import {useOutletContext} from "react-router-dom";
 import "./ShipColor.css";
 
 export function ShipColor({ship}) {
-    const context = useOutletContext();
-    const jwt = context.jwt;
     const [allShipColors, setAllShipColors] = useState(null);
     const [color, setColor] = useState(ship.color);
     const [colorListDisplay, setColorListDisplay] = useState(false);
@@ -16,7 +13,6 @@ export function ShipColor({ship}) {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     color: color.toUpperCase(),
@@ -27,12 +23,7 @@ export function ShipColor({ship}) {
 
     async function getAvailableColors() {
         if (!allShipColors) {
-            await fetch(`/ship/color`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                },
-            })
+            await fetch(`/ship/color`)
                 .then(res => res.json())
                 .then(data => setAllShipColors(data))
                 .catch(err => console.error(err));

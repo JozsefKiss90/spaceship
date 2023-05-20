@@ -5,9 +5,7 @@ import {useMessageDispatchContext} from "../MessageContext";
 import {useOutletContext} from "react-router-dom";
 
 const Storage = () => {
-    const context = useOutletContext();
-    const jwt = context.jwt;
-    const stationId = context.stationId;
+    const { stationId } = useOutletContext();
     const update = useStorageContext();
     const dispatch = useMessageDispatchContext();
     const [updateStorage, setUpdateStorage] = useState(null)
@@ -15,12 +13,7 @@ const Storage = () => {
     const [storage, setStorage] = useState(null);
 
     useEffect(() => {
-        fetch(`/base/${stationId}/storage`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            }
-        })
+        fetch(`/base/${stationId}/storage`)
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.error(err));
@@ -29,12 +22,7 @@ const Storage = () => {
 
 
     const getUpgrade = () => {
-        fetch(`/base/${stationId}/storage/upgrade`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${jwt}`
-            }
-        })
+        fetch(`/base/${stationId}/storage/upgrade`)
             .then(res => res.json())
             .then(data => setUpgradeCost(data))
             .then(err => console.error(err));

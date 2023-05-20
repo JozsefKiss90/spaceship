@@ -5,9 +5,7 @@ import { useHangarContext } from "../HangarContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 function Hangar() {
-  const context = useOutletContext();
-  const jwt = context.jwt;
-  const stationId = context.stationId;
+  const { stationId } = useOutletContext();
   const navigate = useNavigate();
   const [minerCost, setMinerCost] = useState(null);
   const [upgradeCost, setUpgradeCost] = useState(null);
@@ -17,26 +15,17 @@ function Hangar() {
   const [hangar, setHangar] = useState();
 
   useEffect(() => {
-    fetch(`/base/${stationId}/hangar`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/base/${stationId}/hangar`)
       .then((res) => res.json())
       .then((data) => {
         setHangar(data);
 
       })
       .catch((err) => console.error(err));
-  }, [update, jwt, stationId]);
+  }, [update, stationId]);
 
   function getShipCost() {
-    fetch("/ship/cost/miner", {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch("/ship/cost/miner")
       .then((res) => res.json())
       .then((data) => {
         setMinerCost(data);
@@ -45,11 +34,7 @@ function Hangar() {
   }
 
   function getHangarUpgradeCost() {
-    fetch(`/base/${stationId}/hangar/upgrade`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/base/${stationId}/hangar/upgrade`)
       .then((res) => res.json())
       .then((data) => {
         setUpgradeCost(data);
@@ -58,11 +43,7 @@ function Hangar() {
   }
 
   function getShip(id) {
-    fetch(`/ship/miner/${id}`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/ship/miner/${id}`)
       .then((res) => res.json())
       .then((data) => {
         dispatch({
@@ -75,11 +56,7 @@ function Hangar() {
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/base/${stationId}/storage/resources`)
       .then((res) => res.json())
       .then((data) => {
         setStorage(data);

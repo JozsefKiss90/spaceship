@@ -9,9 +9,7 @@ import { ShipStatus } from "./ShipStatus";
 
 export default function DisplayMinerShip({ message, checkStorage }) {
   const dispatch = useMessageDispatchContext();
-  const context = useOutletContext();
-  const jwt = context.jwt;
-  const stationId = context.stationId;
+  const { stationId } = useOutletContext();
   const { id } = useParams();
   const [ship, setShip] = useState(null);
   const [resource, setResource] = useState(null);
@@ -21,16 +19,10 @@ export default function DisplayMinerShip({ message, checkStorage }) {
   const [show, setShow] = useState(false);
   const [part, setPart] = useState(null);
 
-  console.log(context);
   console.log(id);
 
   useEffect(() => {
-    fetch(`/ship/miner/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/ship/miner/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -38,24 +30,14 @@ export default function DisplayMinerShip({ message, checkStorage }) {
   }, [id]);
 
   async function getShipPartUpgradeCost(part) {
-    await fetch(`/ship/miner/${ship.id}/upgrade?part=${part}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    await fetch(`/ship/miner/${ship.id}/upgrade?part=${part}`)
       .then((res) => res.json())
       .then((data) => setResource(data))
       .catch((err) => console.error(err));
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/base/${stationId}/storage/resources`)
       .then((res) => res.json())
       .then((data) => setStorage(data))
       .catch((err) => console.error(err));
