@@ -134,7 +134,7 @@ export default function DisplayMinerShip({ message, checkStorage }) {
                 <div className="resource-row" key={resource.resourceType}>
                   <img
                     style={{ width: "25px", height: "25px" }}
-                    src={resource.resourceType.toLowerCase() + ".png"}
+                    src={"/" + resource.resourceType.toLowerCase() + ".png"}
                     alt={resource.resourceType}
                   />
                   <div
