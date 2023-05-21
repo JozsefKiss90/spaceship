@@ -321,11 +321,13 @@ class MissionManagerTest {
 
     @Test
     void updateStatusMissionEndTest() {
+
         LocalDateTime now = LocalDateTime.now();
 
         Mission expected = Mission.builder()
                 .currentStatus(MissionStatus.OVER)
                 .currentObjectiveTime(now.minusSeconds(5))
+                .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event expectedEvent = Event.builder()
@@ -338,6 +340,7 @@ class MissionManagerTest {
         Mission actual = Mission.builder()
                 .currentStatus(MissionStatus.RETURNING)
                 .currentObjectiveTime(now.minusSeconds(5))
+                .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
@@ -351,6 +354,7 @@ class MissionManagerTest {
         missionManager.updateStatus();
 
         assertEquals(expected, actual);
+        verify(locationMock, times(1)).setCurrentMission(null);
     }
 
     @Test
