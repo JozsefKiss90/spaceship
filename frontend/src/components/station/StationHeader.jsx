@@ -6,6 +6,6 @@ export default function StationHeader() {
     return <div className="station-header">
         <div className="station-name">Station Name</div>
         <div onClick={() => navigate('/station/locations')}>Locations</div>
-        <div>Missions</div>
+        <div onClick={() => navigate('/station/missions')}>Missions</div>
     </div>
 }

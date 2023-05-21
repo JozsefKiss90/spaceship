@@ -28,7 +28,7 @@ export default function Mission() {
           ))}
         </div>
         <div>
-          Mission end: {new Date(mission.approxEndTime).toLocaleString()}
+          Mission end: {new Date(mission.approxEndTime).toLocaleString('hu-HU')}
         </div>
       </div>
     </>
