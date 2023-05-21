@@ -26,6 +26,9 @@ public class MissionManager {
         if (!minerShipManager.isAvailable()) {
             throw new IllegalOperationException("This ship is already on a mission");
         }
+        if (location.getCurrentMission() != null) {
+            throw new IllegalOperationException("There is a mission already in progress at this location");
+        }
         LocalDateTime startTime = LocalDateTime.now();
         long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location);
         long approxMissionDurationInSecs = travelDurationInSecs * 2 + activityDurationInSecs;
@@ -40,6 +43,7 @@ public class MissionManager {
                 .missionType(MissionType.MINING)
                 .ship(minerShip)
                 .location(location)
+                .user(minerShip.getUser())
                 .events(new ArrayList<>())
                 .build();
         minerShipManager.setCurrentMission(mission);

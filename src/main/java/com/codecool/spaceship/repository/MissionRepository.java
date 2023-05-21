@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
-    List<Mission> getMissionsByCurrentStatusNot(MissionStatus missionStatus);
-    List<Mission> getMissionsByCurrentStatus(MissionStatus missionStatus);
+    List<Mission> getMissionsByUserIdAndCurrentStatusNot(Long userId, MissionStatus missionStatus);
+    List<Mission> getMissionsByUserIdAndCurrentStatus(Long userId, MissionStatus missionStatus);
 }

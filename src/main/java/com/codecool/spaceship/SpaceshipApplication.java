@@ -45,7 +45,7 @@ public class SpaceshipApplication {
                 .build();
 
         MinerShip minerShip = MinerShipManager.createNewMinerShip("Built2Mine", Color.DIAMOND);
-        minerShip.setEngineLevel(2);
+        minerShip.setEngineLevel(1);
         minerShip.setShieldEnergy(20);
         minerShip.setDrillLevel(2);
 
