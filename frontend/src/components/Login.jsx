@@ -31,7 +31,7 @@ const Login = () => {
         } else throw new Error();
       })
       .then((data) => {
-        Cookies.set("jwt", data.token);
+        // Cookies.set("jwt", data.token);
         navigate("/station");
       })
       .catch((err) => setMessage("Incorrect username or password."));

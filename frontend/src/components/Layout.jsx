@@ -19,25 +19,28 @@ const Layout = () => {
 
   useEffect(() => {
     if (user !== null) {
-      fetch(`/base/user/${user.userId}`, {
-      })
-        .then(res => res.json())
-        .then(data => setStationId(data.id))
-        .catch(err => console.error(err));
+      fetch(`/base/user/${user.userId}`, {})
+        .then((res) => res.json())
+        .then((data) => setStationId(data.id))
+        .catch((err) => console.error(err));
     }
   }, [user]);
 
   function logout() {
-    Cookies.remove("jwt");
-    setUser(null);
-    setStationId(null);
-    navigate("/");
+    fetch("/api/v1/auth/logout", {
+      method: "POST",
+    }).then(() => {
+      // Cookies.remove("jwt");
+      setUser(null);
+      setStationId(null);
+      navigate("/");
+    });
   }
 
   return (
     <>
       <Header user={user} logout={logout} />
-      <Outlet context={{user, setUser, stationId}} />
+      <Outlet context={{ user, setUser, stationId }} />
       <Footer />
     </>
   );
