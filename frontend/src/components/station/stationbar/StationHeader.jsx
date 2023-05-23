@@ -5,7 +5,7 @@ export default function StationHeader() {
     const navigate = useNavigate();
     return <div className="station-header">
         <div className="station-name">Station Name</div>
-        <div onClick={() => navigate('/station/locations')}>Locations</div>
-        <div onClick={() => navigate('/station/missions')}>Missions</div>
+        <div className="button push" onClick={() => navigate('/station/locations')}>Locations</div>
+        <div className="button" onClick={() => navigate('/station/missions')}>Missions</div>
     </div>
 }

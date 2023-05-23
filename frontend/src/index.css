@@ -35,7 +35,7 @@ h2 {
     border: black solid 2px;
     border-radius: 5px;
     background-color: forestgreen;
-    width: 75px;
+    max-width: fit-content;
     text-align: center;
     justify-self: center;
     align-self: center;
