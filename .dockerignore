@@ -1,0 +1,8 @@
+.dockerignore
+.mvn
+.git
+.github
+.gitignore
+frontend
+target
+.idea
