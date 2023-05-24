@@ -3,6 +3,5 @@
 .git
 .github
 .gitignore
-frontend
 target
 .idea
