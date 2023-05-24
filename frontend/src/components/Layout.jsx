@@ -26,7 +26,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (user !== null) {
-      fetch(`/base/user/${user.userId}`, {
+      fetch(`/api/v1/base/user/${user.userId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

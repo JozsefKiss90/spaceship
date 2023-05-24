@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mission")
+@RequestMapping("api/v1/mission")
 @CrossOrigin(origins = "http://localhost:3000")
 public class MissionController {
 

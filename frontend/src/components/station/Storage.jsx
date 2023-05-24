@@ -13,7 +13,7 @@ const Storage = () => {
     const [storage, setStorage] = useState(null);
 
     useEffect(() => {
-        fetch(`/base/${stationId}/storage`, {
+        fetch(`/api/v1/base/${stationId}/storage`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${jwt}`
@@ -27,7 +27,7 @@ const Storage = () => {
 
 
     const getUpgrade = () => {
-        fetch(`/base/${stationId}/storage/upgrade`, {
+        fetch(`/api/v1/base/${stationId}/storage/upgrade`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${jwt}`

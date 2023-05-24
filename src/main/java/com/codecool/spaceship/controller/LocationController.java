@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/location")
+@RequestMapping("api/v1/location")
 public class LocationController {
 
     private final LocationService locationService;

@@ -22,7 +22,7 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const addShip = async (name) => {
-        await fetch(`/base/${stationId}/add/ship`, {
+        await fetch(`/api/v1/base/${stationId}/add/ship`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${jwt}`
@@ -35,7 +35,7 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradeStorage = async () => {
-        await fetch(`/base/${stationId}/storage/upgrade`, {
+        await fetch(`/api/v1/base/${stationId}/storage/upgrade`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${jwt}`
@@ -46,7 +46,7 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradeHangar = async () => {
-        await fetch(`/base/${stationId}/hangar/upgrade`, {
+        await fetch(`/api/v1/base/${stationId}/hangar/upgrade`, {
             method: "POST", headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${jwt}`
@@ -58,7 +58,7 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradePart = async (id, part) => {
-        await fetch(`/ship/miner/${id}/upgrade?part=${part}`, {
+        await fetch(`/api/v1/ship/miner/${id}/upgrade?part=${part}`, {
             method: "PATCH", headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${jwt}`
