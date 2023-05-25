@@ -14,7 +14,7 @@ public record MinerShipDTO(
         Long id,
         String name,
         Color color,
-        String status,
+        long missionId,
         int engineLevel,
         double maxSpeed,
         int shieldLevel,

@@ -44,7 +44,7 @@ public class MinerShipManager extends SpaceShipManager {
                 minership.getId(),
                 minership.getName(),
                 minership.getColor(),
-                isAvailable() ? "In dock" : "On mission",
+                isAvailable() ? 0L : minership.getCurrentMission().getId(),
                 minership.getEngineLevel(),
                 getSpeed(),
                 minership.getShieldLevel(),
