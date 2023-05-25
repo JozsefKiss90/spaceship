@@ -22,7 +22,7 @@ export default function DisplayMinerShip({ message, checkStorage }) {
   console.log(id);
 
   useEffect(() => {
-    fetch(`/ship/miner/${id}`)
+    fetch(`/api/v1/ship/miner/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -30,14 +30,14 @@ export default function DisplayMinerShip({ message, checkStorage }) {
   }, [id]);
 
   async function getShipPartUpgradeCost(part) {
-    await fetch(`/ship/miner/${ship.id}/upgrade?part=${part}`)
+    await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
       .then((res) => res.json())
       .then((data) => setResource(data))
       .catch((err) => console.error(err));
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`)
+    fetch(`/api/v1/base/${stationId}/storage/resources`)
       .then((res) => res.json())
       .then((data) => setStorage(data))
       .catch((err) => console.error(err));
