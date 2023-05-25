@@ -2,7 +2,6 @@ package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -14,10 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
-@RequestMapping("/ship")
+@RequestMapping("api/v1/ship")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ShipController {
 

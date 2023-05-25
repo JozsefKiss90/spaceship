@@ -28,7 +28,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
   const [triggerColorChange, setTriggerColorChange] = useState(false);
 
   async function getShipPartUpgradeCost(part) {
-    await fetch(`/ship/miner/${ship.id}/upgrade?part=${part}`, {
+    await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -40,7 +40,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`, {
+    fetch(`/api/v1/base/${stationId}/storage/resources`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -91,7 +91,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
   }
 
   async function getShipColors() {
-    await fetch(`/ship/color`, {
+    await fetch(`/api/v1/ship/color`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -103,7 +103,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
   }
 
   async function renameShip(name) {
-    await fetch(`/ship/${ship.id}`, {
+    await fetch(`/api/v1/ship/${ship.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
     //     type: "mission",
     //     ship: ship
     // })
-    fetch(`/mission/`, {
+    fetch(`/api/v1/mission/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
   }
 
   function showMissionDetails() {
-    fetch(`/mission/1`, {
+    fetch(`/api/v1/mission/1`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -209,7 +209,7 @@ export function DisplayMinerShip({ message, checkStorage }) {
 
   useEffect(() => {
     if (color !== ship.color && triggerColorChange) {
-      fetch(`/ship/${ship.id}`, {
+      fetch(`/api/v1/ship/${ship.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

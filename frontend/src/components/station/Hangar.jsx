@@ -14,7 +14,7 @@ function Hangar() {
   const [hangar, setHangar] = useState();
 
   useEffect(() => {
-    fetch(`/base/${stationId}/hangar`, {
+    fetch(`/api/v1/base/${stationId}/hangar`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -28,7 +28,7 @@ function Hangar() {
   }, [update, jwt, stationId]);
 
   function getShipCost() {
-    fetch("/ship/cost/miner", {
+    fetch("/api/v1/ship/cost/miner", {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -41,7 +41,7 @@ function Hangar() {
   }
 
   function getHangarUpgradeCost() {
-    fetch(`/base/${stationId}/hangar/upgrade`, {
+    fetch(`/api/v1/base/${stationId}/hangar/upgrade`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -54,7 +54,7 @@ function Hangar() {
   }
 
   function getShip(id) {
-    fetch(`/ship/miner/${id}`, {
+    fetch(`/api/v1/ship/miner/${id}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -71,7 +71,7 @@ function Hangar() {
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`, {
+    fetch(`/api/v1/base/${stationId}/storage/resources`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },

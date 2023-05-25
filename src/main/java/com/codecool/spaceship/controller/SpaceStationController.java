@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/base")
+@RequestMapping("api/v1/base")
 @CrossOrigin(origins = "http://localhost:3000")
 public class SpaceStationController {
 
