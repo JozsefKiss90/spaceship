@@ -7,15 +7,23 @@
     justify-items: center;
 }
 
+.side-bar {
+    display: flex;
+    flex-flow: column-reverse;
+    justify-content: space-between;
+    width: 40%;
+    padding: 5px 5px 5px 20px;
 
+}
 
 .container {
-    width: 50%;
+    width: 60%;
     min-width: max-content;
+    padding: 5px;
 }
 
 .row {
     display: flex !important;
-    flex-flow: row !important; ;
+    flex-flow: row !important;;
     justify-content: space-between !important;
 }

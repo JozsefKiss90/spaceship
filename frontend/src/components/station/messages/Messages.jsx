@@ -8,14 +8,7 @@ import Mission from "./Mission";
 const Messages = () => {
     const message = useMessageContext();
 
-    const checkStorage = (need, have) => {
-        for (const resource of Object.keys(need)) {
-            if (!(resource in have) || need[resource] > have[resource]) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     const setElement = () => {
         if (message.type) {

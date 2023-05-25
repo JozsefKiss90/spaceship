@@ -44,13 +44,13 @@
     align-items: center;
 }
 
-.container>div {
-    height: 45px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    justify-items: center;
-}
+/*.container>div {*/
+/*    height: 45px;*/
+/*    display: flex;*/
+/*    justify-content: flex-start;*/
+/*    align-items: center;*/
+/*    justify-items: center;*/
+/*}*/
 
 
 
