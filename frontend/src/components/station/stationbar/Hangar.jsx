@@ -15,7 +15,7 @@ function Hangar() {
   const [hangar, setHangar] = useState();
 
   useEffect(() => {
-    fetch(`/base/${stationId}/hangar`)
+    fetch(`/api/v1/base/${stationId}/hangar`)
       .then((res) => res.json())
       .then((data) => {
         setHangar(data);
@@ -25,7 +25,7 @@ function Hangar() {
   }, [update, stationId]);
 
   function getShipCost() {
-    fetch("/ship/cost/miner")
+    fetch("/api/v1/ship/cost/miner")
       .then((res) => res.json())
       .then((data) => {
         setMinerCost(data);
@@ -34,7 +34,7 @@ function Hangar() {
   }
 
   function getHangarUpgradeCost() {
-    fetch(`/base/${stationId}/hangar/upgrade`)
+    fetch(`/api/v1/base/${stationId}/hangar/upgrade`)
       .then((res) => res.json())
       .then((data) => {
         setUpgradeCost(data);
@@ -43,7 +43,7 @@ function Hangar() {
   }
 
   function getShip(id) {
-    fetch(`/ship/miner/${id}`)
+    fetch(`/api/v1/ship/miner/${id}`)
       .then((res) => res.json())
       .then((data) => {
         dispatch({
@@ -56,7 +56,7 @@ function Hangar() {
   }
 
   function getStorage() {
-    fetch(`/base/${stationId}/storage/resources`)
+    fetch(`/api/v1/base/${stationId}/storage/resources`)
       .then((res) => res.json())
       .then((data) => {
         setStorage(data);

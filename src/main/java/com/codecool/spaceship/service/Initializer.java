@@ -1,4 +1,4 @@
-package com.codecool.spaceship;
+package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.Role;
@@ -12,29 +12,30 @@ import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.LocationRepository;
 import com.codecool.spaceship.repository.UserRepository;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-@SpringBootApplication
-public class SpaceshipApplication {
+@Service
+public class Initializer {
 
-    private final Initializer initializer;
+    private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SpaceshipApplication(Initializer initializer) {
-        this.initializer = initializer;
+    public Initializer(UserRepository userRepository, LocationRepository locationRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.locationRepository = locationRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public static void main(String[] args) {
-
-        ApplicationContext applicationContext = SpringApplication.run(SpaceshipApplication.class, args);
-        UserRepository userRepository = applicationContext.getBean(UserRepository.class);
-        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        LocationRepository locationRepository = applicationContext.getBean(LocationRepository.class);
+    public void initialize() {
+        if (userRepository.existsByRole(Role.ADMIN)) {
+            return;
+        }
 
         UserEntity admin = UserEntity.builder()
                 .username("Mr. Admin")
@@ -52,7 +53,7 @@ public class SpaceshipApplication {
                 .build();
 
         MinerShip minerShip = MinerShipManager.createNewMinerShip("Built2Mine", Color.DIAMOND);
-        minerShip.setEngineLevel(1);
+        minerShip.setEngineLevel(2);
         minerShip.setShieldEnergy(20);
         minerShip.setDrillLevel(2);
 
@@ -99,26 +100,6 @@ public class SpaceshipApplication {
                 .distanceFromStation(1)
                 .resourceType(ResourceType.METAL)
                 .build();
-        Location koboh = Location.builder()
-                .name("Koboh")
-                .distanceFromStation(4)
-                .resourceType(ResourceType.CRYSTAL)
-                .build();
-        Location palaven = Location.builder()
-                .name("Palaven")
-                .distanceFromStation(11)
-                .resourceType(ResourceType.SILICONE)
-                .build();
-        Location crosie = Location.builder()
-                .name("Crosie 3W")
-                .distanceFromStation(13)
-                .resourceType(ResourceType.METAL)
-                .build();
-        locationRepository.saveAll(Set.of(morpheus,koboh,palaven, crosie));
-    }
-
-    @PostConstruct
-    public void initialize() {
-        initializer.initialize();
+        locationRepository.save(morpheus);
     }
 }

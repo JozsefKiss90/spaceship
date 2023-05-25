@@ -21,9 +21,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const addShip = async (name) => {
-        await fetch(`/base/${stationId}/add/ship`, {
-            method: "POST", 
-            body: JSON.stringify({name: name, color: "EMERALD", type: "miner"})
+        await fetch(`/api/v1/base/${stationId}/add/ship`, {
+            method: "POST", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({name: name, color: "EMERALD", type: "miner"})
         });
         setDisplayInput(false);
         messageSetter({type: null});
@@ -32,18 +33,20 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradeStorage = async () => {
-        await fetch(`/base/${stationId}/storage/upgrade`, {
-            method: "POST",
-            body: JSON.stringify({})
+        await fetch(`/api/v1/base/${stationId}/storage/upgrade`, {
+            method: "POST", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({})
         });
         messageSetter({type: null});
         storageSetter({type: "update"});
     }
 
     const upgradeHangar = async () => {
-        await fetch(`/base/${stationId}/hangar/upgrade`, {
-            method: "POST",
-            body: JSON.stringify({})
+        await fetch(`/api/v1/base/${stationId}/hangar/upgrade`, {
+            method: "POST", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({})
         });
         messageSetter({type: null});
         storageSetter({type: "update"});
@@ -51,9 +54,10 @@ export function ResourceNeeded({message, checkStorage}) {
     }
 
     const upgradePart = async (id, part) => {
-        await fetch(`/ship/miner/${id}/upgrade?part=${part}`, {
-            method: "PATCH",
-            body: JSON.stringify({})
+        await fetch(`/api/v1/ship/miner/${id}/upgrade?part=${part}`, {
+            method: "PATCH", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({})
         });
         storageSetter({type: "update"});
     }

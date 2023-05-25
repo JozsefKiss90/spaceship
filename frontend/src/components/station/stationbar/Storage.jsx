@@ -13,7 +13,7 @@ const Storage = () => {
     const [storage, setStorage] = useState(null);
 
     useEffect(() => {
-        fetch(`/base/${stationId}/storage`)
+        fetch(`/api/v1/base/${stationId}/storage`)
             .then(res => res.json())
             .then(data => setStorage(data))
             .catch(err => console.error(err));
@@ -22,7 +22,7 @@ const Storage = () => {
 
 
     const getUpgrade = () => {
-        fetch(`/base/${stationId}/storage/upgrade`)
+        fetch(`/api/v1/base/${stationId}/storage/upgrade`)
             .then(res => res.json())
             .then(data => setUpgradeCost(data))
             .then(err => console.error(err));

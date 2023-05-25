@@ -19,7 +19,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (user !== null) {
-      fetch(`/base/user/${user.userId}`, {})
+      fetch(`/api/v1/base/user/${user.userId}`, {})
         .then((res) => res.json())
         .then((data) => setStationId(data.id))
         .catch((err) => console.error(err));
