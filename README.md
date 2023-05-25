@@ -16,7 +16,7 @@ To run the application:
 - you need docker and docker compose installed.
 - clone the repository and be sure to be on "development" branch
 - run ```docker compose up -d``` in the repository root
-- after around a minute you can reach the app on localhost:8080
+- once the containers started, wait around a minute for the server and then you can reach the app on localhost:8080
 - you can stop the app with ```docker compose stop```
 
 
