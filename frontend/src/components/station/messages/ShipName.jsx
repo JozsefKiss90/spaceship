@@ -8,7 +8,7 @@ export function ShipName({ship}) {
     const [shipName, setShipName] = useState(ship.name);
 
     async function renameShip(name) {
-        await fetch(`/ship/${ship.id}`, {
+        await fetch(`/api/v1/ship/${ship.id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

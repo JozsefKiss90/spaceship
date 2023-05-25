@@ -9,7 +9,7 @@ export function ShipColor({ship}) {
     function changeColor() {
         setColorListDisplay(false);
         if (color !== ship.color) {
-            fetch(`/ship/${ship.id}`, {
+            fetch(`/api/v1/ship/${ship.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export function ShipColor({ship}) {
 
     async function getAvailableColors() {
         if (!allShipColors) {
-            await fetch(`/ship/color`)
+            await fetch(`/api/v1/ship/color`)
                 .then(res => res.json())
                 .then(data => setAllShipColors(data))
                 .catch(err => console.error(err));
@@ -37,7 +37,7 @@ export function ShipColor({ship}) {
 
     function ColorList() {
         return (
-            <div className="ship-color">
+            <div className="ship-color row">
                 <select name="colors" defaultValue={color} onChange={(e) => {
                     setColor(e.target.value);
                 }}>
@@ -48,16 +48,16 @@ export function ShipColor({ship}) {
                     ))}
                 </select>
                 <div className="button" onClick={changeColor}> Choose</div>
-            </div>)
+            </div>);
     }
 
     return (
-        <div className="ship-color row">
+        <>
             {colorListDisplay
                 ? <ColorList/>
-                : (<>
+                : (<div className="ship-color row">
                     <div> Color: {color.toLowerCase()}</div>
                     <div className="button" onClick={getAvailableColors}>Change</div>
-                </>)}
-        </div>)
+                </div>)}
+        </>)
 }

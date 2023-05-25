@@ -24,7 +24,7 @@ export default function Location({ location }) {
   }
 
   function postMission(details) {
-    fetch("/api/mission", {
+    fetch("/api/v1/mission", {
       method: "POST",
       body: JSON.stringify(details),
     })

@@ -6,7 +6,7 @@ export default function Mission() {
   const [mission, setMission] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/mission/${id}`)
+    fetch(`/api/v1/mission/${id}`)
       .then((res) => res.json())
       .then((data) => setMission(data));
   }, [id]);

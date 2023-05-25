@@ -8,11 +8,11 @@ export default function LocationList() {
     const [locations, setLocations] = useState(null);
 
     useEffect(() => {
-        fetch(`/api/location?user=${user.userId}`)
+        fetch(`/api/v1/location?user=${user.userId}`)
           .then(res => res.json())
           .then(data => setLocations(data));
     },[user])
-    
+
     if(locations === null) {
         return <div>Loading...</div>
     }

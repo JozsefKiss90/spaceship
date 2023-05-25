@@ -8,7 +8,7 @@ export default function MissionList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/api/mission/${listToShow}`)
+    fetch(`/api/v1/mission/${listToShow}`)
       .then((res) => res.json())
       .then((data) => setMissions(data));
   }, [listToShow]);
