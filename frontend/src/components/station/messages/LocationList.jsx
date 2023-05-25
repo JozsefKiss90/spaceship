@@ -4,21 +4,30 @@ import "./LocationList.css";
 import Location from "./Location";
 
 export default function LocationList() {
-    const {user} = useOutletContext();
-    const [locations, setLocations] = useState(null);
+  const { user, stationId } = useOutletContext();
+  const [locations, setLocations] = useState(null);
+  const [availableShips, setAvailableShips] = useState(null);
 
-    useEffect(() => {
-        fetch(`/api/v1/location?user=${user.userId}`)
-          .then(res => res.json())
-          .then(data => setLocations(data));
-    },[user])
+  useEffect(() => {
+    Promise.all([
+      fetch(`/api/v1/location?user=${user.userId}`).then((res) => res.json()),
+      fetch(`/api/v1/base/${stationId}/hangar`).then((res) => res.json()),
+    ]).then(([locations, hangar]) => {
+      setLocations(locations.sort((a, b) => a.id - b.id));
+      setAvailableShips(hangar.ships.filter(ship => ship.missionId === 0));
+    });
+  }, [user, stationId]);
 
-    if(locations === null) {
-        return <div>Loading...</div>
-    }
+  if (locations === null || availableShips === null) {
+    return <div>Loading...</div>;
+  }
 
-    return <div className="location-list">
-        <div>Available locations:</div>
-        {locations.map(location => <Location key={location.id} location={location}/>)}
+  return (
+    <div className="location-list">
+      <div>Available locations:</div>
+      {locations.map((location) => (
+        <Location key={location.id} location={location} availableShips={availableShips} />
+      ))}
     </div>
+  );
 }

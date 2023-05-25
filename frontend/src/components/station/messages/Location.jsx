@@ -3,7 +3,7 @@ import "./Location.css";
 import { useHangarContext } from "../HangarContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Location({ location }) {
+export default function Location({ location, availableShips }) {
   const [missionMenuToggle, setMissionMenuToggle] = useState(false);
   const hangar = useHangarContext();
   const navigate = useNavigate();
@@ -26,7 +26,10 @@ export default function Location({ location }) {
   function postMission(details) {
     fetch("/api/v1/mission", {
       method: "POST",
-      body: JSON.stringify(details),
+      headers: {
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify(details)
     })
       .then((res) => {
         if(res.ok) {
@@ -58,11 +61,11 @@ export default function Location({ location }) {
         {!missionMenuToggle && (
           <div className="loc-actions">
             {location.missionId === 0 ? (
-              <button onClick={() => setMissionMenuToggle(true)}>
-                Send mission
+              <button className="button" onClick={() => setMissionMenuToggle(true)}>
+                Start mission
               </button>
             ) : (
-              <button onClick={() => navigate(`/station/mission/${location.missionId}`)}>Check Mission</button>
+              <button className="button" onClick={() => navigate(`/station/mission/${location.missionId}`)}>Check mission</button>
             )}
           </div>
         )}
@@ -71,7 +74,9 @@ export default function Location({ location }) {
         <form className="loc-mission-menu" onSubmit={onSubmitMission}>
           <div>
             <label htmlFor="shipId">Ship: </label>
-            <select name="shipId" required></select>
+            <select name="shipId" required>
+              {availableShips.length > 0 ? availableShips.map(ship => <option key={ship.id} value={ship.id}>{ship.name}</option>) : <option disabled>No available ships</option>}
+            </select>
           </div>
           <div>
             <label htmlFor="activityDuration">Mine for: </label>
@@ -80,11 +85,12 @@ export default function Location({ location }) {
               <option value={7200}>2 hours</option>
               <option value={10800}>3 hours</option>
               <option value={14400}>4 hours</option>
+              <option value={60}>DEMO</option>
             </select>
           </div>
           <div className="loc-mission-actions">
-            <button type="submit">Send</button>
-            <button type="button" onClick={() => setMissionMenuToggle(false)}>
+            <button className="button" type="submit">Start</button>
+            <button className="button red" onClick={() => setMissionMenuToggle(false)}>
               Cancel
             </button>
           </div>

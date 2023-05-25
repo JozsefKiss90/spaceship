@@ -113,7 +113,7 @@ public class Initializer {
         Location crosie = Location.builder()
                 .name("Crosie 3W")
                 .distanceFromStation(13)
-                .resourceType(ResourceType.METAL)
+                .resourceType(ResourceType.PLUTONIUM)
                 .build();
         locationRepository.saveAll(Set.of(morpheus,koboh,palaven, crosie));
     }
