@@ -56,7 +56,7 @@ export default function MissionList() {
   );
 
   function ActiveMissionListItem({ mission }) {
-    const formattedStatus = mission.status.replaceAll('_', ' ')
+    const formattedStatus = mission.status.replaceAll('_', ' ');
     return (
       <div
         className="ml-li ml-li-active"
@@ -65,7 +65,7 @@ export default function MissionList() {
         <div>
           <div>{`${mission.missionType} mission on ${mission.location}`}</div>
           {mission.status !== "OVER" && (
-            <div>Next report : {new Date(mission.approxEndTime).toLocaleString('hu-HU')}</div>
+            <div>Next report : {new Date(mission.currentObjectiveTime).toLocaleString('hu-HU')}</div>
           )}
         </div>
         <div>{formattedStatus}</div>

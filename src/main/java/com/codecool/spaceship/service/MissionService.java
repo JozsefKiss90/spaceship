@@ -86,14 +86,14 @@ public class MissionService {
         return new MissionDTO(mission);
     }
 
-    public boolean archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
+    public MissionDTO archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = new MissionManager(mission);
         if(missionManager.archiveMission()) {
-            missionRepository.save(mission);
-            return true;
+            mission =missionRepository.save(mission);
+            return new MissionDTO(mission);
         }
-        return false;
+        return null;
     }
 
     private MissionDTO updateAndConvert(Mission mission) {

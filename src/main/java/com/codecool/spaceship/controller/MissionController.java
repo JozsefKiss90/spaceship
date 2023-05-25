@@ -74,7 +74,7 @@ public class MissionController {
     }
 
     @PutMapping("/{id}/archive")
-    public ResponseEntity<Boolean> archiveMission(@PathVariable Long id) {
+    public ResponseEntity<MissionDTO> archiveMission(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(missionService.archiveMission(id));
         } catch (Exception e) {
