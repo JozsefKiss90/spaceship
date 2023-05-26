@@ -1,47 +1,51 @@
 .message-log {
-    min-width: fit-content;
-    width: -moz-available;
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-evenly;
-    margin: 10px;
-    height: 80vh;
+  min-width: fit-content;
+  width: -moz-available;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-evenly;
+  margin: 10px;
+  height: 80vh;
 }
 
 .messages {
-    width: -moz-available;
-    height: 92%;
-    background-image: -webkit-linear-gradient(rgba(0, 89, 0, 0.75), rgba(0, 96, 0, 0.35), rgba(0, 89, 0, 0.75));
-    padding: 5px;
-    border-radius: 5px;
-    color: white;
-    font-size: 18px;
-    border: #000000 solid 4px;
-    box-shadow: 0 0 5px 5px rgba(0, 23, 0, 0.85);
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    overflow-y: auto;
-    scrollbar-color: rgba(0, 135, 0, 0.35), rgba(0, 204, 0, 0.95);
-    scrollbar-width: 8px;
+  width: 50vw;
+  height: 92%;
+  background-image: -webkit-linear-gradient(
+    rgba(0, 89, 0, 0.75),
+    rgba(0, 96, 0, 0.35),
+    rgba(0, 89, 0, 0.75)
+  );
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  border: #000000 solid 4px;
+  box-shadow: 0 0 5px 5px rgba(0, 23, 0, 0.85);
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-color: rgba(0, 135, 0, 0.35), rgba(0, 204, 0, 0.95);
+  scrollbar-width: 8px;
 }
 
-
 .messages::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(0, 135, 0, 0.35);
-  }
+  width: 8px;
+  background-color: rgba(0, 135, 0, 0.35);
+}
 
-  .messages::-webkit-scrollbar-thumb {
-    background: rgba(0, 204, 0, 0.95);
-  }
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 204, 0, 0.95);
+}
 
 .message-row {
-    padding: 0px 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  padding: 0px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 /*.container>div {*/
@@ -51,6 +55,3 @@
 /*    align-items: center;*/
 /*    justify-items: center;*/
 /*}*/
-
-
-

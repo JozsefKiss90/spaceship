@@ -1,8 +1,8 @@
 import "./ShipName.css";
-import {useHangarDispatchContext} from "../HangarContext";
-import {useEffect, useState} from "react";
+import { useHangarDispatchContext } from "../HangarContext";
+import { useEffect, useState } from "react";
 
-export function ShipName({ship}) {
+export function ShipName({ ship }) {
     const hangarSetter = useHangarDispatchContext();
     const [nameInputDisplay, setNameInputDisplay] = useState(false);
     const [shipName, setShipName] = useState(ship.name);
@@ -18,10 +18,10 @@ export function ShipName({ship}) {
             }),
         });
         setNameInputDisplay(false);
-        hangarSetter({type: "update"});
+        hangarSetter({ type: "update" });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setShipName(ship.name);
     }, [ship])
 
@@ -35,7 +35,9 @@ export function ShipName({ship}) {
                         value={shipName}
                         onChange={(e) => setShipName(e.target.value)}
                         placeholder="Enter ship name"
-                        size="7"
+                        size="9"
+                        minLength="3"
+                        maxLength="15"
                     ></input>
                     <div className="button" onClick={() => renameShip(shipName)}>
                         Change!

@@ -1,16 +1,27 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import Countdown from "react-countdown";
 import "./Mission.css";
 
 export default function Mission() {
   const { id } = useParams();
   const [mission, setMission] = useState(null);
+  const timer = useRef();
 
-  useEffect(() => {
-    fetch(`/api/v1/mission/${id}`)
+  const fetchMission = useCallback(() => {
+    return fetch(`/api/v1/mission/${id}`)
       .then((res) => res.json())
       .then((data) => setMission(data));
   }, [id]);
+
+  useEffect(() => {
+    fetchMission();
+  }, [fetchMission]);
+
+  async function onComplete() {
+    await fetchMission();
+    timer.current.getApi().start();
+  }
 
   function archiveMission() {
     fetch(`/api/v1/mission/${id}/archive`, {
@@ -30,6 +41,7 @@ export default function Mission() {
   }
 
   const formattedStatus = mission.status.replaceAll("_", " ");
+  const active = mission.status !== "OVER" && mission.status !== "ARCHIVED"
   return (
     <>
       <div className="mission-container">
@@ -45,27 +57,19 @@ export default function Mission() {
             <div>{mission.shipName}</div>
           </div>
         </div>
-        {mission.status !== "OVER" && mission.status !== "ARCHIVED" ? (
-          <div className="mission-times">
-            <div className="mission-timer">
-              <div>Expected mission completion</div>
-              <div>
-                {new Date(mission.approxEndTime).toLocaleString("hu-HU")}
-              </div>
-            </div>
-            <div className="mission-timer">
-              <div>Next expected report</div>
-              <div>
-                {new Date(mission.currentObjectiveTime).toLocaleString("hu-HU")}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="mission-end">
-            <div>Mission ended</div>
-            <div>{new Date(mission.approxEndTime).toLocaleString("hu-HU")}</div>
-          </div>
-        )}
+        {active &&
+          <div className="mission-timer">
+            <div>Next expected report</div>
+            <Countdown
+              ref={timer}
+              className="mission-countdown"
+              date={mission.currentObjectiveTime}
+              onComplete={onComplete} />
+          </div>}
+        <div className="mission-end">
+          <div>{active ? "Expected mission completion" : "Mission ended"}</div>
+          <div>{new Date(mission.approxEndTime).toLocaleString("hu-HU")}</div>
+        </div>
         <div className="mission-reports">
           <div>Reports:</div>
           {mission.eventLog.map((log) => (
