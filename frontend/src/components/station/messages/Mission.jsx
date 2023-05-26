@@ -41,7 +41,9 @@ export default function Mission() {
   }
 
   const formattedStatus = mission.status.replaceAll("_", " ");
-  const active = mission.status !== "OVER" && mission.status !== "ARCHIVED"
+  const active = mission.status !== "OVER" && mission.status !== "ARCHIVED";
+  const endTime = new Date(mission.approxEndTime+"Z");
+  const nextReport = new Date(mission.currentObjectiveTime+"Z");
   return (
     <>
       <div className="mission-container">
@@ -63,17 +65,18 @@ export default function Mission() {
             <Countdown
               ref={timer}
               className="mission-countdown"
-              date={mission.currentObjectiveTime}
-              onComplete={onComplete} />
+              date={nextReport}
+              onComplete={onComplete}
+              daysInHours={true} />
           </div>}
         <div className="mission-end">
           <div>{active ? "Expected mission completion" : "Mission ended"}</div>
-          <div>{new Date(mission.approxEndTime).toLocaleString("hu-HU")}</div>
+          <div>{endTime.toLocaleString("hu-HU")}</div>
         </div>
         <div className="mission-reports">
           <div>Reports:</div>
-          {mission.eventLog.map((log) => (
-            <div key={log}>{log}</div>
+          {mission.reports.map((report) => (
+            <Report key={report.time} report={report}/>
           ))}
         </div>
         <div className="mission-actions">
@@ -86,4 +89,13 @@ export default function Mission() {
       </div>
     </>
   );
+
+  function Report({report}) {
+    const formattedDate = `<${new Date(report.time+'Z').toLocaleString("hu-HU")}>`;
+    return <div className="mission-report">
+      <div>{formattedDate}</div>
+      <div>{report.message}</div>
+    </div>
+  }
+  
 }

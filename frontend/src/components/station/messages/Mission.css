@@ -59,6 +59,16 @@
   gap: 5px;
 }
 
+.mission-report {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.mission-report > div:first-child {
+  min-width: fit-content;
+}
+
 .mission-actions {
   position: absolute;
   top: 10px;
