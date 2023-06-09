@@ -73,10 +73,19 @@ public class MissionController {
         }
     }
 
-    @PutMapping("/{id}/archive")
+    @PatchMapping("/{id}/archive")
     public ResponseEntity<MissionDTO> archiveMission(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(missionService.archiveMission(id));
+        } catch (Exception e) {
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
+        }
+    }
+
+    @PatchMapping("/{id}/abort")
+    public ResponseEntity<MissionDTO> abortMission(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(missionService.abortMission(id));
         } catch (Exception e) {
             return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }

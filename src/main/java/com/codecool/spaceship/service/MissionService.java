@@ -90,7 +90,17 @@ public class MissionService {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = new MissionManager(mission);
         if(missionManager.archiveMission()) {
-            mission =missionRepository.save(mission);
+            mission = missionRepository.save(mission);
+            return new MissionDTO(mission);
+        }
+        return null;
+    }
+
+    public MissionDTO abortMission(Long id) throws DataNotFoundException, IllegalOperationException {
+        Mission mission = getMissionByIdAndCheckAccess(id);
+        MissionManager missionManager = new MissionManager(mission);
+        if (missionManager.abortMission()) {
+            mission = missionRepository.save(mission);
             return new MissionDTO(mission);
         }
         return null;

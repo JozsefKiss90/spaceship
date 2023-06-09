@@ -85,17 +85,16 @@ public class MissionManager {
         return true;
     }
 
-    public void abortMission() {
-        if (mission.getCurrentStatus() == MissionStatus.RETURNING
-                || mission.getCurrentStatus() == MissionStatus.OVER) {
-            return;
+    public boolean abortMission() throws IllegalOperationException {
+        switch (mission.getCurrentStatus()) {
+            case OVER, ARCHIVED -> throw new IllegalOperationException("Mission is already over.");
+            case RETURNING -> throw new IllegalOperationException("Mission is already returning.");
         }
         LocalDateTime now = LocalDateTime.now(clock);
         Event abortedEvent = popLastEvent();
         Event abortEvent = Event.builder()
                 .eventType(EventType.ABORT)
                 .endTime(now)
-                .eventMessage("Mission aborted by Command. Returning to station.")
                 .build();
 
         if (abortedEvent.getEventType() == EventType.MINING_COMPLETE) {
@@ -108,16 +107,23 @@ public class MissionManager {
             } catch (StorageException e) {
                 throw new RuntimeException(e);
             }
+            abortEvent.setEventMessage("Mission aborted by Command. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
         }
+
+        if (abortEvent.getEventMessage() == null) {
+            abortEvent.setEventMessage("Mission aborted by Command. Returning to station.");
+        }
+
         pushNewEvent(abortEvent);
         mission.setApproxEndTime(now.plusSeconds(mission.getTravelDurationInSecs()));
         startReturnTravel();
+        return true;
     }
 
     public boolean archiveMission() throws IllegalOperationException {
         if (mission.getCurrentStatus() == MissionStatus.ARCHIVED) {
             throw new IllegalOperationException("Mission is already archived");
-        } else  if (mission.getCurrentStatus() != MissionStatus.OVER) {
+        } else if (mission.getCurrentStatus() != MissionStatus.OVER) {
             throw new IllegalOperationException("Mission can't be archived until its over");
         } else {
             mission.setCurrentStatus(MissionStatus.ARCHIVED);
@@ -261,7 +267,7 @@ public class MissionManager {
 
     private Event peekLastEvent() {
         List<Event> events = mission.getEvents();
-        return events.get(events.size()-1);
+        return events.get(events.size() - 1);
     }
 
     private boolean pushNewEvent(Event event) {

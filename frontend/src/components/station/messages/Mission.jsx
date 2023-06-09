@@ -25,7 +25,20 @@ export default function Mission() {
 
   function archiveMission() {
     fetch(`/api/v1/mission/${id}/archive`, {
-      method: "PUT",
+      method: "PATCH",
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then((data) => setMission(data))
+      .catch((err) => console.error(err));
+  }
+
+  function abortMission() {
+    fetch(`/api/v1/mission/${id}/abort`, {
+      method: "PATCH",
     })
       .then((res) => {
         if (res.ok) {
@@ -42,8 +55,8 @@ export default function Mission() {
 
   const formattedStatus = mission.status.replaceAll("_", " ");
   const active = mission.status !== "OVER" && mission.status !== "ARCHIVED";
-  const endTime = new Date(mission.approxEndTime+"Z");
-  const nextReport = new Date(mission.currentObjectiveTime+"Z");
+  const endTime = new Date(mission.approxEndTime + "Z");
+  const nextReport = new Date(mission.currentObjectiveTime + "Z");
   return (
     <>
       <div className="mission-container">
@@ -76,10 +89,14 @@ export default function Mission() {
         <div className="mission-reports">
           <div>Reports:</div>
           {mission.reports.map((report) => (
-            <Report key={report.time} report={report}/>
+            <Report key={report.time} report={report} />
           ))}
         </div>
         <div className="mission-actions">
+          {(active && mission.status !== "RETURNING") &&
+            <button className="button red" onClick={abortMission}>
+              Abort
+            </button>}
           {mission.status === "OVER" && (
             <button className="button" onClick={archiveMission}>
               Archive
@@ -90,12 +107,12 @@ export default function Mission() {
     </>
   );
 
-  function Report({report}) {
-    const formattedDate = `<${new Date(report.time+'Z').toLocaleString("hu-HU")}>`;
+  function Report({ report }) {
+    const formattedDate = `<${new Date(report.time + 'Z').toLocaleString("hu-HU")}>`;
     return <div className="mission-report">
       <div>{formattedDate}</div>
       <div>{report.message}</div>
     </div>
   }
-  
+
 }
