@@ -33,27 +33,27 @@ function Hangar() {
       .catch((err) => console.error(err));
   }
 
-  function getHangarUpgradeCost() {
-    fetch(`/api/v1/base/${stationId}/hangar/upgrade`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUpgradeCost(data);
-      })
-      .catch((err) => console.error(err));
-  }
+  // function getHangarUpgradeCost() {
+  //   fetch(`/api/v1/base/${stationId}/hangar/upgrade`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setUpgradeCost(data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }
 
-  function getShip(id) {
-    fetch(`/api/v1/ship/miner/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch({
-          type: "display ship",
-          data: data,
-          storage: storage,
-        });
-      })
-      .catch((err) => console.error(err));
-  }
+  // function getShip(id) {
+  //   fetch(`/api/v1/ship/miner/${id}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       dispatch({
+  //         type: "display ship",
+  //         data: data,
+  //         storage: storage,
+  //       });
+  //     })
+  //     .catch((err) => console.error(err));
+  // }
 
   function getStorage() {
     fetch(`/api/v1/base/${stationId}/storage/resources`)
@@ -106,9 +106,8 @@ function Hangar() {
             </div>
             <div
               className="button"
-              onClick={async () => {
-                await getStorage();
-                getHangarUpgradeCost();
+              onClick={() => {
+                navigate("/station/upgrade/hangar");
               }}
             >
               Upgrade

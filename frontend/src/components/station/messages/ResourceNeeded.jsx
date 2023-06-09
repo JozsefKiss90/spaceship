@@ -1,11 +1,11 @@
-import {useMessageDispatchContext} from "../MessageContext";
-import {useStorageDispatchContext} from "../StorageContext";
-import {useHangarDispatchContext} from "../HangarContext";
-import {useEffect, useState} from "react";
-import {useOutletContext} from "react-router-dom";
+import { useMessageDispatchContext } from "../MessageContext";
+import { useStorageDispatchContext } from "../StorageContext";
+import { useHangarDispatchContext } from "../HangarContext";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
-export function ResourceNeeded({cost, item, onConfirm}) {
-    const {stationId} = useOutletContext();
+export function ResourceNeeded({ cost, item, onConfirm }) {
+    const { stationId } = useOutletContext();
     // const messageSetter = useMessageDispatchContext();
     // const storageSetter = useStorageDispatchContext();
     // const hangarSetter = useHangarDispatchContext();
@@ -91,7 +91,7 @@ export function ResourceNeeded({cost, item, onConfirm}) {
     //     }
     // }
 
-    if (storage===null) {
+    if (storage === null) {
         return <div>Loading...</div>
     }
 
@@ -99,13 +99,13 @@ export function ResourceNeeded({cost, item, onConfirm}) {
         <div>Resources needed to upgrade {item}:</div>
         {Object.keys(cost).map(key => {
             return <div className="message-row" key={key}>
-                <img style={{width: "25px", height: "25px"}} src={'/' + key.toLowerCase() + '.png'}
-                     alt={key}/>
-                <p style={{marginLeft: "5px"}}>{key}: {cost[key]}</p>
+                <img style={{ width: "25px", height: "25px" }} src={'/' + key.toLowerCase() + '.png'}
+                    alt={key} />
+                <p style={{ marginLeft: "5px" }}>{key} : {cost[key]}</p>
             </div>
         })}
         {checkStorage()
             ? <div className="button" onClick={onConfirm}>I want it!</div>
-            : <div style={{color: "red"}}>Not enough resources</div>}
+            : <div style={{ color: "red" }}>Not enough resources</div>}
     </div>);
 }
