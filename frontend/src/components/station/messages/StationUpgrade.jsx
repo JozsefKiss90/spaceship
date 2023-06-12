@@ -12,13 +12,16 @@ export default function StationUpgrade() {
     const hangarSetter = useHangarDispatchContext();
     const modules = useMemo(() => ["hangar", "storage"], []);
     const [cost, setCost] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (modules.includes(stationModule)) {
+            setLoading(true);
             fetch(`/api/v1/base/${stationId}/${stationModule}/upgrade`)
                 .then(res => res.json())
                 .then(cost => {
                     setCost(cost);
+                    setLoading(false);
                 })
                 .catch((err) => console.error(err));
         }
@@ -29,6 +32,7 @@ export default function StationUpgrade() {
     }
 
     async function onConfirm() {
+        setLoading(true);
         await fetch(`/api/v1/base/${stationId}/${stationModule}/upgrade`, {
             method: "POST", headers: {
                 "Content-Type": "application/json"
@@ -38,10 +42,11 @@ export default function StationUpgrade() {
         if (stationModule === "hangar") {
             hangarSetter({ type: "update" });
         }
+        setLoading(false);
         navigate("/station");
     }
 
-    if (cost === null) {
+    if (loading) {
         return <div>Loading...</div>
     }
 
