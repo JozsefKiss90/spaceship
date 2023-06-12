@@ -24,14 +24,14 @@ function Hangar() {
       .catch((err) => console.error(err));
   }, [update, stationId]);
 
-  function getShipCost() {
-    fetch("/api/v1/ship/cost/miner")
-      .then((res) => res.json())
-      .then((data) => {
-        setMinerCost(data);
-      })
-      .catch((err) => console.error(err));
-  }
+  // function getShipCost() {
+  //   fetch("/api/v1/ship/cost/miner")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setMinerCost(data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }
 
   // function getHangarUpgradeCost() {
   //   fetch(`/api/v1/base/${stationId}/hangar/upgrade`)
@@ -55,14 +55,14 @@ function Hangar() {
   //     .catch((err) => console.error(err));
   // }
 
-  function getStorage() {
-    fetch(`/api/v1/base/${stationId}/storage/resources`)
-      .then((res) => res.json())
-      .then((data) => {
-        setStorage(data);
-      })
-      .catch((err) => console.error(err));
-  }
+  // function getStorage() {
+  //   fetch(`/api/v1/base/${stationId}/storage/resources`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setStorage(data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }
 
   useEffect(() => {
     if (upgradeCost && storage) {
@@ -135,8 +135,7 @@ function Hangar() {
             <div
               className="button"
               onClick={() => {
-                getStorage();
-                getShipCost();
+                navigate("ship/add");
               }}
             >
               Add ship

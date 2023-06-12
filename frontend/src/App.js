@@ -14,6 +14,7 @@ import LocationList from './components/station/messages/LocationList';
 import Mission from './components/station/messages/Mission';
 import MissionList from './components/station/messages/MissionList';
 import StationUpgrade from './components/station/messages/StationUpgrade';
+import AddShip from './components/station/messages/AddShip';
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path='/' element={<Home />}></Route>
                     <Route path="/station" element={<Station />}>
                         <Route path='/station/' element={<Welcome />} />
+                        <Route path='/station/ship/add' element={<AddShip />} />
                         <Route path='/station/ship/:id' element={<DisplayMinerShip />} />
                         <Route path='/station/locations' element={<LocationList />} />
                         <Route path='/station/missions' element={<MissionList />} />

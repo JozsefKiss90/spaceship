@@ -14,6 +14,7 @@ import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
+import com.codecool.spaceship.repository.SpaceShipRepository;
 import com.codecool.spaceship.repository.SpaceStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,10 +28,12 @@ import java.util.Objects;
 public class StationService {
 
     private final SpaceStationRepository spaceStationRepository;
+    private final SpaceShipRepository spaceShipRepository;
 
     @Autowired
-    public StationService(SpaceStationRepository spaceStationRepository) {
+    public StationService(SpaceStationRepository spaceStationRepository, SpaceShipRepository spaceShipRepository) {
         this.spaceStationRepository = spaceStationRepository;
+        this.spaceShipRepository = spaceShipRepository;
     }
 
     public SpaceStationDTO getBaseById(long stationId) throws DataNotFoundException {
@@ -65,7 +68,7 @@ public class StationService {
         return true;
     }
 
-    public boolean addShip(long stationId, String name, Color color, ShipType shipType) throws StorageException, DataNotFoundException {
+    public long addShip(long stationId, String name, Color color, ShipType shipType) throws StorageException, DataNotFoundException {
         SpaceStation station = getStationByIdAndCheckAccess(stationId);
 
         SpaceShip ship;
@@ -73,14 +76,14 @@ public class StationService {
             ship = MinerShipManager.createNewMinerShip(name, color);
             ship.setUser(station.getUser());
         } else {
-            return false;
+            return 0;
         }
 
         SpaceStationManager stationManager = new SpaceStationManager(station);
         stationManager.addNewShip(ship, shipType);
 
-        spaceStationRepository.save(station);
-        return true;
+        ship = spaceShipRepository.save(ship);
+        return ship.getId();
     }
 
     public SpaceStationStorageDTO getStationStorage(long stationId) throws DataNotFoundException {

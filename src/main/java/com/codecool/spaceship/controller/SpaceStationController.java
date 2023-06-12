@@ -54,7 +54,7 @@ public class SpaceStationController {
     }
 
     @PostMapping("/{baseId}/add/ship")
-    public ResponseEntity<Boolean> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
+    public ResponseEntity<Long> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
         try {
             return ResponseEntity.ok(stationService.addShip(baseId,
                     objectNode.get("name").asText(),
