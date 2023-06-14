@@ -104,20 +104,20 @@ function Hangar() {
                 " / " +
                 hangar.capacity}
             </div>
-            <div
+            <button
               className="button"
               onClick={() => {
                 navigate("/station/upgrade/hangar");
               }}
             >
               Upgrade
-            </div>
+            </button>
           </div>
           <div className="ship-list">
             {Object.keys(hangar.ships).length === 0 ? (
               <p>No ships yet</p>
             ) : (
-              hangar.ships.map((ship) => {
+              hangar.ships.sort((a,b) => a.id - b.id).map((ship) => {
                 return (
                   <div className="shiplist"
                     onClick={() => {
@@ -131,15 +131,15 @@ function Hangar() {
               })
             )}
           </div>
-          <div className="add ship">
-            <div
+          <div className="add-ship-btn">
+            <button
               className="button"
               onClick={() => {
                 navigate("ship/add");
               }}
             >
               Add ship
-            </div>
+            </button>
           </div>
         </>
       )}

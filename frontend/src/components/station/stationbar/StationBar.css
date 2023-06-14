@@ -1,6 +1,6 @@
 .station-bar {
     min-width: fit-content;
-    width: 27vw;
+    width: 30vw;
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
@@ -12,6 +12,8 @@
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+    padding: 2px 0 2px 5px;
+    background-image: -webkit-linear-gradient(#000000, #00170000);
 }
 
 .menu>div {

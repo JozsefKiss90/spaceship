@@ -13,7 +13,6 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  text-align: center;
   box-shadow: 0 0 4px 4px rgba(29, 52, 0, 0.741);
 }
 .home-message>div {
