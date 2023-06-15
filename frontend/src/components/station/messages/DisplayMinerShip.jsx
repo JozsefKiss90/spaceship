@@ -1,32 +1,22 @@
 import "./DisplayMinerShip.css";
 import {ResourceNeeded} from "./ResourceNeeded";
 import {useEffect, useState} from "react";
-import {useOutletContext, useParams} from "react-router-dom";
-import {useMessageDispatchContext} from "../MessageContext";
-import {ShipName} from "./ShipName";
+import {useParams} from "react-router-dom";import {ShipName} from "./ShipName";
 import {ShipColor} from "./ShipColor";
 import {ShipStatus} from "./ShipStatus";
 import {useStorageDispatchContext} from "../StorageContext";
 
-export default function DisplayMinerShip({message, checkStorage}) {
-    const dispatch = useMessageDispatchContext();
-    const {stationId} = useOutletContext();
+export default function DisplayMinerShip() {
     const {id} = useParams();
     const [ship, setShip] = useState(null);
     const [cost, setCost] = useState(null);
     const storageSetter = useStorageDispatchContext();
-    const [storage, setStorage] = useState(null);
-    //const [displayResource, setDisplayResource] = useState(false);
-    const [resourceMessage, setResourceMessage] = useState(null);
-    const [show, setShow] = useState(false);
     const [part, setPart] = useState(null);
-
 
     useEffect(() => {
         fetch(`/api/v1/ship/miner/${id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setShip(data);
             });
     }, [id]);
@@ -38,15 +28,7 @@ export default function DisplayMinerShip({message, checkStorage}) {
             .catch((err) => console.error(err));
     }
 
-    // function getStorage() {
-    //     fetch(`/api/v1/base/${stationId}/storage/resources`)
-    //         .then((res) => res.json())
-    //         .then((data) => setStorage(data))
-    //         .catch((err) => console.error(err));
-    // }
-
     async function onClick(part) {
-        //await getStorage();
         await getShipPartUpgradeCost(part);
         setPart(part);
     }
@@ -68,15 +50,6 @@ export default function DisplayMinerShip({message, checkStorage}) {
             })
             .catch(err => console.log(err));
     }
-
-    // useEffect(() => {
-    //     if (part && cost) {
-    //         setResourceMessage({
-    //             part: part, type: part.toLowerCase() + " upgrade", data: cost, storage: storage, id: ship.id,
-    //         });
-    //         setShow(true);
-    //     }
-    // }, [displayResource]);
 
     if (ship == null) {
         return <div>Loading...</div>;
@@ -128,7 +101,6 @@ export default function DisplayMinerShip({message, checkStorage}) {
                     </div>);
                 })) : (<div>Ship storage is empty</div>)}
             </div>
-
         </div>
         <div className="side-bar">
             <img

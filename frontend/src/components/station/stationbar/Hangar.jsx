@@ -24,46 +24,6 @@ function Hangar() {
       .catch((err) => console.error(err));
   }, [update, stationId]);
 
-  // function getShipCost() {
-  //   fetch("/api/v1/ship/cost/miner")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setMinerCost(data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }
-
-  // function getHangarUpgradeCost() {
-  //   fetch(`/api/v1/base/${stationId}/hangar/upgrade`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setUpgradeCost(data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }
-
-  // function getShip(id) {
-  //   fetch(`/api/v1/ship/miner/${id}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       dispatch({
-  //         type: "display ship",
-  //         data: data,
-  //         storage: storage,
-  //       });
-  //     })
-  //     .catch((err) => console.error(err));
-  // }
-
-  // function getStorage() {
-  //   fetch(`/api/v1/base/${stationId}/storage/resources`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setStorage(data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }
-
   useEffect(() => {
     if (upgradeCost && storage) {
       dispatch({

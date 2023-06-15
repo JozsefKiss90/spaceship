@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useStorageDispatchContext } from "../StorageContext";
 import { useHangarDispatchContext } from "../HangarContext";
 import "./AddShip.css";
+import ResourceList from "./ResourceList";
 
 export default function AddShip() {
   const { stationId } = useOutletContext();
@@ -85,28 +86,6 @@ export default function AddShip() {
       .catch((err) => console.error(err));
   }
 
-  function ResourceNeeded() {
-    return (
-      <div>
-        <div>Resources needed:</div>
-        {Object.keys(cost).map((key) => {
-          return (
-            <div className="message-row" key={key}>
-              <img
-                style={{ width: "25px", height: "25px" }}
-                src={"/" + key.toLowerCase() + ".png"}
-                alt={key}
-              />
-              <p style={{ marginLeft: "5px" }}>
-                {key} : {cost[key]}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
   function AddButton() {
     if (!hasAvailableDock) {
       return (
@@ -170,7 +149,7 @@ export default function AddShip() {
         </div>
         {!loading ? (
           <>
-            <ResourceNeeded />
+            <ResourceList message={"Resources needed:"} cost={cost} />
             <AddButton />
           </>
         ) : (

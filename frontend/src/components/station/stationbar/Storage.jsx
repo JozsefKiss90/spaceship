@@ -20,15 +20,6 @@ const Storage = () => {
             .catch(err => console.error(err));
     }, [update, updateStorage]);
 
-
-
-    // const getUpgrade = () => {
-    //     fetch(`/api/v1/base/${stationId}/storage/upgrade`)
-    //         .then(res => res.json())
-    //         .then(data => setUpgradeCost(data))
-    //         .then(err => console.error(err));
-    // }
-
     useEffect(() => {
         if (upgradeCost) {
             dispatch({

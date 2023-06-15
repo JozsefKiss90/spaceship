@@ -1,14 +1,10 @@
 import { useState } from "react";
 import "./Location.css";
-import { useHangarContext } from "../HangarContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Location({ location, availableShips }) {
   const [missionMenuToggle, setMissionMenuToggle] = useState(false);
-  const hangar = useHangarContext();
   const navigate = useNavigate();
-
-  console.log(hangar);
 
   function onSubmitMission(e) {
     e.preventDefault();
@@ -20,10 +16,10 @@ export default function Location({ location, availableShips }) {
       return acc;
     }, {});
     details.locationId = location.id;
-    postMission(details);
+    startMission(details);
   }
 
-  function postMission(details) {
+  function startMission(details) {
     fetch("/api/v1/mission", {
       method: "POST",
       headers: {
