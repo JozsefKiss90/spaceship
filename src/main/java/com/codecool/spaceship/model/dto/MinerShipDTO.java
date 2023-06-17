@@ -14,7 +14,7 @@ public record MinerShipDTO(
         Long id,
         String name,
         Color color,
-        String status,
+        long missionId,
         int engineLevel,
         double maxSpeed,
         int shieldLevel,
@@ -24,7 +24,8 @@ public record MinerShipDTO(
         int drillEfficiency,
         int storageLevel,
         int maxStorageCapacity,
-        int amounntOfCurrentlyStoredItems,
-        Set<ShipResource> resources) {
+        int amountOfCurrentlyStoredItems,
+        Set<ShipResource> resources
+) {
 
 }

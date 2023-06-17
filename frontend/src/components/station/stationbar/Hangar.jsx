@@ -2,10 +2,11 @@ import "./Hangar.css";
 import { useEffect, useState } from "react";
 import { useMessageDispatchContext } from "../MessageContext";
 import { useHangarContext } from "../HangarContext";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 function Hangar() {
-  const [jwt, , , , stationId] = useOutletContext();
+  const { stationId } = useOutletContext();
+  const navigate = useNavigate();
   const [minerCost, setMinerCost] = useState(null);
   const [upgradeCost, setUpgradeCost] = useState(null);
   const [storage, setStorage] = useState(null);
@@ -14,79 +15,19 @@ function Hangar() {
   const [hangar, setHangar] = useState();
 
   useEffect(() => {
-    fetch(`/api/v1/base/${stationId}/hangar`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
+    fetch(`/api/v1/base/${stationId}/hangar`)
       .then((res) => res.json())
       .then((data) => {
         setHangar(data);
-      })
-      .catch((err) => console.error(err));
-  }, [update, jwt, stationId]);
 
-  function getShipCost() {
-    fetch("/api/v1/ship/cost/miner", {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setMinerCost(data);
       })
       .catch((err) => console.error(err));
-  }
-
-  function getHangarUpgradeCost() {
-    fetch(`/api/v1/base/${stationId}/hangar/upgrade`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUpgradeCost(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  function getShip(id) {
-    fetch(`/api/v1/ship/miner/${id}`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch({
-          type: "display ship",
-          data: data,
-          storage: storage,
-        });
-      })
-      .catch((err) => console.error(err));
-  }
-
-  function getStorage() {
-    fetch(`/api/v1/base/${stationId}/storage/resources`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setStorage(data);
-      })
-      .catch((err) => console.error(err));
-  }
+  }, [update, stationId]);
 
   useEffect(() => {
     if (upgradeCost && storage) {
       dispatch({
-        type: "hangar upgrade",
+        type: "base hangar upgrade",
         data: upgradeCost,
         storage: storage,
       });
@@ -123,44 +64,42 @@ function Hangar() {
                 " / " +
                 hangar.capacity}
             </div>
-            <div
+            <button
               className="button"
-              onClick={async () => {
-                await getStorage();
-                getHangarUpgradeCost();
+              onClick={() => {
+                navigate("/station/upgrade/hangar");
               }}
             >
               Upgrade
-            </div>
+            </button>
           </div>
           <div className="ship-list">
             {Object.keys(hangar.ships).length === 0 ? (
               <p>No ships yet</p>
             ) : (
-              hangar.ships.map((ship) => {
+              hangar.ships.sort((a,b) => a.id - b.id).map((ship) => {
                 return (
-                  <div
+                  <div className="shiplist"
                     onClick={() => {
-                      getShip(ship.id);
+                      navigate(`ship/${ship.id}`);
                     }}
                     key={ship.id}
                   >
-                    {ship.name} - {ship.type}{" "}
+                    {ship.name} - {ship.type}
                   </div>
                 );
               })
             )}
           </div>
-          <div className="add ship">
-            <div
+          <div className="add-ship-btn">
+            <button
               className="button"
               onClick={() => {
-                getStorage();
-                getShipCost();
+                navigate("ship/add");
               }}
             >
               Add ship
-            </div>
+            </button>
           </div>
         </>
       )}

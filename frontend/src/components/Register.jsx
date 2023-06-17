@@ -20,23 +20,26 @@ export default function Register() {
     handleLogin(credentials);
   };
 
-  async function handleLogin(formData) {
-    try {
-      await fetch("/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  function handleLogin(formData) {
+    fetch("/api/v1/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error();
+        }
       })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          Cookies.set("jwt", JSON.stringify(data.token));
-          navigate("/station");
-        });
-    } catch (err) {
-      setMessage("Username or email already used by someone else.");
-    }
+      .then((data) => {
+        Cookies.set("jwt", data.token);
+        navigate("/station");
+      })
+      .catch((err) =>
+        setMessage("Username or email already used by someone else.")
+      );
   }
 
   return (
@@ -60,11 +63,12 @@ export default function Register() {
           <input type="checkbox" required />
           <span>
             I accept the{" "}
-            <a href="/terms" target="blank">
+            <a className="clickable" href="/terms" target="blank">
               Terms and Conditions
             </a>{" "}
             &{" "}
-            <a href="/privacy" target="blank">
+            <br/>
+            <a className="clickable" href="/privacy" target="blank">
               Privacy Policy
             </a>
           </span>

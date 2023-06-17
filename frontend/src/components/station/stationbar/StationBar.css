@@ -1,6 +1,6 @@
 .station-bar {
     min-width: fit-content;
-    width: 27vw;
+    width: 30vw;
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
@@ -8,23 +8,12 @@
     height: 80vh;
 }
 
-.button {
-    margin: 0;
-    padding: 4px;
-    font-size: 15px;
-    border: black solid 2px;
-    border-radius: 5px;
-    background-color: forestgreen;
-    width: 75px;
-    text-align: center;
-    justify-self: center;
-    align-self: center;
-}
-
 .menu {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+    padding: 2px 0 2px 5px;
+    background-image: -webkit-linear-gradient(#000000, #00170000);
 }
 
 .menu>div {

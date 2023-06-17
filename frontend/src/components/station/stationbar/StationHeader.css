@@ -1,21 +1,14 @@
-.hangar {
+.station-header {
     width: -moz-available;
-    height: 43%;
+    height: 4%;
     background-image: -webkit-linear-gradient(#001700, #002300, #001700);
     padding: 5px;
     border-radius: 5px;
     color: white;
-    font-family: Garamond, serif;
     font-size: 18px;
     border: #000000 solid 4px;
     box-shadow:  0 0 5px 5px rgba(0, 23, 0, 0.85);
-}
-
-.ship-list>div {
-    height: 45px;
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row;
     align-items: center;
-    justify-items: center;
 }
-

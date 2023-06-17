@@ -24,6 +24,4 @@ public class SpaceshipApplication {
     public void initialize() {
         initializer.initialize();
     }
-
-
 }

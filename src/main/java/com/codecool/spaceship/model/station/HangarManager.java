@@ -90,7 +90,7 @@ public class HangarManager implements Upgradeable {
     @Override
     public Map<ResourceType, Integer> getUpgradeCost() throws UpgradeNotAvailableException {
         if (currentLevelIndex < MAX_LEVEL_INDEX) return new HashMap<>(UPGRADE_LEVELS.get(currentLevelIndex + 1).cost());
-        throw new UpgradeNotAvailableException("Already on max level");
+        throw new UpgradeNotAvailableException("Already at max level");
     }
 
     @Override

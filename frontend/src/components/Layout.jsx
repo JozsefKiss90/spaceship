@@ -6,49 +6,41 @@ import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 
 const Layout = () => {
-  const [jwt, setJwt] = useState(null);
   const [user, setUser] = useState(null);
   const [stationId, setStationId] = useState(null);
-  const jwtCookie = Cookies.get("jwt");
   const navigate = useNavigate();
+  const jwtCookie = Cookies.get("jwt");
 
   useEffect(() => {
     if (jwtCookie) {
-      const token = JSON.parse(jwtCookie);
-      console.log(token);
-      setJwt(token);
-      setUser(jwt_decode(token));
-    } else {
-      setUser(null);
-      setJwt(null);
+      setUser(jwt_decode(jwtCookie));
     }
-  }, [jwtCookie, jwt]);
+  }, [jwtCookie]);
 
   useEffect(() => {
     if (user !== null) {
-      fetch(`/api/v1/base/user/${user.userId}`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
+      fetch(`/api/v1/base/user/${user.userId}`, {})
         .then((res) => res.json())
         .then((data) => setStationId(data.id))
         .catch((err) => console.error(err));
     }
-  }, [user, jwt]);
+  }, [user]);
 
   function logout() {
-    Cookies.remove("jwt");
-    navigate("/");
+    fetch("/api/v1/auth/logout", {
+      method: "POST",
+    }).then(() => {
+      // Cookies.remove("jwt");
+      setUser(null);
+      setStationId(null);
+      navigate("/");
+    });
   }
-
-  console.log(user);
-  console.log(stationId);
 
   return (
     <>
       <Header user={user} logout={logout} />
-      <Outlet context={[jwt, setJwt, user, setUser, stationId]} />
+      <Outlet context={{ user, setUser, stationId }} />
       <Footer />
     </>
   );

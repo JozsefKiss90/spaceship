@@ -17,7 +17,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public List<LocationDTO> getAllLocations() {
+    public List<LocationDTO> getAllLocationsByUser(Long userId) {
         return locationRepository.findAll().stream()
                 .map(LocationDTO::new)
                 .toList();

@@ -29,8 +29,8 @@ export function StationContext({children}) {
 const messageReducer = (message, action) => {
     switch (action.type) {
         case 'miner cost':
-        case 'storage upgrade':
-        case 'hangar upgrade':
+        case 'base storage upgrade':
+        case 'base hangar upgrade':
         case 'display ship':
             return {
                 type: action.type,
