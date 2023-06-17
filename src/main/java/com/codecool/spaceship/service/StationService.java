@@ -144,6 +144,19 @@ public class StationService {
             return false;
         }
     }
+    public boolean moveResourceFromShipToStation(long stationId, long shipId, Map<ResourceType, Integer> resources) throws DataNotFoundException, StorageException {
+        SpaceStation station = getStationByIdAndCheckAccess(stationId);
+
+        SpaceShip ship = station.getHangar().stream().filter(s -> s.getId() == shipId).findFirst()
+                .orElseThrow(() -> new StorageException("No such ship on this station"));
+
+        SpaceStationManager stationManager = new SpaceStationManager(station);
+        if (stationManager.addResourcesFromShip(ship, resources)) {
+            spaceStationRepository.save(station);
+            return true;
+        }
+        return false;
+    }
 
     private SpaceStation getStationByIdAndCheckAccess(long stationId) throws DataNotFoundException {
         SpaceStation station = spaceStationRepository.findById(stationId)
@@ -157,4 +170,5 @@ public class StationService {
             throw new SecurityException("You don't have authority to access this station");
         }
     }
+
 }

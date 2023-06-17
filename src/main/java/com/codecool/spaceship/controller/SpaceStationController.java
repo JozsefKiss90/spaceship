@@ -10,6 +10,7 @@ import com.codecool.spaceship.service.StationService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -45,9 +46,19 @@ public class SpaceStationController {
     }
 
     @PostMapping("/{baseId}/add/resources")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> addResources(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
         try {
             return ResponseEntity.ok(stationService.addResources(baseId, resources));
+        } catch (Exception e) {
+            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
+        }
+    }
+
+    @PatchMapping("/{baseId}/add/resource-from-ship")
+    public ResponseEntity<Boolean> moveResourceFromShipToStation(@PathVariable long baseId, @RequestParam(name = "ship") long shipId, @RequestBody Map<ResourceType, Integer> resources) {
+        try {
+            return ResponseEntity.ok(stationService.moveResourceFromShipToStation(baseId, shipId, resources));
         } catch (Exception e) {
             return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
         }
