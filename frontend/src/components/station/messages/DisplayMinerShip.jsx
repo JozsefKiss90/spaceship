@@ -5,6 +5,7 @@ import {useParams} from "react-router-dom";import {ShipName} from "./ShipName";
 import {ShipColor} from "./ShipColor";
 import {ShipStatus} from "./ShipStatus";
 import {useStorageDispatchContext} from "../StorageContext";
+import ShipResources from "./ShipResources/ShipResources";
 
 export default function DisplayMinerShip() {
     const {id} = useParams();
@@ -19,6 +20,10 @@ export default function DisplayMinerShip() {
             .then((data) => {
                 setShip(data);
             });
+    }, [id]);
+
+    useEffect(() => {
+        setPart(null);
     }, [id]);
 
     async function getShipPartUpgradeCost(part) {
@@ -55,6 +60,8 @@ export default function DisplayMinerShip() {
         return <div>Loading...</div>;
     }
 
+    const resourceSum = Object.values(ship.resources).reduce((sum, next) => sum + next, 0);
+
     return (<>
         <div
             className="container"
@@ -75,32 +82,15 @@ export default function DisplayMinerShip() {
                 <div className="button" onClick={() => onClick("DRILL")}>Upgrade</div>
             </div>
             <div className="ship-engine row">
-                <div>Engine | lvl: {ship.engineLevel} | lightyear/hour: {ship.maxSpeed}</div>
+                <div>Engine | lvl: {ship.engineLevel} | AU/hour: {ship.maxSpeed}</div>
                 <div className="button" onClick={() => onClick("ENGINE")}>Upgrade</div>
             </div>
             <div className="ship-storage row">
                 <div> Storage |
-                    lvl: {ship.storageLevel} | {ship.amountOfCurrentlyStoredItems} / {ship.maxStorageCapacity}</div>
+                    lvl: {ship.storageLevel} | {resourceSum} / {ship.maxStorageCapacity}</div>
                 <div className="button" onClick={() => onClick("STORAGE")}>Upgrade</div>
             </div>
-            <div className="ship-storage-contents"
-                 style={{display: "flex", flexFlow: "column", alignItems: "flex-start", height: "min-content",}}>
-                {ship.resources.length > 0 ? (ship.resources.map((resource) => {
-                    return (<div className="resource-row" key={resource.resourceType}>
-                        <img
-                            style={{width: "25px", height: "25px"}}
-                            src={"/" + resource.resourceType.toLowerCase() + ".png"}
-                            alt={resource.resourceType}
-                        />
-                        <div
-                            style={{marginLeft: "5px"}}
-                            key={resource.resourceType}
-                        >
-                            {resource.resourceType}: {resource.quantity}
-                        </div>
-                    </div>);
-                })) : (<div>Ship storage is empty</div>)}
-            </div>
+            <ShipResources ship={ship} setShip={setShip}/>
         </div>
         <div className="side-bar">
             <img

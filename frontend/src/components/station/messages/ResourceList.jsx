@@ -1,18 +1,18 @@
-export default function ResourceList({message, cost}) {
+export default function ResourceList({message, resources}) {
   return (
     <>
       <div>{message}</div>
-      {Object.keys(cost).map((key) => {
+      {Object.keys(resources).map((key) => {
         return (
-          <div className="message-row" key={key}>
+          <div className="resource-row" key={key}>
             <img
               style={{ width: "25px", height: "25px" }}
               src={"/" + key.toLowerCase() + ".png"}
               alt={key}
             />
-            <p style={{ marginLeft: "5px" }}>
-              {key} : {cost[key]}
-            </p>
+            <div style={{ marginLeft: "5px" }}>
+              {key} : {resources[key]}
+            </div>
           </div>
         );
       })}
