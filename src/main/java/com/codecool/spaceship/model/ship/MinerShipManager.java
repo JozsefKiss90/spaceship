@@ -5,7 +5,6 @@ import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.resource.ShipResource;
 import com.codecool.spaceship.model.ship.shipparts.*;
 
 import java.util.*;
@@ -18,12 +17,13 @@ public class MinerShipManager extends SpaceShipManager {
         put(ResourceType.CRYSTAL, 20);
         put(ResourceType.SILICONE, 20);
     }};
-
-    public MinerShip minership;
+    private final MinerShip minerShip;
+    private ShipStorageManager storage;
+    private DrillManager drill;
 
     public MinerShipManager(MinerShip minerShip) {
         super(minerShip);
-        this.minership = minerShip;
+        this.minerShip = minerShip;
     }
 
     public static MinerShip createNewMinerShip(String name, Color color) {
@@ -41,56 +41,61 @@ public class MinerShipManager extends SpaceShipManager {
 
     public MinerShipDTO getMinerShipDTO() {
         return new MinerShipDTO(
-                minership.getId(),
-                minership.getName(),
-                minership.getColor(),
-                isAvailable() ? 0L : minership.getCurrentMission().getId(),
-                minership.getEngineLevel(),
+                minerShip.getId(),
+                minerShip.getName(),
+                minerShip.getColor(),
+                isAvailable() ? 0L : minerShip.getCurrentMission().getId(),
+                minerShip.getEngineLevel(),
                 getSpeed(),
-                minership.getShieldLevel(),
+                minerShip.getShieldLevel(),
                 getShieldEnergy(),
                 getShieldMaxEnergy(),
-                minership.getDrillLevel(),
+                minerShip.getDrillLevel(),
                 getDrillEfficiency(),
-                minership.getStorageLevel(),
+                minerShip.getStorageLevel(),
                 getMaxStorageCapacity(),
-                getMaxStorageCapacity()-getEmptyStorageSpace(),
                 getStorageContents()
         );
     }
 
     public int getDrillEfficiency() {
-        DrillManager drill = new DrillManager(((MinerShip) spaceShip).getDrillLevel());
+        createDrillIfNotExists();
         return drill.getEfficiency();
     }
 
     public int getMaxStorageCapacity() {
-        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+        createStorageIfNotExists();
         return storage.getMaxCapacity();
     }
 
     public double getSpeed() {
-        EngineManager engine = new EngineManager(((MinerShip) spaceShip).getEngineLevel());
+        EngineManager engine = new EngineManager(minerShip.getEngineLevel());
         return engine.getSpeed();
     }
 
     public int getEmptyStorageSpace() {
-        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+        createStorageIfNotExists();
         return storage.getEmptySpace();
     }
 
-    public Set<ShipResource> getStorageContents() {
-        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+    public Map<ResourceType, Integer> getStorageContents() {
+        createStorageIfNotExists();
         return storage.getStoredResources();
     }
 
+    public boolean hasResourcesInStorage(Map<ResourceType, Integer> resources) {
+        createStorageIfNotExists();
+        return resources.entrySet().stream()
+                .allMatch(entry ->  storage.hasResource(entry.getKey(), entry.getValue()));
+    }
+
     public boolean addResourceToStorage(ResourceType resourceType, int amount) throws StorageException {
-        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+        createStorageIfNotExists();
         return storage.addResource(resourceType, amount);
     }
 
     public boolean removeResourceFromStorage(ResourceType resourceType, int amount) throws StorageException {
-        ShipStorageManager storage = new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources());
+        createStorageIfNotExists();
         return storage.removeResource(resourceType, amount);
     }
     @Override
@@ -102,16 +107,18 @@ public class MinerShipManager extends SpaceShipManager {
     public Map<ResourceType, Integer> getUpgradeCost(ShipPart part) throws UpgradeNotAvailableException, NoSuchPartException {
         switch (part) {
             case ENGINE -> {
-                return new EngineManager(spaceShip.getEngineLevel()).getUpgradeCost();
+                return new EngineManager(minerShip.getEngineLevel()).getUpgradeCost();
             }
             case SHIELD -> {
-                return new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy()).getUpgradeCost();
+                return new ShieldManager(minerShip.getShieldLevel(), minerShip.getShieldEnergy()).getUpgradeCost();
             }
             case DRILL -> {
-                return new DrillManager(((MinerShip) spaceShip).getDrillLevel()).getUpgradeCost();
+                createDrillIfNotExists();
+                return drill.getUpgradeCost();
             }
             case STORAGE -> {
-                return new ShipStorageManager(((MinerShip) spaceShip).getStorageLevel(), ((MinerShip) spaceShip).getResources()).getUpgradeCost();
+                createStorageIfNotExists();
+                return storage.getUpgradeCost();
             }
             default -> throw new NoSuchPartException("No such part on this ship");
         }
@@ -119,7 +126,6 @@ public class MinerShipManager extends SpaceShipManager {
 
     @Override
     public boolean upgradePart(ShipPart part) throws NoSuchPartException {
-        MinerShip minerShip = (MinerShip) spaceShip;
         switch (part) {
             case ENGINE -> {
                 EngineManager engine = new EngineManager(spaceShip.getEngineLevel());
@@ -133,12 +139,12 @@ public class MinerShipManager extends SpaceShipManager {
                 minerShip.setShieldEnergy(shield.getCurrentEnergy());
             }
             case DRILL -> {
-                DrillManager drill = new DrillManager((minerShip).getDrillLevel());
+                createDrillIfNotExists();
                 drill.upgrade();
                 minerShip.setDrillLevel(drill.getCurrentLevel());
             }
             case STORAGE -> {
-                ShipStorageManager storage = new ShipStorageManager((minerShip).getStorageLevel(), (minerShip).getResources());
+                createStorageIfNotExists();
                 storage.upgrade();
                 minerShip.setStorageLevel(storage.getCurrentLevel());
             }
@@ -150,5 +156,17 @@ public class MinerShipManager extends SpaceShipManager {
     @Override
     public Map<ResourceType, Integer> getCost() {
         return new HashMap<>(COST);
+    }
+
+    private void createStorageIfNotExists() {
+        if (storage == null) {
+            storage = new ShipStorageManager(minerShip.getStorageLevel(), minerShip.getResources());
+        }
+    }
+
+    private void createDrillIfNotExists() {
+        if (drill == null) {
+            drill = new DrillManager((minerShip).getDrillLevel());
+        }
     }
 }

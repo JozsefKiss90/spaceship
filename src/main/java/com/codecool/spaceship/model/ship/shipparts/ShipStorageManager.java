@@ -80,8 +80,10 @@ public class ShipStorageManager implements Upgradeable {
         return LEVELS.get(currentLevelIndex).level();
     }
 
-    public Set<ShipResource> getStoredResources() {
-        return storedResources;
+    public Map<ResourceType, Integer> getStoredResources() {
+        Map<ResourceType, Integer> resources = new HashMap<>();
+        storedResources.forEach(shipResource -> resources.put(shipResource.getResourceType(), shipResource.getQuantity()));
+        return resources;
     }
 
     public int getMaxCapacity() {
@@ -93,6 +95,17 @@ public class ShipStorageManager implements Upgradeable {
                 .mapToInt(ShipResource::getQuantity)
                 .sum();
         return getMaxCapacity() - filledSpace;
+    }
+
+    public boolean hasResource(ResourceType resourceType, int amount) {
+        ShipResource resource = storedResources.stream()
+                .filter(sr -> sr.getResourceType() == resourceType)
+                .findFirst()
+                .orElse(null);
+        if (resource == null) {
+            return false;
+        }
+        return resource.getQuantity() >= amount;
     }
 
     public boolean addResource(ResourceType resourceType, int amount) throws StorageException {

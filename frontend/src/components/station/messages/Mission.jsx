@@ -89,7 +89,7 @@ export default function Mission() {
         <div className="mission-reports">
           <div>Reports:</div>
           {mission.reports.map((report) => (
-            <Report key={report.time} report={report} />
+            <Report key={report.message} report={report} />
           ))}
         </div>
         <div className="mission-actions">

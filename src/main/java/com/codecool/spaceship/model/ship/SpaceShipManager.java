@@ -15,6 +15,8 @@ import java.util.Map;
 public abstract class SpaceShipManager {
 
     protected final SpaceShip spaceShip;
+    protected ShieldManager shield;
+    protected EngineManager engine;
 
     protected SpaceShipManager(SpaceShip spaceShip) {
         this.spaceShip = spaceShip;
@@ -37,27 +39,40 @@ public abstract class SpaceShipManager {
     }
 
     public int getShieldMaxEnergy() {
-        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+        createShieldIfNotExists();
         return shield.getMaxEnergy();
     }
 
     public void repairShield(int amount) {
-        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+        createShieldIfNotExists();
         shield.repair(amount);
     }
 
     public void damageShield(int amount) {
-        ShieldManager shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+        createShieldIfNotExists();
         shield.damage(amount);
     }
 
     public double getSpeed() {
-        EngineManager engine = new EngineManager(spaceShip.getEngineLevel());
+        createEngineIfNotExists();
         return engine.getSpeed();
+    }
+
+    protected void createShieldIfNotExists() {
+        if (shield == null) {
+            shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+        }
+    }
+
+    protected void createEngineIfNotExists() {
+        if (engine == null) {
+            engine = new EngineManager(spaceShip.getEngineLevel());
+        }
     }
     public abstract List<ShipPart> getPartTypes();
 
     public abstract boolean upgradePart(ShipPart part) throws NoSuchPartException;
+
     public abstract Map<ResourceType, Integer> getCost();
 
     public abstract Map<ResourceType, Integer> getUpgradeCost(ShipPart part) throws UpgradeNotAvailableException, NoSuchPartException;

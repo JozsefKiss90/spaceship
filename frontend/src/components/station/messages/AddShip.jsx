@@ -149,7 +149,7 @@ export default function AddShip() {
         </div>
         {!loading ? (
           <>
-            <ResourceList message={"Resources needed:"} cost={cost} />
+            <ResourceList message={"Resources needed:"} resources={cost} />
             <AddButton />
           </>
         ) : (

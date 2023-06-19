@@ -4,6 +4,8 @@ import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
 import com.codecool.spaceship.model.exception.*;
+import com.codecool.spaceship.model.mission.Mission;
+import com.codecool.spaceship.model.mission.MissionManager;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
@@ -12,6 +14,7 @@ import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.station.SpaceStationManager;
+import com.codecool.spaceship.repository.MissionRepository;
 import com.codecool.spaceship.repository.SpaceShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,10 +29,12 @@ import java.util.stream.Collectors;
 @Service
 public class ShipService {
     private final SpaceShipRepository spaceShipRepository;
+    private final MissionRepository missionRepository;
 
     @Autowired
-    public ShipService(SpaceShipRepository spaceShipRepository) {
+    public ShipService(SpaceShipRepository spaceShipRepository, MissionRepository missionRepository) {
         this.spaceShipRepository = spaceShipRepository;
+        this.missionRepository = missionRepository;
     }
 
     public List<ShipDTO> getShipsByStation(long stationId) {
@@ -49,6 +54,7 @@ public class ShipService {
 
     public MinerShipDTO getMinerShipById(long id) throws DataNotFoundException, IllegalArgumentException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
+        updateMissionIfExists(ship);
 
         if (ship instanceof MinerShip) {
             return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
@@ -113,6 +119,16 @@ public class ShipService {
         }
         spaceShipRepository.delete(ship);
         return true;
+    }
+
+    private void updateMissionIfExists(SpaceShip ship) {
+        Mission currentMission = ship.getCurrentMission();
+        if (currentMission != null) {
+            MissionManager missionManager = new MissionManager(currentMission);
+            if (missionManager.updateStatus()) {
+                missionRepository.save(currentMission);
+            }
+        }
     }
 
     private SpaceShip getShipByIdAndCheckAccess(Long id) throws DataNotFoundException {

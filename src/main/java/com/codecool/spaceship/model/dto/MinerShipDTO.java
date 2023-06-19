@@ -1,14 +1,10 @@
 package com.codecool.spaceship.model.dto;
 
 
-import com.codecool.spaceship.model.resource.ShipResource;
-import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.model.ship.shipparts.EngineManager;
-import com.codecool.spaceship.model.ship.shipparts.ShieldManager;
-import org.apache.catalina.Engine;
 
-import java.util.Set;
+import java.util.Map;
 
 public record MinerShipDTO(
         Long id,
@@ -24,8 +20,7 @@ public record MinerShipDTO(
         int drillEfficiency,
         int storageLevel,
         int maxStorageCapacity,
-        int amountOfCurrentlyStoredItems,
-        Set<ShipResource> resources
+        Map<ResourceType, Integer> resources
 ) {
 
 }

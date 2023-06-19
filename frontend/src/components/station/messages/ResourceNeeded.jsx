@@ -36,7 +36,7 @@ export function ResourceNeeded({ cost, item, onConfirm }) {
     }
 
     return (<div className="cost">
-        <ResourceList message={`Resources needed to upgrade ${item}:`} cost={cost}/>
+        <ResourceList message={`Resources needed to upgrade ${item}:`} resources={cost}/>
         {checkStorage()
             ? <div className="button" onClick={onConfirm}>I want it!</div>
             : <div style={{ color: "red", textShadow: "1px 1px black" }}>Not enough resources</div>}

@@ -6,6 +6,8 @@ import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 
@@ -50,6 +52,7 @@ public class SpaceStationManager {
         throw new StorageException("Not enough resource");
     }
 
+
     public boolean addNewShip(SpaceShip ship, ShipType shipType) throws StorageException {
         Map<ResourceType, Integer> cost = shipType.getCost();
         createHangarIfNotExists();
@@ -80,6 +83,23 @@ public class SpaceStationManager {
     public boolean addResource(ResourceType resourceType, int quantity) throws StorageException {
         createStorageIfNotExists();
         return storage.addResource(resourceType, quantity);
+    }
+    public boolean addResourcesFromShip(SpaceShip ship, Map<ResourceType, Integer> resources) throws StorageException {
+        MinerShipManager shipManager = new MinerShipManager((MinerShip) ship);
+        if (hasShipAvailable(ship) && shipManager.hasResourcesInStorage(resources)) {
+            int sum = resources.values().stream()
+                    .mapToInt(i -> i)
+                    .sum();
+            createStorageIfNotExists();
+            if (sum <= storage.getCurrentAvailableStorageSpace()) {
+                for (ResourceType resource : resources.keySet()) {
+                    addResource(resource, resources.get(resource));
+                    shipManager.removeResourceFromStorage(resource, resources.get(resource));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public Map<ResourceType, Integer> getStorageUpgradeCost() throws UpgradeNotAvailableException {
@@ -140,4 +160,5 @@ public class SpaceStationManager {
             storage = new StationStorageManager(station.getStorageLevel(), station.getResources());
         }
     }
+
 }

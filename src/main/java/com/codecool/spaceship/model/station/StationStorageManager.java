@@ -71,7 +71,7 @@ public class StationStorageManager implements Upgradeable {
     }
 
     public boolean addResource(ResourceType resourceType, int quantity) throws StorageException {
-        if (quantity < getCurrentAvailableStorageSpace()) {
+        if (quantity <= getCurrentAvailableStorageSpace()) {
             StationResource resource = storedItems.stream()
                     .filter(sr -> sr.getResourceType() == resourceType)
                     .findFirst()
