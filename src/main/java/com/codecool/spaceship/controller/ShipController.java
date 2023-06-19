@@ -8,7 +8,6 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,79 +26,50 @@ public class ShipController {
     }
 
     @GetMapping("/all/{stationId}")
-    public ResponseEntity<List<ShipDTO>> getAllShipsFromBase(@PathVariable Long stationId) {
-        try {
-            return ResponseEntity.ok(shipService.getShipsByStation(stationId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public List<ShipDTO> getAllShipsFromBase(@PathVariable Long stationId) {
+        return shipService.getShipsByStation(stationId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShipDTO> getShipById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(shipService.getShipByID(id));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public ShipDTO getShipById(@PathVariable Long id) {
+        return shipService.getShipByID(id);
     }
 
     @GetMapping("/miner/{id}")
-    public ResponseEntity<MinerShipDTO> getMinerShipById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(shipService.getMinerShipById(id));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public MinerShipDTO getMinerShipById(@PathVariable Long id) {
+        return shipService.getMinerShipById(id);
+
     }
+
     @GetMapping("/miner/{id}/upgrade")
-    public ResponseEntity<Map<ResourceType, Integer>> getMinderShipShipPartUpgradeCost(@PathVariable Long id, @RequestParam ShipPart part) {
-        try {
-            return ResponseEntity.ok(shipService.getShipPartUpgradeCost(id,part));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Map<ResourceType, Integer> getMinderShipShipPartUpgradeCost(@PathVariable Long id, @RequestParam ShipPart part) {
+        return shipService.getShipPartUpgradeCost(id, part);
     }
 
     @PatchMapping("/miner/{id}/upgrade")
-    public ResponseEntity<MinerShipDTO> upgradeMinerShipShipPart(@PathVariable Long id, @RequestParam ShipPart part) {
-        try {
-            return ResponseEntity.ok(shipService.upgradeMinerShip(id, part));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public MinerShipDTO upgradeMinerShipShipPart(@PathVariable Long id, @RequestParam ShipPart part) {
+        return shipService.upgradeMinerShip(id, part);
     }
 
     @GetMapping("/color")
-    public ResponseEntity<Color[]> getAvailableColors() {
-        return ResponseEntity.ok(shipService.getColors());
+    public Color[] getAvailableColors() {
+        return shipService.getColors();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ShipDTO> updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
-        try {
-            return ResponseEntity.ok(shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color()));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public ShipDTO updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
+        return shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteShipById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(shipService.deleteShipById(id));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Boolean deleteShipById(@PathVariable Long id) {
+        return shipService.deleteShipById(id);
+
     }
 
     @GetMapping("/cost/{shipType}")
-    public ResponseEntity<Map<ResourceType, Integer>> getMinerShipCost(@PathVariable String shipType) {
-        try {
-            return ResponseEntity.ok(shipService.getShipCost(ShipType.valueOf(shipType.toUpperCase())));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Map<ResourceType, Integer> getMinerShipCost(@PathVariable String shipType) {
+        return shipService.getShipCost(ShipType.valueOf(shipType.toUpperCase()));
     }
 
 }

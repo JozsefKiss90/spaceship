@@ -3,7 +3,6 @@ package com.codecool.spaceship.controller;
 import com.codecool.spaceship.model.dto.LocationDTO;
 import com.codecool.spaceship.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class LocationController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<LocationDTO>> getAllLocationsByUser(@RequestParam Long user) {
-        return ResponseEntity.ok(locationService.getAllLocationsByUser(user));
+    public List<LocationDTO> getAllLocationsByUser(@RequestParam Long user) {
+        return locationService.getAllLocationsByUser(user);
     }
 }

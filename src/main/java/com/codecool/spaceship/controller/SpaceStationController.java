@@ -9,7 +9,6 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.StationService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,115 +27,67 @@ public class SpaceStationController {
     }
 
     @GetMapping({"/{baseId}"})
-    public ResponseEntity<SpaceStationDTO> getBaseById(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getBaseById(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public SpaceStationDTO getBaseById(@PathVariable long baseId) {
+        return stationService.getBaseById(baseId);
     }
 
     @GetMapping({"/user/{userId}"})
-    public ResponseEntity<SpaceStationDTO> getBaseByUserId(@PathVariable long userId) {
-        try {
-            return ResponseEntity.ok(stationService.getBaseByUserId(userId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public SpaceStationDTO getBaseByUserId(@PathVariable long userId) {
+        return stationService.getBaseByUserId(userId);
     }
 
     @PostMapping("/{baseId}/add/resources")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> addResources(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
-        try {
-            return ResponseEntity.ok(stationService.addResources(baseId, resources));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Boolean addResources(@PathVariable long baseId, @RequestBody Map<ResourceType, Integer> resources) {
+        return stationService.addResources(baseId, resources);
     }
 
     @PatchMapping("/{baseId}/add/resource-from-ship")
-    public ResponseEntity<Boolean> moveResourceFromShipToStation(@PathVariable long baseId, @RequestParam(name = "ship") long shipId, @RequestBody Map<ResourceType, Integer> resources) {
-        try {
-            return ResponseEntity.ok(stationService.moveResourceFromShipToStation(baseId, shipId, resources));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Boolean moveResourceFromShipToStation(@PathVariable long baseId, @RequestParam(name = "ship") long shipId, @RequestBody Map<ResourceType, Integer> resources) {
+        return stationService.moveResourceFromShipToStation(baseId, shipId, resources);
     }
 
     @PostMapping("/{baseId}/add/ship")
-    public ResponseEntity<Long> addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
-        try {
-            return ResponseEntity.ok(stationService.addShip(baseId,
-                    objectNode.get("name").asText(),
-                    Color.valueOf(objectNode.get("color").asText().toUpperCase()),
-                    ShipType.valueOf(objectNode.get("type").asText().toUpperCase())));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Long addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
+        return stationService.addShip(baseId,
+                objectNode.get("name").asText(),
+                Color.valueOf(objectNode.get("color").asText().toUpperCase()),
+                ShipType.valueOf(objectNode.get("type").asText().toUpperCase()));
     }
 
     @GetMapping("/{baseId}/storage")
-    public ResponseEntity<SpaceStationStorageDTO> getStationStorage(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getStationStorage(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public SpaceStationStorageDTO getStationStorage(@PathVariable long baseId) {
+        return stationService.getStationStorage(baseId);
     }
 
     @GetMapping("/{baseId}/storage/resources")
-    public ResponseEntity<Map<ResourceType, Integer>> getStoredResources(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getStoredResources(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Map<ResourceType, Integer> getStoredResources(@PathVariable long baseId) {
+        return stationService.getStoredResources(baseId);
     }
 
     @GetMapping("/{baseId}/storage/upgrade")
-    public ResponseEntity<Map<ResourceType, Integer>> getStorageUpgradeCost(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getStorageUpgradeCost(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Map<ResourceType, Integer> getStorageUpgradeCost(@PathVariable long baseId) {
+        return stationService.getStorageUpgradeCost(baseId);
     }
 
     @PostMapping("/{baseId}/storage/upgrade")
-    public ResponseEntity<Boolean> upgradeStorage(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.upgradeStorage(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Boolean upgradeStorage(@PathVariable long baseId) {
+        return stationService.upgradeStorage(baseId);
     }
 
     @GetMapping("/{baseId}/hangar")
-    public ResponseEntity<HangarDTO> getStationHangar(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getStationHangar(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public HangarDTO getStationHangar(@PathVariable long baseId) {
+        return stationService.getStationHangar(baseId);
     }
 
     @GetMapping("/{baseId}/hangar/upgrade")
-    public ResponseEntity<Map<ResourceType, Integer>> getHangarUpgradeCost(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.getHangarUpgradeCost(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Map<ResourceType, Integer> getHangarUpgradeCost(@PathVariable long baseId) {
+        return stationService.getHangarUpgradeCost(baseId);
     }
 
     @PostMapping("/{baseId}/hangar/upgrade")
-    public ResponseEntity<Boolean> upgradeHangar(@PathVariable long baseId) {
-        try {
-            return ResponseEntity.ok(stationService.upgradeHangar(baseId));
-        } catch (Exception e) {
-            return ResponseEntity.of(ControllerExceptionHandler.getProblemDetail(e)).build();
-        }
+    public Boolean upgradeHangar(@PathVariable long baseId) {
+        return stationService.upgradeHangar(baseId);
     }
 
 }
