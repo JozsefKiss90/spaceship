@@ -1,14 +1,15 @@
 import "./DisplayMinerShip.css";
-import {ResourceNeeded} from "./ResourceNeeded";
-import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";import {ShipName} from "./ShipName";
-import {ShipColor} from "./ShipColor";
-import {ShipStatus} from "./ShipStatus";
-import {useStorageDispatchContext} from "../StorageContext";
+import { ResourceNeeded } from "./ResourceNeeded";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; import { ShipName } from "./ShipName";
+import { ShipColor } from "./ShipColor";
+import { ShipStatus } from "./ShipStatus";
+import { useStorageDispatchContext } from "../StorageContext";
 import ShipResources from "./ShipResources/ShipResources";
 
 export default function DisplayMinerShip() {
-    const {id} = useParams();
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [ship, setShip] = useState(null);
     const [cost, setCost] = useState(null);
     const storageSetter = useStorageDispatchContext();
@@ -16,9 +17,21 @@ export default function DisplayMinerShip() {
 
     useEffect(() => {
         fetch(`/api/v1/ship/miner/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setShip(data);
+            .then((res) => {
+                console.log(res);
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    if (res.status === 404) {
+                        navigate('/404');
+                    } else if (res.status === 403) {
+                        navigate('/403')
+                    }
+                }
+            })
+            .then(data => setShip(data))
+            .catch(err => {
+                console.err(err);
             });
     }, [id]);
 
@@ -51,7 +64,7 @@ export default function DisplayMinerShip() {
                 setShip(data);
                 setPart(null);
                 setCost(null);
-                storageSetter({type: "update"});
+                storageSetter({ type: "update" });
             })
             .catch(err => console.log(err));
     }
@@ -65,14 +78,14 @@ export default function DisplayMinerShip() {
     return (<>
         <div
             className="container"
-            style={{display: "flex", flexFlow: "column"}}
+            style={{ display: "flex", flexFlow: "column" }}
         >
-            <ShipName ship={ship}/>
-            <div className="ship-type" style={{fontSize: "13px", height: "15px"}}>
+            <ShipName ship={ship} />
+            <div className="ship-type" style={{ fontSize: "13px", height: "15px" }}>
                 miner ship
             </div>
-            <ShipColor ship={ship}/>
-            <ShipStatus ship={ship}/>
+            <ShipColor ship={ship} />
+            <ShipStatus ship={ship} />
             <div className="ship-shield row">
                 <div> Shield | lvl: {ship.shieldLevel} | {ship.shieldEnergy} / {ship.maxShieldEnergy}</div>
                 <div className="button" onClick={() => onClick("SHIELD")}>Upgrade</div>
@@ -90,7 +103,7 @@ export default function DisplayMinerShip() {
                     lvl: {ship.storageLevel} | {resourceSum} / {ship.maxStorageCapacity}</div>
                 <div className="button" onClick={() => onClick("STORAGE")}>Upgrade</div>
             </div>
-            <ShipResources ship={ship} setShip={setShip}/>
+            <ShipResources ship={ship} setShip={setShip} />
         </div>
         <div className="side-bar">
             <img
@@ -100,7 +113,7 @@ export default function DisplayMinerShip() {
                     width: "128px", height: "128px", padding: "60px", justifySelf: "end", alignSelf: "end",
                 }}
             />
-            <div className="resource-needed" style={{height: "min-content", paddingTop: "15px"}}>
+            <div className="resource-needed" style={{ height: "min-content", paddingTop: "15px" }}>
                 {part ? (<ResourceNeeded
                     cost={cost}
                     item={part.toLowerCase()}
