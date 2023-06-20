@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "./Login&Register.css";
 import { useState } from "react";
@@ -31,7 +30,6 @@ const Login = () => {
         } else throw new Error();
       })
       .then((data) => {
-        // Cookies.set("jwt", data.token);
         navigate("/station");
       })
       .catch((err) => setMessage("Incorrect username or password."));

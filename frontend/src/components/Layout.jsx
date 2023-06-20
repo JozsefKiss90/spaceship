@@ -30,7 +30,6 @@ const Layout = () => {
     fetch("/api/v1/auth/logout", {
       method: "POST",
     }).then(() => {
-      // Cookies.remove("jwt");
       setUser(null);
       setStationId(null);
       navigate("/");

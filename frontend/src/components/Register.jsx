@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "./Login&Register.css";
 import { useState } from "react";
@@ -34,7 +33,6 @@ export default function Register() {
         }
       })
       .then((data) => {
-        Cookies.set("jwt", data.token);
         navigate("/station");
       })
       .catch((err) =>
@@ -67,7 +65,7 @@ export default function Register() {
               Terms and Conditions
             </a>{" "}
             &{" "}
-            <br/>
+            <br />
             <a className="clickable" href="/privacy" target="blank">
               Privacy Policy
             </a>
