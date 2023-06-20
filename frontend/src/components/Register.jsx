@@ -19,25 +19,34 @@ export default function Register() {
     handleLogin(credentials);
   };
 
-  function handleLogin(formData) {
-    fetch("/api/v1/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error();
+  async function handleLogin(formData) {
+    try {
+      const res = await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          navigate("/station");
         }
-      })
-      .then((data) => {
-        navigate("/station");
-      })
-      .catch((err) =>
-        setMessage("Username or email already used by someone else.")
-      );
+      } else {
+        let message;
+        try {
+          const data = await res.json();
+          if (data.detail) {
+            message = data.detail;
+          } else throw new Error();
+        } catch (err) {
+          message = res.statusText;
+        }
+
+        throw new Error(message);
+      }
+    } catch (err) {
+      setMessage(err.message);
+    }
   }
 
   return (
