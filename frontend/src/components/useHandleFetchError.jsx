@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
+import { useCallback } from "react";
 
 export default function useHandleFetchError() {
     const navigate = useNavigate();
     const dispatch = useNotificationsDispatch();
-    return async (response) => {
 
+    return useCallback(async (response) => {
         if (response.status === 403) {
             navigate("/403");
         } else if (response.status === 404) {
@@ -27,5 +28,5 @@ export default function useHandleFetchError() {
                 timer: 5
             });
         }
-    }
+    },[navigate, dispatch]);
 }

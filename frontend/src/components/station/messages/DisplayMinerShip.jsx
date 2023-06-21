@@ -31,14 +31,14 @@ export default function DisplayMinerShip() {
             .catch(err => {
                 console.err(err);
             });
-    }, [id]);
+    }, [id, handleFetchError]);
 
     useEffect(() => {
         setPart(null);
     }, [id]);
 
-    async function getShipPartUpgradeCost(part) {
-        await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
+    function getShipPartUpgradeCost(part) {
+        return fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
             .then((res) => res.json())
             .then((data) => setCost(data))
             .catch((err) => console.error(err));
