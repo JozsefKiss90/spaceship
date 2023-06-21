@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
+import { NotificationProvider } from "./notifications/NotificationContext";
+import Notifications from "./notifications/Notifications";
 
 const Layout = () => {
   const [user, setUser] = useState(null);
@@ -37,11 +39,12 @@ const Layout = () => {
   }
 
   return (
-    <>
+    <NotificationProvider>
       <Header user={user} logout={logout} />
       <Outlet context={{ user, setUser, stationId }} />
       <Footer />
-    </>
+      <Notifications />
+    </NotificationProvider>
   );
 };
 
