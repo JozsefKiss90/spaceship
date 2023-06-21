@@ -8,23 +8,26 @@
   display: flex;
   flex-direction: column;
   align-items: end;
-  gap: 2px;
+  gap: 5px;
   pointer-events: none;
 }
 
 .notification {
-  width: 30%;
+  width: 25%;
   border: 4px solid black;
   border-radius: 5px;
   color: white;
   display: flex;
-  padding: 3px;
+  padding: 5px 3px 5px 3px;
   pointer-events: auto;
+}
+
+.notification div:last-child {
+  margin-left: auto;
 }
 
 .notification button {
   all: unset;
-  margin-left: auto;
   color: rgba(255, 255, 255, 0.445);
   text-shadow: 0 0 3px rgba(116, 116, 116, 0.555);
 }

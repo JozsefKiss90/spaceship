@@ -1,15 +1,17 @@
 import "./DisplayMinerShip.css";
 import { ResourceNeeded } from "./ResourceNeeded";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; import { ShipName } from "./ShipName";
+import { useParams } from "react-router-dom";
+import { ShipName } from "./ShipName";
 import { ShipColor } from "./ShipColor";
 import { ShipStatus } from "./ShipStatus";
 import { useStorageDispatchContext } from "../StorageContext";
 import ShipResources from "./ShipResources/ShipResources";
+import useHandleFetchError from "../../useHandleFetchError";
 
 export default function DisplayMinerShip() {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const handleFetchError = useHandleFetchError();
     const [ship, setShip] = useState(null);
     const [cost, setCost] = useState(null);
     const storageSetter = useStorageDispatchContext();
@@ -22,11 +24,7 @@ export default function DisplayMinerShip() {
                 if (res.ok) {
                     return res.json();
                 } else {
-                    if (res.status === 404) {
-                        navigate('/404');
-                    } else if (res.status === 403) {
-                        navigate('/403')
-                    }
+                    handleFetchError(res);
                 }
             })
             .then(data => setShip(data))

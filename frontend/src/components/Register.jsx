@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import "./Login&Register.css";
 import { useState } from "react";
+import useHandleFetchError from "./useHandleFetchError";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [message, setMessage] = useState(null);
+  const handleFetchError = useHandleFetchError();
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setSubmitting(true);
     const formData = new FormData(e.target);
     const entries = [...formData.entries()];
 
@@ -16,10 +19,10 @@ export default function Register() {
       acc[k] = v;
       return acc;
     }, {});
-    handleLogin(credentials);
+    handleRegister(credentials);
   };
 
-  async function handleLogin(formData) {
+  async function handleRegister(formData) {
     try {
       const res = await fetch("/api/v1/auth/register", {
         method: "POST",
@@ -32,21 +35,12 @@ export default function Register() {
           navigate("/station");
         }
       } else {
-        let message;
-        try {
-          const data = await res.json();
-          if (data.detail) {
-            message = data.detail;
-          } else throw new Error();
-        } catch (err) {
-          message = res.statusText;
-        }
-
-        throw new Error(message);
+        handleFetchError(res);
       }
     } catch (err) {
-      setMessage(err.message);
+      console.error(err);
     }
+    setSubmitting(false);
   }
 
   return (
@@ -80,11 +74,10 @@ export default function Register() {
             </a>
           </span>
         </div>
-        <button className="button" type="Submit">
+        <button className="button" type="Submit" disabled={submitting}>
           Register
         </button>
       </form>
-      {message && <div className="lrform-message">{message}</div>}
     </div>
   );
 }
