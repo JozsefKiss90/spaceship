@@ -12,6 +12,7 @@ import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
 import LocationList from './components/station/messages/LocationList';
 import MissionList from './components/station/messages/MissionList';
 import Mission from './components/station/messages/Mission';
+import StationUpgrade from './components/station/messages/StationUpgrade';
 import Login from './components/Login';
 import Register from './components/Register';
 import TermsAndConditions from './components/TermsAndConditions';
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/station/upgrade/:stationModule',
-                        element: <AddShip />
+                        element: <StationUpgrade />
                     }
                 ]
             },
