@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import "./Login&Register.css";
 import { useState } from "react";
+import useHandleFetchError from "./useHandleFetchError";
+import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [message, setMessage] = useState(null);
+  const handleFetchError = useHandleFetchError();
+  const dispatch = useNotificationsDispatch();
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = (e) => {
+    setSubmitting(true);
     e.preventDefault();
     const formData = new FormData(e.target);
     const entries = [...formData.entries()];
@@ -18,21 +23,28 @@ const Login = () => {
     handleLogin(credentials);
   };
 
-  function handleLogin(formData) {
-    fetch("/api/v1/auth/authenticate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else throw new Error();
-      })
-      .then((data) => {
-        navigate("/station");
-      })
-      .catch((err) => setMessage("Incorrect username or password."));
+  async function handleLogin(formData) {
+    try {
+      const res = await fetch("/api/v1/auth/authenticate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          navigate("/station");
+        }
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      dispatch({
+        type: "generic error"
+      });
+    }
+    setSubmitting(false);
   }
 
   return (
@@ -51,11 +63,10 @@ const Login = () => {
           required
           placeholder="Password"
         ></input>
-        <button className="button" type="submit">
+        <button className="button" type="submit" disabled={submitting}>
           Login
         </button>
       </form>
-      {message && <div className="lrform-message">{message}</div>}
     </div>
   );
 };

@@ -8,36 +8,46 @@ import { ShipStatus } from "./ShipStatus";
 import { useStorageDispatchContext } from "../StorageContext";
 import ShipResources from "./ShipResources/ShipResources";
 import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function DisplayMinerShip() {
     const { id } = useParams();
     const handleFetchError = useHandleFetchError();
+    const dispatch = useNotificationsDispatch();
     const [ship, setShip] = useState(null);
+    const [shipLoading, setShipLoading] = useState(true);
     const [cost, setCost] = useState(null);
     const storageSetter = useStorageDispatchContext();
     const [part, setPart] = useState(null);
 
     useEffect(() => {
+        setShipLoading(true);
         fetch(`/api/v1/ship/miner/${id}`)
             .then((res) => {
-                console.log(res);
                 if (res.ok) {
                     return res.json();
                 } else {
                     handleFetchError(res);
                 }
             })
-            .then(data => setShip(data))
+            .then(data => {
+                setShip(data);
+                setShipLoading(false);
+            })
             .catch(err => {
-                console.err(err);
+                console.error(err);
+                dispatch({
+                    type: "generic error"
+                });
             });
-    }, [id, handleFetchError]);
+    }, [id, handleFetchError, dispatch]);
 
     useEffect(() => {
         setPart(null);
     }, [id]);
 
-    function getShipPartUpgradeCost(part) {
+    async function getShipPartUpgradeCost(part) {
+        setCost(null);
         return fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
             .then((res) => res.json())
             .then((data) => setCost(data))
@@ -49,25 +59,34 @@ export default function DisplayMinerShip() {
         setPart(part);
     }
 
-    const upgradePart = async () => {
-        await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`, {
-            method: "PATCH"
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                }
-            })
-            .then(data => {
+    async function upgradePart() {
+        try {
+            const res = await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`, {
+                method: "PATCH"
+            });
+            if (res.ok) {
+                const data = await res.json();
                 setShip(data);
                 setPart(null);
                 setCost(null);
                 storageSetter({ type: "update" });
-            })
-            .catch(err => console.log(err));
+                dispatch({
+                    type: "add",
+                    message: `${part} upgraded.`,
+                    timer: 5
+                });
+            } else {
+                handleFetchError(res);
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: "generic error"
+            });
+        }
     }
 
-    if (ship == null) {
+    if (shipLoading) {
         return <div>Loading...</div>;
     }
 
@@ -82,7 +101,7 @@ export default function DisplayMinerShip() {
             <div className="ship-type" style={{ fontSize: "13px", height: "15px" }}>
                 miner ship
             </div>
-            <ShipColor ship={ship} />
+            <ShipColor ship={ship} setShip={setShip} />
             <ShipStatus ship={ship} />
             <div className="ship-shield row">
                 <div> Shield | lvl: {ship.shieldLevel} | {ship.shieldEnergy} / {ship.maxShieldEnergy}</div>
