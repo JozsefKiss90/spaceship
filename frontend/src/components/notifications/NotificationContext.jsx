@@ -37,6 +37,14 @@ function notificationReducer(notifications, action) {
         case 'remove': {
             return notifications.filter(n => n.id !== action.id);
         }
+        case 'generic error': {
+            return [...notifications, {
+                id: uuidv4(),
+                type: 'error',
+                message: 'Something went wrong.',
+                timer: 10
+            }]
+        }
         default: {
             throw new Error(`Unknown action: ${action.type}`);
         }
