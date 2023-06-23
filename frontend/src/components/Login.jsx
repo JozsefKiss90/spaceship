@@ -7,7 +7,7 @@ import { useNotificationsDispatch } from "./notifications/NotificationContext";
 const Login = () => {
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
-  const dispatch = useNotificationsDispatch();
+  const notifDispatch = useNotificationsDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = (e) => {
@@ -40,7 +40,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error(err);
-      dispatch({
+      notifDispatch({
         type: "generic error"
       });
     }

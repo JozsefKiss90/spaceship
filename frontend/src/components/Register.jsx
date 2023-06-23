@@ -7,7 +7,7 @@ import { useNotificationsDispatch } from "./notifications/NotificationContext";
 export default function Register() {
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
-  const dispatch = useNotificationsDispatch();
+  const notifDispatch = useNotificationsDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = (e) => {
@@ -41,7 +41,7 @@ export default function Register() {
       }
     } catch (err) {
       console.error(err);
-      dispatch({
+      notifDispatch({
         type: "generic error"
       });
     }

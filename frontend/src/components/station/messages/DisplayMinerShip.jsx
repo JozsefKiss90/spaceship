@@ -1,6 +1,6 @@
 import "./DisplayMinerShip.css";
 import { ResourceNeeded } from "./ResourceNeeded";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShipName } from "./ShipName";
 import { ShipColor } from "./ShipColor";
@@ -13,34 +13,33 @@ import { useNotificationsDispatch } from "../../notifications/NotificationContex
 export default function DisplayMinerShip() {
     const { id } = useParams();
     const handleFetchError = useHandleFetchError();
-    const dispatch = useNotificationsDispatch();
+    const notifDispatch = useNotificationsDispatch();
     const [ship, setShip] = useState(null);
-    const [shipLoading, setShipLoading] = useState(true);
     const [cost, setCost] = useState(null);
     const storageSetter = useStorageDispatchContext();
     const [part, setPart] = useState(null);
 
-    useEffect(() => {
-        setShipLoading(true);
-        fetch(`/api/v1/ship/miner/${id}`)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    handleFetchError(res);
-                }
-            })
-            .then(data => {
+    const fetchShip = useCallback(async () => {
+        setShip(null);
+        try {
+            const res = await fetch(`/api/v1/ship/miner/${id}`);
+            if (res.ok) {
+                const data = await res.json();
                 setShip(data);
-                setShipLoading(false);
+            } else {
+                handleFetchError(res);
+            }
+        } catch (err) {
+            console.error(err);
+            notifDispatch({
+                type: "generic error"
             })
-            .catch(err => {
-                console.error(err);
-                dispatch({
-                    type: "generic error"
-                });
-            });
-    }, [id, handleFetchError, dispatch]);
+        }
+    }, [id, notifDispatch, handleFetchError])
+
+    useEffect(() => {
+        fetchShip();
+    }, [fetchShip]);
 
     useEffect(() => {
         setPart(null);
@@ -48,15 +47,29 @@ export default function DisplayMinerShip() {
 
     async function getShipPartUpgradeCost(part) {
         setCost(null);
-        return fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
-            .then((res) => res.json())
-            .then((data) => setCost(data))
-            .catch((err) => console.error(err));
+        try {
+            const res = await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
+            if (res.ok) {
+                const data = await res.json();
+                setCost(data);
+                return true
+            } else {
+                handleFetchError(res);
+            }
+        } catch (err) {
+            console.error(err);
+            notifDispatch({
+                type: "generic error"
+            })
+        }
+        return false;
     }
 
     async function onClick(part) {
-        await getShipPartUpgradeCost(part);
-        setPart(part);
+        setPart(null);
+        if (await getShipPartUpgradeCost(part)) {
+            setPart(part);
+        }
     }
 
     async function upgradePart() {
@@ -70,7 +83,7 @@ export default function DisplayMinerShip() {
                 setPart(null);
                 setCost(null);
                 storageSetter({ type: "update" });
-                dispatch({
+                notifDispatch({
                     type: "add",
                     message: `${part} upgraded.`,
                     timer: 5
@@ -80,13 +93,13 @@ export default function DisplayMinerShip() {
             }
         } catch (err) {
             console.error(err);
-            dispatch({
+            notifDispatch({
                 type: "generic error"
             });
         }
     }
 
-    if (shipLoading) {
+    if (ship === null) {
         return <div>Loading...</div>;
     }
 
@@ -97,7 +110,7 @@ export default function DisplayMinerShip() {
             className="container"
             style={{ display: "flex", flexFlow: "column" }}
         >
-            <ShipName ship={ship} />
+            <ShipName ship={ship} setShip={setShip} />
             <div className="ship-type" style={{ fontSize: "13px", height: "15px" }}>
                 miner ship
             </div>

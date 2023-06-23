@@ -1,11 +1,34 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import ResourceList from "./ResourceList";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export function ResourceNeeded({ cost, item, onConfirm }) {
     const { stationId } = useOutletContext();
+    const handleFetchError = useHandleFetchError();
+    const notifDispatch = useNotificationsDispatch();
     const [storage, setStorage] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
+    const fetchStorage = useCallback(async () => {
+        try {
+
+            const res = await fetch(`/api/v1/base/${stationId}/storage/resources`);
+            if (res.ok) {
+                const data = await res.json();
+                setStorage(data);
+            } else {
+                handleFetchError(res);
+            }
+        } catch (err) {
+            console.error(err);
+            notifDispatch({
+                type: "generic error"
+            });
+        }
+    }, [stationId, handleFetchError, notifDispatch])
+
 
     const checkStorage = () => {
         for (const resource of Object.keys(cost)) {
@@ -17,17 +40,8 @@ export function ResourceNeeded({ cost, item, onConfirm }) {
     }
 
     useEffect(() => {
-        fetch(`/api/v1/base/${stationId}/storage/resources`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setStorage(data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }, [stationId]);
+        fetchStorage();
+    }, [fetchStorage]);
 
     async function onClick() {
         setSubmitting(true);
@@ -37,10 +51,6 @@ export function ResourceNeeded({ cost, item, onConfirm }) {
 
     if (storage === null || cost === null) {
         return <div>Loading...</div>
-    }
-
-    if (cost.detail === "Already at max level") {
-        return <div style={{ color: "yellow", textShadow: "1px 1px 2px black" }}>Can't upgrade, {item} is already at max level.</div>;
     }
 
     return (<div className="cost">

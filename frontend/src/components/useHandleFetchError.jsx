@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 export default function useHandleFetchError() {
     const navigate = useNavigate();
-    const dispatch = useNotificationsDispatch();
+    const notifDispatch = useNotificationsDispatch();
 
     return useCallback(async (response) => {
         if (response.status === 403) {
@@ -21,12 +21,12 @@ export default function useHandleFetchError() {
             } catch (err) {
                 message = response.statusText;
             }
-            dispatch({
+            notifDispatch({
                 type: "add",
                 message,
                 notifType: "error",
                 timer: 5
             });
         }
-    },[navigate, dispatch]);
+    }, [navigate, notifDispatch]);
 }

@@ -2,14 +2,14 @@ import { useCallback, useEffect } from "react";
 import { useNotificationsDispatch } from "./NotificationContext";
 
 export default function Notification({ notification }) {
-    const dispatch = useNotificationsDispatch();
+    const notifDispatch = useNotificationsDispatch();
 
     const close = useCallback(() => {
-        dispatch({
+        notifDispatch({
             type: "remove",
             id: notification.id
         });
-    }, [notification, dispatch]);
+    }, [notification, notifDispatch]);
 
     useEffect(() => {
         let timer;

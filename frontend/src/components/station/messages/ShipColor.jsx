@@ -4,7 +4,7 @@ import { useNotificationsDispatch } from "../../notifications/NotificationContex
 import useHandleFetchError from "../../useHandleFetchError";
 
 export function ShipColor({ ship, setShip }) {
-    const dispatch = useNotificationsDispatch();
+    const notifDispatch = useNotificationsDispatch();
     const handleFetchError = useHandleFetchError();
     const [allShipColors, setAllShipColors] = useState(null);
     const [color, setColor] = useState(ship.color);
@@ -31,7 +31,7 @@ export function ShipColor({ ship, setShip }) {
                     newShip.color = color;
                     setShip(newShip);
                     setColorListDisplay(false);
-                    dispatch({
+                    notifDispatch({
                         type: "add",
                         message: "Ship repainted.",
                         timer: 5
@@ -41,7 +41,7 @@ export function ShipColor({ ship, setShip }) {
                 }
             } catch (err) {
                 console.error(err);
-                dispatch({
+                notifDispatch({
                     type: "generic error"
                 });
             }
@@ -62,7 +62,7 @@ export function ShipColor({ ship, setShip }) {
                 }
             } catch (err) {
                 console.error(err);
-                dispatch({
+                notifDispatch({
                     type: "generic error"
                 });
             }
