@@ -1,14 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Login&Register.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useHandleFetchError from "./useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 export default function Register() {
+  const { user } = useOutletContext();
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const onSubmit = (e) => {
     e.preventDefault();

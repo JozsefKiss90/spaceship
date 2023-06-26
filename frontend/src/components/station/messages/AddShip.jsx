@@ -4,43 +4,81 @@ import { useStorageDispatchContext } from "../StorageContext";
 import { useHangarDispatchContext } from "../HangarContext";
 import "./AddShip.css";
 import ResourceList from "./ResourceList";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function AddShip() {
   const { stationId } = useOutletContext();
   const navigate = useNavigate();
+  const handleFetchError = useHandleFetchError();
+  const notifDispatch = useNotificationsDispatch();
   const storageSetter = useStorageDispatchContext();
   const hangarSetter = useHangarDispatchContext();
   const [shipType, setShipType] = useState("miner");
   const [cost, setCost] = useState(null);
   const [colors, setColors] = useState(null);
-  const [resources, setResources] = useState(null);
-  const [hasAvailableDock, setHasAvailableDock] = useState(false);
+  const [storage, setStorage] = useState(null);
+  const [hasAvailableDock, setHasAvailableDock] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const getShipCost = useCallback(() => {
+  const getShipCost = useCallback(async () => {
     setLoading(true);
-    fetch(`/api/v1/ship/cost/${shipType}`)
-      .then((res) => res.json())
-      .then((data) => {
+    try {
+      const res = await fetch(`/api/v1/ship/cost/${shipType}`);
+      if (res.ok) {
+        const data = await res.json();
         setCost(data);
         setLoading(false);
-      })
-      .catch((err) => console.error(err));
-  }, [shipType]);
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+  }, [shipType, handleFetchError, notifDispatch]);
+
+  const getStationData = useCallback(async () => {
+    if (colors === null || storage === null || hasAvailableDock === null) {
+      try {
+        const urls = [
+          `/api/v1/ship/color`,
+          `/api/v1/base/${stationId}/storage/resources`,
+          `/api/v1/base/${stationId}/hangar`,
+        ];
+        const [colors, resources, hangar] = await Promise.all(
+          urls.map(async (url) => {
+            const res = await fetch(url);
+            if (res.ok) {
+              return res.json();
+            } else {
+              handleFetchError(res);
+            }
+          })
+        );
+        setColors(colors);
+        setStorage(resources);
+        setHasAvailableDock(hangar.freeDocks > 0);
+      } catch (err) {
+        console.error(err);
+        notifDispatch({
+          type: "generic error",
+        });
+      }
+    }
+  }, [
+    colors,
+    storage,
+    hasAvailableDock,
+    stationId,
+    handleFetchError,
+    notifDispatch,
+  ]);
 
   useEffect(() => {
-    Promise.all([
-      fetch(`/api/v1/ship/color`).then((res) => res.json()),
-      fetch(`/api/v1/base/${stationId}/storage/resources`).then((res) =>
-        res.json()
-      ),
-      fetch(`/api/v1/base/${stationId}/hangar`).then((res) => res.json()),
-    ]).then(([colors, resources, hangar]) => {
-      setColors(colors);
-      setResources(resources);
-      setHasAvailableDock(hangar.freeDocks > 0);
-    });
-  }, [stationId]);
+    getStationData();
+  }, [getStationData]);
 
   useEffect(() => {
     getShipCost();
@@ -48,7 +86,7 @@ export default function AddShip() {
 
   function checkStorage() {
     for (const resource of Object.keys(cost)) {
-      if (!(resource in resources) || cost[resource] > resources[resource]) {
+      if (!(resource in storage) || cost[resource] > storage[resource]) {
         return false;
       }
     }
@@ -69,21 +107,30 @@ export default function AddShip() {
     addShip(shipData);
   }
 
-  function addShip(shipData) {
-    fetch(`/api/v1/base/${stationId}/add/ship`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shipData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+  async function addShip(shipData) {
+    try {
+      const res = await fetch(`/api/v1/base/${stationId}/add/ship`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(shipData),
+      });
+      if (res.ok) {
+        const data = await res.json();
         storageSetter({ type: "update" });
         hangarSetter({ type: "update" });
         navigate(`/station/ship/${data}`);
-      })
-      .catch((err) => console.error(err));
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+    setLoading(false);
   }
 
   function AddButton() {
@@ -108,7 +155,7 @@ export default function AddShip() {
     }
   }
 
-  if (colors === null || resources === null || hasAvailableDock === null) {
+  if (colors === null || storage === null || hasAvailableDock === null) {
     return <div>Loading...</div>;
   }
 
