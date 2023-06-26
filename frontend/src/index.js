@@ -20,6 +20,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Issues from './components/Issues';
 import NotFoundPage from './components/errorPages/NotFoundPage';
 import AccessDeniedPage from './components/errorPages/AccessDeniedPage';
+import GenericErrorPage from './components/errorPages/GenericErrorPage';
 
 const router = createBrowserRouter([
     {
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
                 element: <Issues />
             }
         ]
+    },
+    {
+        path: '/error',
+        element: <GenericErrorPage />
     },
     {
         path: '/403',

@@ -1,8 +1,17 @@
 import { useNavigate } from "react-router";
 import "./Header.css";
 
-const Header = ({ user, logout }) => {
+const Header = ({ user, setUser }) => {
   const navigate = useNavigate();
+
+  function logout() {
+    fetch("/api/v1/auth/logout", {
+      method: "POST",
+    }).then(() => {
+      setUser(null);
+      navigate("/");
+    });
+  }
 
   return (
     <>
