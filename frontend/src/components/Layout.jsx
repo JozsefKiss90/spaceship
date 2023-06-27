@@ -41,6 +41,12 @@ const Layout = () => {
     fetchBaseId();
   }, [fetchBaseId]);
 
+  useEffect(()=> {
+    if (user === null) {
+      setStationId(null);
+    }
+  },[user]);
+
   return (
     <NotificationProvider>
       <Header user={user} setUser={setUser} />

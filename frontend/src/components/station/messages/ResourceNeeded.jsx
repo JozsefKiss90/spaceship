@@ -13,7 +13,6 @@ export function ResourceNeeded({ cost, item, onConfirm }) {
 
     const fetchStorage = useCallback(async () => {
         try {
-
             const res = await fetch(`/api/v1/base/${stationId}/storage/resources`);
             if (res.ok) {
                 const data = await res.json();

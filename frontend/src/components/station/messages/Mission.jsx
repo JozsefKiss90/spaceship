@@ -2,17 +2,33 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Countdown from "react-countdown";
 import "./Mission.css";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function Mission() {
   const { id } = useParams();
+  const handleFetchError = useHandleFetchError();
+  const notifDispatch = useNotificationsDispatch();
   const [mission, setMission] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const timer = useRef();
 
-  const fetchMission = useCallback(() => {
-    return fetch(`/api/v1/mission/${id}`)
-      .then((res) => res.json())
-      .then((data) => setMission(data));
-  }, [id]);
+  const fetchMission = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/v1/mission/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setMission(data);
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+  }, [id, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchMission();
@@ -23,30 +39,56 @@ export default function Mission() {
     timer.current.getApi().start();
   }
 
-  function archiveMission() {
-    fetch(`/api/v1/mission/${id}/archive`, {
-      method: "PATCH",
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then((data) => setMission(data))
-      .catch((err) => console.error(err));
+  async function archiveMission() {
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/v1/mission/${id}/archive`, {
+        method: "PATCH",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMission(data);
+        notifDispatch({
+          type: "add",
+          message: "Mission archived.",
+          timer: 5,
+        });
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+    setSubmitting(false);
   }
 
-  function abortMission() {
-    fetch(`/api/v1/mission/${id}/abort`, {
+  async function abortMission() {
+    setSubmitting(true);
+    try {
+    const res = await fetch(`/api/v1/mission/${id}/abort`, {
       method: "PATCH",
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then((data) => setMission(data))
-      .catch((err) => console.error(err));
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setMission(data);
+      notifDispatch({
+        type: "add",
+        message: "Mission aborted.",
+        timer: 5,
+      });
+    } else {
+      handleFetchError(res);
+    }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+    setSubmitting(false);
   }
 
   if (mission === null) {
@@ -72,7 +114,7 @@ export default function Mission() {
             <div>{mission.shipName}</div>
           </div>
         </div>
-        {active &&
+        {active && (
           <div className="mission-timer">
             <div>Next expected report</div>
             <Countdown
@@ -80,8 +122,10 @@ export default function Mission() {
               className="mission-countdown"
               date={nextReport}
               onComplete={onComplete}
-              daysInHours={true} />
-          </div>}
+              daysInHours={true}
+            />
+          </div>
+        )}
         <div className="mission-end">
           <div>{active ? "Expected mission completion" : "Mission ended"}</div>
           <div>{endTime.toLocaleString("hu-HU")}</div>
@@ -93,12 +137,13 @@ export default function Mission() {
           ))}
         </div>
         <div className="mission-actions">
-          {(active && mission.status !== "RETURNING") &&
-            <button className="button red" onClick={abortMission}>
+          {active && mission.status !== "RETURNING" && (
+            <button className="button red" onClick={abortMission} disabled={submitting}>
               Abort
-            </button>}
+            </button>
+          )}
           {mission.status === "OVER" && (
-            <button className="button" onClick={archiveMission}>
+            <button className="button" onClick={archiveMission} disabled={submitting}>
               Archive
             </button>
           )}
@@ -108,11 +153,14 @@ export default function Mission() {
   );
 
   function Report({ report }) {
-    const formattedDate = `<${new Date(report.time + 'Z').toLocaleString("hu-HU")}>`;
-    return <div className="mission-report">
-      <div>{formattedDate}</div>
-      <div>{report.message}</div>
-    </div>
+    const formattedDate = `<${new Date(report.time + "Z").toLocaleString(
+      "hu-HU"
+    )}>`;
+    return (
+      <div className="mission-report">
+        <div>{formattedDate}</div>
+        <div>{report.message}</div>
+      </div>
+    );
   }
-
 }

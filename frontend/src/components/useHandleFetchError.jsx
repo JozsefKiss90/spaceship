@@ -28,5 +28,5 @@ export default function useHandleFetchError() {
                 timer: 5
             });
         }
-    }, [navigate, notifDispatch]);
+    }, [notifDispatch]);
 }

@@ -52,6 +52,11 @@ export default function MoveResources({ ship, onApplyMove }) {
         const data = await res.json();
         if (data === true) {
           onApplyMove(moveAmount);
+          notifDispatch({
+            type: "add",
+            message: "Resources moved.",
+            timer: 5
+          });
         }
       } else {
         handleFetchError(res);

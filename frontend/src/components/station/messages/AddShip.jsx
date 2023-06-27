@@ -120,6 +120,11 @@ export default function AddShip() {
         const data = await res.json();
         storageSetter({ type: "update" });
         hangarSetter({ type: "update" });
+        notifDispatch({
+          type: "add",
+          message: "New ship built.",
+          timer: 5
+        });
         navigate(`/station/ship/${data}`);
       } else {
         handleFetchError(res);
