@@ -1,6 +1,6 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.exception.DataNotFoundException;
+import com.codecool.spaceship.model.exception.*;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,10 +27,14 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Incorrect username or password.")).build();
     }
 
+    @ExceptionHandler(value = {IllegalOperationException.class, InvalidLevelException.class, NoSuchPartException.class, StorageException.class, UpgradeNotAvailableException.class})
+    public ResponseEntity<Object> handleCustomException(Exception exception) {
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage())).build();
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception exception) {
-        System.out.println(exception.getClass());
-        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage())).build();
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage())).build();
     }
 
 }
