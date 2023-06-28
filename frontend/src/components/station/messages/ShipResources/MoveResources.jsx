@@ -1,43 +1,83 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import ResourceRow from "./ResourceRow";
+import useHandleFetchError from "../../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function MoveResources({ ship, onApplyMove }) {
   const { stationId } = useOutletContext();
+  const handleFetchError = useHandleFetchError();
+  const notifDispatch = useNotificationsDispatch();
   const [storage, setStorage] = useState(null);
   const [moveAmount, setMoveAmount] = useState({});
   const [loading, setLoading] = useState(true);
-  console.log(moveAmount);
+
+  const fetchStorage = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/v1/base/${stationId}/storage`);
+      if (res.ok) {
+        const data = await res.json();
+        setStorage(data);
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+    setLoading(false);
+  }, [stationId, handleFetchError, notifDispatch]);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/v1/base/${stationId}/storage`)
-      .then((res) => res.json())
-      .then((data) => setStorage(data))
-      .finally(() => setLoading(false));
-  }, [stationId]);
+    fetchStorage();
+  }, [fetchStorage]);
 
-  function confirmMove() {
+  const confirmMove = useCallback(async () => {
     setLoading(true);
-    fetch(`/api/v1/base/${stationId}/add/resource-from-ship?ship=${ship.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(moveAmount),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          onApplyMove(moveAmount);
-        } else {
-          setLoading(false);
+    try {
+      const res = await fetch(
+        `/api/v1/base/${stationId}/add/resource-from-ship?ship=${ship.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(moveAmount),
         }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data === true) {
+          onApplyMove(moveAmount);
+          notifDispatch({
+            type: "add",
+            message: "Resources moved.",
+            timer: 5
+          });
+        }
+      } else {
+        handleFetchError(res);
+      }
+    } catch (error) {
+      console.error(error);
+      notifDispatch({
+        type: "generic error",
       });
-  }
+    }
+    setLoading(false);
+  }, [
+    stationId,
+    ship,
+    moveAmount,
+    onApplyMove,
+    handleFetchError,
+    notifDispatch,
+  ]);
 
   function updateMoveAmount(resource, amount) {
-    console.log(amount);
     const newMoveAmount = { ...moveAmount };
     newMoveAmount[resource] = amount;
     setMoveAmount(newMoveAmount);
@@ -51,7 +91,6 @@ export default function MoveResources({ ship, onApplyMove }) {
     (sum, next) => sum + next,
     0
   );
-  console.log(totalMoved);
   const freeSpace = storage.freeSpace - totalMoved;
 
   return (

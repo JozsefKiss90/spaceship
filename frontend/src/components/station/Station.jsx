@@ -1,7 +1,6 @@
 import StationBar from "./stationbar/StationBar";
 import "./Station.css";
 import "./messages/Messages.css";
-import { StationContext } from "./MessageContext";
 import { StorageStationContext } from "./StorageContext";
 import { HangarStationContext } from "./HangarContext";
 import { Outlet, useOutletContext } from "react-router-dom";
@@ -18,7 +17,6 @@ const Station = () => {
   return (
     <>
       <div className="station">
-        <StationContext>
           <StorageStationContext>
             <HangarStationContext>
               <StationBar></StationBar>
@@ -29,7 +27,6 @@ const Station = () => {
               </div>
             </HangarStationContext>
           </StorageStationContext>
-        </StationContext>
       </div>
     </>
   );

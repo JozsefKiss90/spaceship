@@ -1,15 +1,17 @@
 import Footer from "./Footer";
 import Header from "./Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
+import { NotificationProvider } from "./notifications/NotificationContext";
+import Notifications from "./notifications/Notifications";
 
 const Layout = () => {
-  const [user, setUser] = useState(null);
-  const [stationId, setStationId] = useState(null);
   const navigate = useNavigate();
   const jwtCookie = Cookies.get("jwt");
+  const [user, setUser] = useState(null);
+  const [stationId, setStationId] = useState(null);
 
   useEffect(() => {
     if (jwtCookie) {
@@ -17,32 +19,41 @@ const Layout = () => {
     }
   }, [jwtCookie]);
 
-  useEffect(() => {
+  const fetchBaseId = useCallback(async () => {
     if (user !== null) {
-      fetch(`/api/v1/base/user/${user.userId}`, {})
-        .then((res) => res.json())
-        .then((data) => setStationId(data.id))
-        .catch((err) => console.error(err));
+      try {
+        const res = await fetch(`/api/v1/base/user/${user.userId}`)
+        if (res.ok) {
+          const data = await res.json();
+          setStationId(data.id);
+        } else {
+          navigate("/error");
+        }
+      } catch (err) {
+        console.error(err);
+        navigate("/error");
+      }
     }
   }, [user]);
 
-  function logout() {
-    fetch("/api/v1/auth/logout", {
-      method: "POST",
-    }).then(() => {
-      // Cookies.remove("jwt");
-      setUser(null);
+
+  useEffect(() => {
+    fetchBaseId();
+  }, [fetchBaseId]);
+
+  useEffect(()=> {
+    if (user === null) {
       setStationId(null);
-      navigate("/");
-    });
-  }
+    }
+  },[user]);
 
   return (
-    <>
-      <Header user={user} logout={logout} />
+    <NotificationProvider>
+      <Header user={user} setUser={setUser} />
       <Outlet context={{ user, setUser, stationId }} />
       <Footer />
-    </>
+      <Notifications />
+    </NotificationProvider>
   );
 };
 

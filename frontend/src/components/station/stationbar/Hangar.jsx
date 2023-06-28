@@ -1,108 +1,97 @@
 import "./Hangar.css";
-import { useEffect, useState } from "react";
-import { useMessageDispatchContext } from "../MessageContext";
+import { useCallback, useEffect, useState } from "react";
 import { useHangarContext } from "../HangarContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 function Hangar() {
   const { stationId } = useOutletContext();
   const navigate = useNavigate();
-  const [minerCost, setMinerCost] = useState(null);
-  const [upgradeCost, setUpgradeCost] = useState(null);
-  const [storage, setStorage] = useState(null);
-  const dispatch = useMessageDispatchContext();
+  const handleFetchError = useHandleFetchError();
+  const notifDispatch = useNotificationsDispatch();
   const update = useHangarContext();
-  const [hangar, setHangar] = useState();
+  const [hangar, setHangar] = useState(null);
 
-  useEffect(() => {
-    fetch(`/api/v1/base/${stationId}/hangar`)
-      .then((res) => res.json())
-      .then((data) => {
+  const fetchHangar = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/v1/base/${stationId}/hangar`);
+      if (res.ok) {
+        const data = await res.json();
         setHangar(data);
-
-      })
-      .catch((err) => console.error(err));
-  }, [update, stationId]);
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+  }, [stationId, handleFetchError, notifDispatch]);
 
   useEffect(() => {
-    if (upgradeCost && storage) {
-      dispatch({
-        type: "base hangar upgrade",
-        data: upgradeCost,
-        storage: storage,
-      });
-      setUpgradeCost(null);
-      setStorage(null);
-    }
-  }, [upgradeCost, storage]);
+    fetchHangar();
+  }, [update, fetchHangar]);
 
-  useEffect(() => {
-    if (minerCost && storage) {
-      dispatch({
-        type: "miner cost",
-        data: minerCost,
-        storage: storage,
-      });
-      setMinerCost(null);
-      setStorage(null);
-    }
-  }, [minerCost, storage]);
-
+  if (hangar === null) {
+    return (
+      <div className="hangar">
+        <div className="menu">HANGAR loading...</div>
+      </div>
+    );
+  }
   return (
     <div className="hangar">
-      {!hangar ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <div className="menu">
-            <div>
-              {"HANGAR | " +
-                "lvl: " +
-                hangar.level +
-                " | " +
-                (hangar.capacity - hangar.freeDocks) +
-                " / " +
-                hangar.capacity}
-            </div>
-            <button
-              className="button"
-              onClick={() => {
-                navigate("/station/upgrade/hangar");
-              }}
-            >
-              Upgrade
-            </button>
-          </div>
-          <div className="ship-list">
-            {Object.keys(hangar.ships).length === 0 ? (
-              <p>No ships yet</p>
-            ) : (
-              hangar.ships.sort((a,b) => a.id - b.id).map((ship) => {
-                return (
-                  <div className="shiplist"
-                    onClick={() => {
-                      navigate(`ship/${ship.id}`);
-                    }}
-                    key={ship.id}
-                  >
-                    {ship.name} - {ship.type}
-                  </div>
-                );
-              })
-            )}
-          </div>
-          <div className="add-ship-btn">
-            <button
-              className="button"
-              onClick={() => {
-                navigate("ship/add");
-              }}
-            >
-              Add ship
-            </button>
-          </div>
-        </>
-      )}
+      <div className="menu">
+        <div>
+          {"HANGAR | lvl: " +
+            hangar.level +
+            " | " +
+            (hangar.capacity - hangar.freeDocks) +
+            " / " +
+            hangar.capacity}
+        </div>
+        <button
+          className="button"
+          onClick={() => {
+            navigate("/station/upgrade/hangar");
+          }}
+        >
+          Upgrade
+        </button>
+      </div>
+      <div className="ship-list">
+        {Object.keys(hangar.ships).length === 0 ? (
+          <p>No ships yet</p>
+        ) : (
+          hangar.ships
+            .sort((a, b) => a.id - b.id)
+            .map((ship) => {
+              return (
+                <div
+                  className="shiplist"
+                  onClick={() => {
+                    navigate(`ship/${ship.id}`);
+                  }}
+                  key={ship.id}
+                >
+                  {ship.name} - {ship.type}
+                </div>
+              );
+            })
+        )}
+      </div>
+      <div className="add-ship-btn">
+        <button
+          className="button"
+          onClick={() => {
+            navigate("ship/add");
+          }}
+        >
+          Add ship
+        </button>
+      </div>
     </div>
   );
 }

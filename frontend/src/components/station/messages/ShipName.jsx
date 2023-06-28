@@ -1,24 +1,56 @@
 import "./ShipName.css";
 import { useHangarDispatchContext } from "../HangarContext";
 import { useEffect, useState } from "react";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
-export function ShipName({ ship }) {
+export function ShipName({ ship, setShip }) {
     const hangarSetter = useHangarDispatchContext();
+    const handleFetchError = useHandleFetchError();
+    const notifDispatch = useNotificationsDispatch();
     const [nameInputDisplay, setNameInputDisplay] = useState(false);
     const [shipName, setShipName] = useState(ship.name);
+    const [submitting, setSubmitting] = useState(false);
 
     async function renameShip(name) {
-        await fetch(`/api/v1/ship/${ship.id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name,
-            }),
-        });
-        setNameInputDisplay(false);
-        hangarSetter({ type: "update" });
+        if (name === ship.name) {
+            setNameInputDisplay(false);
+            return;
+        }
+        setSubmitting(true);
+        try {
+
+            const res = await fetch(`/api/v1/ship/${ship.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: name,
+                }),
+            });
+            if (res.ok) {
+                setShip({
+                    ...ship,
+                    name
+                });
+                setNameInputDisplay(false);
+                hangarSetter({ type: "update" });
+                notifDispatch({
+                    type: "add",
+                    message: "Ship renamed.",
+                    timer: 5
+                });
+            } else {
+                handleFetchError(res);
+            }
+        } catch (err) {
+            console.error(err);
+            notifDispatch({
+                type: "generic error"
+            })
+        }
+        setSubmitting(false);
     }
 
     useEffect(() => {
@@ -39,16 +71,16 @@ export function ShipName({ ship }) {
                         minLength="3"
                         maxLength="15"
                     ></input>
-                    <div className="button" onClick={() => renameShip(shipName)}>
+                    <button className="button" onClick={() => renameShip(shipName)} disabled={submitting}>
                         Change!
-                    </div>
+                    </button>
                 </div>
                 : <>
-                    <div>{shipName}</div>
-                    <div className="button" onClick={() => {
+                    <div>{ship.name}</div>
+                    <button className="button" onClick={() => {
                         setNameInputDisplay(true);
                     }}>Rename
-                    </div>
+                    </button>
                 </>
             }
         </div>

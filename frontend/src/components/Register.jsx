@@ -1,14 +1,25 @@
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Login&Register.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useHandleFetchError from "./useHandleFetchError";
+import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 export default function Register() {
+  const { user } = useOutletContext();
   const navigate = useNavigate();
-  const [message, setMessage] = useState(null);
+  const handleFetchError = useHandleFetchError();
+  const notifDispatch = useNotificationsDispatch();
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setSubmitting(true);
     const formData = new FormData(e.target);
     const entries = [...formData.entries()];
 
@@ -17,29 +28,31 @@ export default function Register() {
       acc[k] = v;
       return acc;
     }, {});
-    handleLogin(credentials);
+    handleRegister(credentials);
   };
 
-  function handleLogin(formData) {
-    fetch("/api/v1/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error();
+  async function handleRegister(formData) {
+    try {
+      const res = await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          navigate("/station");
         }
-      })
-      .then((data) => {
-        Cookies.set("jwt", data.token);
-        navigate("/station");
-      })
-      .catch((err) =>
-        setMessage("Username or email already used by someone else.")
-      );
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error"
+      });
+    }
+    setSubmitting(false);
   }
 
   return (
@@ -67,17 +80,16 @@ export default function Register() {
               Terms and Conditions
             </a>{" "}
             &{" "}
-            <br/>
+            <br />
             <a className="clickable" href="/privacy" target="blank">
               Privacy Policy
             </a>
           </span>
         </div>
-        <button className="button" type="Submit">
+        <button className="button" type="Submit" disabled={submitting}>
           Register
         </button>
       </form>
-      {message && <div className="lrform-message">{message}</div>}
     </div>
   );
 }

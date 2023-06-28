@@ -1,39 +1,50 @@
 import "./Storage.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useStorageContext } from "../StorageContext";
-import { useMessageDispatchContext } from "../MessageContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import useHandleFetchError from "../../useHandleFetchError";
+import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 const Storage = () => {
     const { stationId } = useOutletContext();
     const navigate = useNavigate();
+    const handleFetchError = useHandleFetchError();
+    const notifDispatch = useNotificationsDispatch();
     const update = useStorageContext();
-    const dispatch = useMessageDispatchContext();
-    const [updateStorage, setUpdateStorage] = useState(null);
-    const [upgradeCost, setUpgradeCost] = useState(null);
     const [storage, setStorage] = useState(null);
 
-    useEffect(() => {
-        fetch(`/api/v1/base/${stationId}/storage`)
-            .then(res => res.json())
-            .then(data => setStorage(data))
-            .catch(err => console.error(err));
-    }, [update, updateStorage]);
+    const fetchStorage = useCallback(async () => {
+        try {
+            const res = await fetch(`/api/v1/base/${stationId}/storage`);
+            if (res.ok) {
+              const data = await res.json();
+              setStorage(data);
+            } else {
+              handleFetchError(res);
+            }
+          } catch (err) {
+            console.error(err);
+            notifDispatch({
+              type: "generic error",
+            });
+          }
+    }, [stationId, handleFetchError, notifDispatch]);
 
     useEffect(() => {
-        if (upgradeCost) {
-            dispatch({
-                type: "base storage upgrade",
-                data: upgradeCost,
-                storage: storage.resources
-            })
-        }
-    }, [upgradeCost]);
+        fetchStorage();
+    }, [update, fetchStorage]);
 
+    if (storage === null) {
+        return (
+            <div className="storage">
+                <div className="menu">STORAGE loading...</div>
+            </div>
+        );
+    }
     return (<>
         {!storage ? "Loading..." : (<div className="storage">
             <div className="menu">
-                <div>{"STORAGE | " + "lvl: " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
+                <div>{"STORAGE | lvl: " + storage.level + " | " + (storage.capacity - storage.freeSpace) + " / " + storage.capacity}</div>
                 <div
                     className="button"
                     onClick={() => navigate("/station/upgrade/storage")}>Upgrade

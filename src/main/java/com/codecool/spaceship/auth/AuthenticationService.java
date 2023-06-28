@@ -8,44 +8,49 @@ import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
-import com.codecool.spaceship.repository.SpaceShipRepository;
 import com.codecool.spaceship.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
-    private final SpaceShipRepository spaceShipRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request){
-        //TODO if username or email are taken, throw error
+    public Cookie register(RegisterRequest request) {
+        checkUsernameAndEmailAvailability(request.getUsername(), request.getEmail());
         UserEntity user = createUser(request);
         String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return createCookie(jwtToken);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public Cookie authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword())
         );
         UserEntity user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return createCookie(jwtToken);
+    }
+
+    public Cookie clearCookie() {
+        Cookie jwtCookie = new Cookie("jwt", null);
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setDomain(System.getenv("domain"));
+        jwtCookie.setPath("/");
+        return jwtCookie;
     }
 
     private UserEntity createUser(RegisterRequest request) {
@@ -65,5 +70,30 @@ public class AuthenticationService {
         minerShip.setStation(spaceStation);
         minerShip.setUser(user);
         return userRepository.save(user);
+    }
+
+    private void checkUsernameAndEmailAvailability(String username, String email) {
+        List<UserEntity> matches = userRepository.findAllByUsernameIsIgnoreCaseOrEmailIsIgnoreCase(username, email);
+        if (matches.size() > 1) {
+            throw new IllegalArgumentException("Email and username are both in use.");
+        } else if (matches.size() == 1) {
+            UserEntity match = matches.get(0);
+            if (match.getEmail().equalsIgnoreCase(email)
+                    && match.getUsername().equalsIgnoreCase(username)) {
+                throw new IllegalArgumentException("Email and username are both in use.");
+            } else if (match.getEmail().equalsIgnoreCase(email)) {
+                throw new IllegalArgumentException("Email is already in use.");
+            } else {
+                throw new IllegalArgumentException("Username is already in use.");
+            }
+        }
+    }
+
+    private Cookie createCookie(String token) {
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(1));
+        jwtCookie.setDomain(System.getenv("domain"));
+        jwtCookie.setPath("/");
+        return jwtCookie;
     }
 }
