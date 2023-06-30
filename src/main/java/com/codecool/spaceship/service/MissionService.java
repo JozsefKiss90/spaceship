@@ -6,9 +6,9 @@ import com.codecool.spaceship.model.dto.MissionDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.mission.Mission;
+import com.codecool.spaceship.model.mission.MissionFactory;
 import com.codecool.spaceship.model.mission.MissionManager;
 import com.codecool.spaceship.model.mission.MissionStatus;
-import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.repository.LocationRepository;
 import com.codecool.spaceship.repository.MissionRepository;
@@ -25,12 +25,14 @@ import java.util.Objects;
 public class MissionService {
 
     private final MissionRepository missionRepository;
+    private final MissionFactory missionFactory;
     private final SpaceShipRepository spaceShipRepository;
     private final LocationRepository locationRepository;
 
     @Autowired
-    public MissionService(MissionRepository missionRepository, SpaceShipRepository spaceShipRepository, LocationRepository locationRepository) {
+    public MissionService(MissionRepository missionRepository, MissionFactory missionFactory, SpaceShipRepository spaceShipRepository, LocationRepository locationRepository) {
         this.missionRepository = missionRepository;
+        this.missionFactory = missionFactory;
         this.spaceShipRepository = spaceShipRepository;
         this.locationRepository = locationRepository;
     }
@@ -71,24 +73,20 @@ public class MissionService {
         if (!Objects.equals(user.getId(), spaceShip.getUser().getId())) {
             throw new SecurityException("You don't have authority to send this ship");
         }
-        MinerShip minerShip;
-        if (spaceShip instanceof MinerShip) {
-            minerShip = (MinerShip) spaceShip;
-        } else {
-            throw new IllegalArgumentException("Ship is not a miner ship");
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new DataNotFoundException("No location found with id %d".formatted(locationId)));
+        Mission mission = missionFactory.startNewMission(spaceShip, location, activityDurationInSecs);
+        mission = missionRepository.save(mission);
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
+        if (missionManager.updateStatus()) {
+            mission = missionRepository.save(mission);
         }
-        Location location = locationRepository.findById(locationId).orElseThrow(() -> new DataNotFoundException("No location found with id %d".formatted(locationId)));
-        Mission mission = MissionManager.startMiningMission(minerShip, location, activityDurationInSecs);
-        MissionManager missionManager = new MissionManager(mission);
-        mission = missionRepository.save(mission);
-        missionManager.updateStatus();
-        mission = missionRepository.save(mission);
         return new MissionDTO(mission);
     }
 
     public MissionDTO archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
-        MissionManager missionManager = new MissionManager(mission);
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
         if(missionManager.archiveMission()) {
             mission = missionRepository.save(mission);
             return new MissionDTO(mission);
@@ -98,7 +96,7 @@ public class MissionService {
 
     public MissionDTO abortMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
-        MissionManager missionManager = new MissionManager(mission);
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {
             mission = missionRepository.save(mission);
         }
@@ -110,10 +108,7 @@ public class MissionService {
     }
 
     private MissionDTO updateAndConvert(Mission mission) {
-        MissionManager missionManager = new MissionManager(mission);
-        if (missionManager.updateStatus()) {
-            mission = missionRepository.save(mission);
-        }
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {
             mission = missionRepository.save(mission);
         }

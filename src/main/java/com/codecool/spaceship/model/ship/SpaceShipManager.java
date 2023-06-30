@@ -1,5 +1,6 @@
 package com.codecool.spaceship.model.ship;
 
+import com.codecool.spaceship.model.dto.ShipDetailDTO;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
@@ -7,6 +8,7 @@ import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.shipparts.EngineManager;
 import com.codecool.spaceship.model.ship.shipparts.ShieldManager;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
+import com.codecool.spaceship.service.LevelService;
 
 import java.util.List;
 import java.util.Map;
@@ -14,16 +16,22 @@ import java.util.Map;
 
 public abstract class SpaceShipManager {
 
+    protected final LevelService levelService;
     protected final SpaceShip spaceShip;
     protected ShieldManager shield;
     protected EngineManager engine;
 
-    protected SpaceShipManager(SpaceShip spaceShip) {
+    protected SpaceShipManager(LevelService levelService, SpaceShip spaceShip) {
+        this.levelService = levelService;
         this.spaceShip = spaceShip;
     }
 
     public boolean isAvailable() {
         return spaceShip.getCurrentMission() == null;
+    }
+
+    public Mission getCurrentMission() {
+        return spaceShip.getCurrentMission();
     }
 
     public void setCurrentMission(Mission mission) {
@@ -53,22 +61,24 @@ public abstract class SpaceShipManager {
         shield.damage(amount);
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         createEngineIfNotExists();
         return engine.getSpeed();
     }
 
     protected void createShieldIfNotExists() {
         if (shield == null) {
-            shield = new ShieldManager(spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
+            shield = new ShieldManager(levelService, spaceShip.getShieldLevel(), spaceShip.getShieldEnergy());
         }
     }
 
     protected void createEngineIfNotExists() {
         if (engine == null) {
-            engine = new EngineManager(spaceShip.getEngineLevel());
+            engine = new EngineManager(levelService, spaceShip.getEngineLevel());
         }
     }
+    public abstract ShipDetailDTO getDetailedDTO();
+
     public abstract List<ShipPart> getPartTypes();
 
     public abstract boolean upgradePart(ShipPart part) throws NoSuchPartException;

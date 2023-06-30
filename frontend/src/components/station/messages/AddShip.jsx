@@ -188,7 +188,7 @@ export default function AddShip() {
             id="type"
             onChange={(e) => setShipType(e.target.value)}
           >
-            <option value="miner">Miner</option>
+            <option value="MINER">Miner</option>
           </select>
         </div>
         <div>

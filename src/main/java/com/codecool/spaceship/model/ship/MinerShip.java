@@ -1,13 +1,10 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.resource.ShipResource;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import com.codecool.spaceship.model.resource.ResourceType;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -18,8 +15,13 @@ import java.util.Set;
 public class MinerShip extends SpaceShip {
     private int drillLevel;
     private int storageLevel;
-    @OneToMany(cascade = CascadeType.MERGE)
-    @JoinColumn(name ="ship_id")
-    private Set<ShipResource> resources;
+    @ElementCollection
+    @CollectionTable(
+            name = "minership_storage_mapping",
+            joinColumns = @JoinColumn(name = "ship_id", referencedColumnName = "id")
+    )
+    @MapKeyJoinColumn(name = "resource")
+    @Column(name = "amount")
+    private Map<ResourceType, Integer> storedResources;
 
 }

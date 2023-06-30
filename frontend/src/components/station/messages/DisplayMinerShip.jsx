@@ -22,7 +22,7 @@ export default function DisplayMinerShip() {
     const fetchShip = useCallback(async () => {
         setShip(null);
         try {
-            const res = await fetch(`/api/v1/ship/miner/${id}`);
+            const res = await fetch(`/api/v1/ship/${id}/detail`);
             if (res.ok) {
                 const data = await res.json();
                 setShip(data);
@@ -48,7 +48,7 @@ export default function DisplayMinerShip() {
     async function getShipPartUpgradeCost(part) {
         setCost(null);
         try {
-            const res = await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`)
+            const res = await fetch(`/api/v1/ship/${ship.id}/upgrade?part=${part}`)
             if (res.ok) {
                 const data = await res.json();
                 setCost(data);
@@ -74,7 +74,7 @@ export default function DisplayMinerShip() {
 
     async function upgradePart() {
         try {
-            const res = await fetch(`/api/v1/ship/miner/${ship.id}/upgrade?part=${part}`, {
+            const res = await fetch(`/api/v1/ship/${ship.id}/upgrade?part=${part}`, {
                 method: "PATCH"
             });
             if (res.ok) {

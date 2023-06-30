@@ -1,22 +1,21 @@
 package com.codecool.spaceship.model.station;
 
+import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.UpgradeableType;
 import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
-import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.service.LevelService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HangarManagerTest {
@@ -26,19 +25,26 @@ class HangarManagerTest {
     MinerShip ship2;
     @Mock
     SpaceShip ship3;
+    @Mock
+    LevelService levelServiceMock;
+    @Mock
+    Level levelMock;
+
     @Test
     void addShipSuccess() {
-        HangarManager hangarManager = new HangarManager();
-        try {
-            hangarManager.addShip(ship1);
-        } catch (StorageException ignored) {
-        }
+        when(levelServiceMock.getLevelByTypeAndLevel(UpgradeableType.HANGAR, 1)).thenReturn(levelMock);
+        when(levelMock.getEffect()).thenReturn(2);
+        HangarManager hangarManager = new HangarManager(levelServiceMock);
+        hangarManager.addShip(ship1);
+
         assertEquals(Set.of(ship1), hangarManager.getAllShips());
     }
 
     @Test
     void addShipError() {
-        HangarManager hangarManager = new HangarManager();
+        when(levelServiceMock.getLevelByTypeAndLevel(UpgradeableType.HANGAR, 1)).thenReturn(levelMock);
+        when(levelMock.getEffect()).thenReturn(2);
+        HangarManager hangarManager = new HangarManager(levelServiceMock);
         try {
             hangarManager.addShip(ship1);
             hangarManager.addShip(ship2);
@@ -49,7 +55,9 @@ class HangarManagerTest {
 
     @Test
     void getAllShipsTwo() {
-        HangarManager hangarManager = new HangarManager();
+        when(levelServiceMock.getLevelByTypeAndLevel(UpgradeableType.HANGAR, 1)).thenReturn(levelMock);
+        when(levelMock.getEffect()).thenReturn(2);
+        HangarManager hangarManager = new HangarManager(levelServiceMock);
         try {
             hangarManager.addShip(ship1);
             hangarManager.addShip(ship3);
@@ -61,60 +69,64 @@ class HangarManagerTest {
 
     @Test
     void getAllShipsEmpty() {
-        HangarManager hangarManager = new HangarManager();
+        when(levelServiceMock.getLevelByTypeAndLevel(UpgradeableType.HANGAR, 1)).thenReturn(levelMock);
+        when(levelMock.getEffect()).thenReturn(2);
+        HangarManager hangarManager = new HangarManager(levelServiceMock);
         Set<SpaceShip> expected = Set.of();
         assertEquals(expected, hangarManager.getAllShips());
     }
 
-    @Test
-    void getUpgradeCostLevel1() {
-        HangarManager hangarManager = new HangarManager();
-        Map<ResourceType, Integer> expected = new HashMap<>() {{
-            put(ResourceType.METAL, 5);
-        }};
-        Map<ResourceType, Integer> actual = null;
-        try {
-            actual = hangarManager.getUpgradeCost();
-        } catch (UpgradeNotAvailableException ignored) {
-        }
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getUpgradeCostLevel3() {
-        HangarManager hangarManager = new HangarManager(3, new HashSet<>());
-        Map<ResourceType, Integer> expected = new HashMap<>() {{
-            put(ResourceType.METAL, 100);
-            put(ResourceType.SILICONE, 100);
-            put(ResourceType.CRYSTAL, 50);
-        }};
-        Map<ResourceType, Integer> actual = null;
-        try {
-            actual = hangarManager.getUpgradeCost();
-        } catch (UpgradeNotAvailableException ignored) {
-        }
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getUpgradeCostThrows() {
-        HangarManager hangarManager = new HangarManager(5, new HashSet<>());
-        assertThrows(UpgradeNotAvailableException.class, hangarManager::getUpgradeCost);
-    }
-
-    @Test
-    void upgradeSuccess() {
-        HangarManager hangarManager = new HangarManager();
-        hangarManager.upgrade();
-        int expected = 2;
-        assertEquals(expected, hangarManager.getCurrentLevel());
-    }
-
-    @Test
-    void upgradeMaxLevelExceeded() {
-        HangarManager hangarManager = new HangarManager(5, new HashSet<>());
-        hangarManager.upgrade();
-        int expected = 5;
-        assertEquals(expected, hangarManager.getCurrentLevel());
-    }
+//    Upgrading is no longer implemented in the manager classes, test elsewhere
+//
+//    @Test
+//    void getUpgradeCostLevel1() {
+//        HangarManager hangarManager = new HangarManager(levelService);
+//        Map<ResourceType, Integer> expected = new HashMap<>() {{
+//            put(ResourceType.METAL, 5);
+//        }};
+//        Map<ResourceType, Integer> actual = null;
+//        try {
+//            actual = hangarManager.getUpgradeCost();
+//        } catch (UpgradeNotAvailableException ignored) {
+//        }
+//        assertEquals(expected, actual);
+//    }
+//
+//    @Test
+//    void getUpgradeCostLevel3() {
+//        HangarManager hangarManager = new HangarManager(levelService, 3, new HashSet<>());
+//        Map<ResourceType, Integer> expected = new HashMap<>() {{
+//            put(ResourceType.METAL, 100);
+//            put(ResourceType.SILICONE, 100);
+//            put(ResourceType.CRYSTAL, 50);
+//        }};
+//        Map<ResourceType, Integer> actual = null;
+//        try {
+//            actual = hangarManager.getUpgradeCost();
+//        } catch (UpgradeNotAvailableException ignored) {
+//        }
+//        assertEquals(expected, actual);
+//    }
+//
+//    @Test
+//    void getUpgradeCostThrows() {
+//        HangarManager hangarManager = new HangarManager(levelService, 5, new HashSet<>());
+//        assertThrows(UpgradeNotAvailableException.class, hangarManager::getUpgradeCost);
+//    }
+//
+//    @Test
+//    void upgradeSuccess() {
+//        HangarManager hangarManager = new HangarManager(levelService);
+//        hangarManager.upgrade();
+//        int expected = 2;
+//        assertEquals(expected, hangarManager.getCurrentLevel());
+//    }
+//
+//    @Test
+//    void upgradeMaxLevelExceeded() {
+//        HangarManager hangarManager = new HangarManager(levelService, 5, new HashSet<>());
+//        hangarManager.upgrade();
+//        int expected = 5;
+//        assertEquals(expected, hangarManager.getCurrentLevel());
+//    }
 }
