@@ -3,7 +3,7 @@ import { ResourceNeeded } from "./ResourceNeeded";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStorageDispatchContext } from "../StorageContext";
 import { useHangarDispatchContext } from "../HangarContext";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function StationUpgrade() {

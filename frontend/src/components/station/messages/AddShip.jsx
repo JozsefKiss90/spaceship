@@ -4,7 +4,7 @@ import { useStorageDispatchContext } from "../StorageContext";
 import { useHangarDispatchContext } from "../HangarContext";
 import "./AddShip.css";
 import ResourceList from "./ResourceList";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function AddShip() {

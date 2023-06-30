@@ -7,7 +7,7 @@ import { ShipColor } from "./ShipColor";
 import { ShipStatus } from "./ShipStatus";
 import { useStorageDispatchContext } from "../StorageContext";
 import ShipResources from "./ShipResources/ShipResources";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function DisplayMinerShip() {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import ResourceRow from "./ResourceRow";
-import useHandleFetchError from "../../../useHandleFetchError";
+import useHandleFetchError from "../../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function MoveResources({ ship, onApplyMove }) {

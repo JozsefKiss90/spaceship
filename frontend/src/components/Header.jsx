@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import "./Header.css";
-import useHandleFetchError from "./useHandleFetchError";
+import useHandleFetchError from "../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 const Header = ({ user, setUser }) => {

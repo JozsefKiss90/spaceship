@@ -1,7 +1,7 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import "./Login&Register.css";
 import { useEffect, useState } from "react";
-import useHandleFetchError from "./useHandleFetchError";
+import useHandleFetchError from "../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 export default function Register() {

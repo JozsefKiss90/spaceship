@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useNotificationsDispatch } from "./notifications/NotificationContext";
+import { useNotificationsDispatch } from "../components/notifications/NotificationContext";
 import { useCallback } from "react";
 
 export default function useHandleFetchError() {
