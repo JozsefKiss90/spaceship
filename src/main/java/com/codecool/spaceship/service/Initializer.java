@@ -52,6 +52,16 @@ public class Initializer {
                 .password(passwordEncoder.encode("password"))
                 .role(Role.ADMIN)
                 .build();
+        MinerShip minerShip1 = MinerShipManager.createNewMinerShip(levelService,"Adminship", Color.DIAMOND);
+        SpaceStation spaceStation1 = SpaceStationManager.createNewSpaceStation("Admin-i-station");
+
+        minerShip1.setUser(admin);
+        minerShip1.setStation(spaceStation1);
+
+        spaceStation1.setHangar(Set.of(minerShip1));
+        spaceStation1.setUser(admin);
+
+        admin.setSpaceStation(spaceStation1);
         userRepository.save(admin);
 
         UserEntity user = UserEntity.builder()
@@ -61,27 +71,27 @@ public class Initializer {
                 .role(Role.USER)
                 .build();
 
-        MinerShip minerShip = MinerShipManager.createNewMinerShip(levelService,"Built2Mine", Color.DIAMOND);
-        minerShip.setEngineLevel(1);
-        minerShip.setShieldEnergy(20);
-        minerShip.setDrillLevel(2);
+        MinerShip minerShip2 = MinerShipManager.createNewMinerShip(levelService,"Built2Mine", Color.DIAMOND);
+        minerShip2.setEngineLevel(1);
+        minerShip2.setShieldEnergy(20);
+        minerShip2.setDrillLevel(2);
 
-        SpaceStation spaceStation = SpaceStationManager.createNewSpaceStation("Station ONE");
-        spaceStation.setStorageLevel(5);
+        SpaceStation spaceStation2 = SpaceStationManager.createNewSpaceStation("Station ONE");
+        spaceStation2.setStorageLevel(5);
 
-        minerShip.setUser(user);
-        minerShip.setStation(spaceStation);
+        minerShip2.setUser(user);
+        minerShip2.setStation(spaceStation2);
 
-        spaceStation.setHangar(Set.of(minerShip));
-        spaceStation.setStoredResources(Map.of(
+        spaceStation2.setHangar(Set.of(minerShip2));
+        spaceStation2.setStoredResources(Map.of(
                 ResourceType.METAL, 10000,
                 ResourceType.CRYSTAL, 10000,
                 ResourceType.PLUTONIUM, 10000,
                 ResourceType.SILICONE, 10000
         ));
-        spaceStation.setUser(user);
+        spaceStation2.setUser(user);
 
-        user.setSpaceStation(spaceStation);
+        user.setSpaceStation(spaceStation2);
 
         userRepository.save(user);
 
