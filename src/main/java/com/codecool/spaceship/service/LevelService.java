@@ -44,4 +44,18 @@ public class LevelService {
         levelRepository.save(level);
         return new LevelDTO(level);
     }
+
+    public boolean deleteLastLevelOfType(UpgradeableType type) {
+        Level maxLevel = levelRepository.getLevelByTypeAndMax(type, true)
+                .orElseThrow(() -> new RuntimeException("No max level has been set for %s type".formatted(type)));
+        if (maxLevel.getLevel() == 1) {
+            throw new IllegalArgumentException("The first level can't be deleted.");
+        }
+        Level newMaxLevel = levelRepository.getLevelByTypeAndLevel(type, maxLevel.getLevel() - 1)
+                .orElseThrow(() -> new RuntimeException("Level sequence is incorrect for %s type".formatted(type)));
+        newMaxLevel.setMax(true);
+        levelRepository.delete(maxLevel);
+        levelRepository.save(newMaxLevel);
+        return true;
+    }
 }

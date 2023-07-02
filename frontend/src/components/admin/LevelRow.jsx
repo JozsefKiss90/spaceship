@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import useHandleFetchError from "../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../notifications/NotificationContext";
 
-export default function LevelRow({ level, updateLevels }) {
+export default function LevelRow({ level, updateLevels, deleteLastLevel }) {
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
   const [edit, setEdit] = useState(false);
@@ -42,6 +42,45 @@ export default function LevelRow({ level, updateLevels }) {
         const data = await res.json();
         updateLevels(data);
         cancelEdit(data);
+        notifDispatch({
+          type: "add",
+          message: "Level updated.",
+          notifType: "admin",
+          timer: 5
+        });
+      } else {
+        handleFetchError(res);
+      }
+    } catch (err) {
+      console.error(err);
+      notifDispatch({
+        type: "generic error",
+      });
+    }
+    setSubmitting(false);
+  }
+
+  async function onDeleteLevel() {
+    if (!window.confirm("Deleting levels can lead to errors. Are you sure?")) {
+      setSubmitting(false);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/v1/level?type=${level.type}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data === true) {
+          deleteLastLevel();
+          notifDispatch({
+            type: "add",
+            message: "Level deleted.",
+            notifType: "admin",
+            timer: 5
+          });
+        }
       } else {
         handleFetchError(res);
       }
@@ -114,7 +153,15 @@ export default function LevelRow({ level, updateLevels }) {
               <button className="button blue" onClick={() => setEdit(true)}>
                 Edit
               </button>
-              {level.max && <button className="button red">Delete</button>}
+              {level.max && level.level > 1 && (
+                <button
+                  className="button red"
+                  onClick={onDeleteLevel}
+                  disabled={submitting}
+                >
+                  Delete
+                </button>
+              )}
             </>
           )}
         </div>

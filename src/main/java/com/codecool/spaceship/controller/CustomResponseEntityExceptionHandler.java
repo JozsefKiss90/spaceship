@@ -27,7 +27,8 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Incorrect username or password.")).build();
     }
 
-    @ExceptionHandler(value = {IllegalOperationException.class, InvalidLevelException.class, NoSuchPartException.class, StorageException.class, UpgradeNotAvailableException.class})
+    @ExceptionHandler(value = {IllegalOperationException.class, InvalidLevelException.class, NoSuchPartException.class,
+            StorageException.class, UpgradeNotAvailableException.class, IllegalArgumentException.class})
     public ResponseEntity<Object> handleCustomException(Exception exception) {
         return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage())).build();
     }

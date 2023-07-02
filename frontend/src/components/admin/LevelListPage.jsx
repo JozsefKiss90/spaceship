@@ -55,6 +55,15 @@ export default function LevelListPage() {
     setLevels(newLevels);
   }
 
+  function deleteLastLevel() {
+    const newLevels = [...levels];
+    newLevels.pop();
+    const newMax = {...newLevels.pop()};
+    newMax.max = true;
+    newLevels.push(newMax);
+    setLevels(newLevels);
+  }
+
   const formatted = useMemo(() => {
     return type.replaceAll("_", " ");
   }, [type]);
@@ -74,20 +83,20 @@ export default function LevelListPage() {
       {levels === null ? (
         <div>Not Available</div>
       ) : (
-        <LevelList levels={levels} updateLevels={updateLevels} />
+        <LevelList levels={levels} updateLevels={updateLevels} deleteLastLevel={deleteLastLevel} />
       )}
     </div>
   );
 }
 
-function LevelList({ levels, updateLevels }) {
+function LevelList({ levels, updateLevels, deleteLastLevel }) {
   if (levels.length === 0) {
     return <div>No levels found.</div>;
   } else {
     return (
       <>
         {levels.map((level) => (
-          <LevelRow key={level.id} level={level} updateLevels={updateLevels} />
+          <LevelRow key={level.id} level={level} updateLevels={updateLevels} deleteLastLevel={deleteLastLevel} />
         ))}
       </>
     );

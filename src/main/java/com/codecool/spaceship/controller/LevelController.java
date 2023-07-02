@@ -36,4 +36,9 @@ public class LevelController {
     public LevelDTO updateLevelById(@PathVariable Long id, @RequestBody NewLevelDTO newLevelDTO) {
         return levelService.updateLevelById(id, newLevelDTO);
     }
+
+    @DeleteMapping
+    public boolean deleteLastLevelOfType(@RequestParam UpgradeableType type) {
+        return levelService.deleteLastLevelOfType(type);
+    }
 }

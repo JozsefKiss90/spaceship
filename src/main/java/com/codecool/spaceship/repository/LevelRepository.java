@@ -12,4 +12,6 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
     Optional<Level> getLevelByTypeAndLevel(UpgradeableType type, int level);
 
     List<Level> getLevelsByType(UpgradeableType type);
+
+    Optional<Level> getLevelByTypeAndMax(UpgradeableType type, boolean isMax);
 }

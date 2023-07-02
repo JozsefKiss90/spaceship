@@ -21,7 +21,7 @@ public class Level {
     private UpgradeableType type;
     private Integer level;
     private Integer effect;
-    private boolean maxLevel;
+    private boolean max;
     @ElementCollection
     @CollectionTable(
             name = "level_cost_mapping",

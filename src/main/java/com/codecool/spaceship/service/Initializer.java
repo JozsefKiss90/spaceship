@@ -126,14 +126,14 @@ public class Initializer {
                 .type(UpgradeableType.ENGINE)
                 .level(1)
                 .effect(400)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level engine2 = Level.builder()
                 .type(UpgradeableType.ENGINE)
                 .level(2)
                 .effect(5)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.SILICONE, 10,
                         ResourceType.CRYSTAL, 5
@@ -143,7 +143,7 @@ public class Initializer {
                 .type(UpgradeableType.ENGINE)
                 .level(3)
                 .effect(10)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.SILICONE, 25,
                         ResourceType.CRYSTAL, 5
@@ -153,7 +153,7 @@ public class Initializer {
                 .type(UpgradeableType.ENGINE)
                 .level(4)
                 .effect(20)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.SILICONE, 100,
                         ResourceType.CRYSTAL, 10
@@ -163,7 +163,7 @@ public class Initializer {
                 .type(UpgradeableType.ENGINE)
                 .level(5)
                 .effect(50)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.SILICONE, 150,
                         ResourceType.CRYSTAL, 20,
@@ -175,14 +175,14 @@ public class Initializer {
                 .type(UpgradeableType.DRILL)
                 .level(1)
                 .effect(1200)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level drill2 = Level.builder()
                 .type(UpgradeableType.DRILL)
                 .level(2)
                 .effect(10)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 20,
                         ResourceType.CRYSTAL, 10
@@ -192,7 +192,7 @@ public class Initializer {
                 .type(UpgradeableType.DRILL)
                 .level(3)
                 .effect(20)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 100,
                         ResourceType.CRYSTAL, 50
@@ -202,7 +202,7 @@ public class Initializer {
                 .type(UpgradeableType.DRILL)
                 .level(4)
                 .effect(35)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 200,
                         ResourceType.CRYSTAL, 100
@@ -212,7 +212,7 @@ public class Initializer {
                 .type(UpgradeableType.DRILL)
                 .level(5)
                 .effect(50)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 400,
                         ResourceType.CRYSTAL, 150,
@@ -224,14 +224,14 @@ public class Initializer {
                 .type(UpgradeableType.SHIELD)
                 .level(1)
                 .effect(20)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level shield2 = Level.builder()
                 .type(UpgradeableType.SHIELD)
                 .level(2)
                 .effect(50)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.CRYSTAL, 20
                 ))
@@ -240,7 +240,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIELD)
                 .level(3)
                 .effect(100)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.CRYSTAL, 40,
                         ResourceType.SILICONE, 10
@@ -250,7 +250,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIELD)
                 .level(4)
                 .effect(150)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.CRYSTAL, 100,
                         ResourceType.SILICONE, 20
@@ -260,7 +260,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIELD)
                 .level(5)
                 .effect(200)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.CRYSTAL, 150,
                         ResourceType.SILICONE, 40,
@@ -272,14 +272,14 @@ public class Initializer {
                 .type(UpgradeableType.SHIP_STORAGE)
                 .level(1)
                 .effect(10)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level shipStorage2 = Level.builder()
                 .type(UpgradeableType.SHIP_STORAGE)
                 .level(2)
                 .effect(25)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 20,
                         ResourceType.SILICONE, 10
@@ -289,7 +289,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIP_STORAGE)
                 .level(3)
                 .effect(50)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 100,
                         ResourceType.SILICONE, 50
@@ -299,7 +299,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIP_STORAGE)
                 .level(4)
                 .effect(75)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 200,
                         ResourceType.SILICONE, 100
@@ -309,7 +309,7 @@ public class Initializer {
                 .type(UpgradeableType.SHIP_STORAGE)
                 .level(5)
                 .effect(100)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 400,
                         ResourceType.SILICONE, 150,
@@ -321,14 +321,14 @@ public class Initializer {
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(1)
                 .effect(20)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level stationStorage2 = Level.builder()
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(2)
                 .effect(50)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 5
                 ))
@@ -337,7 +337,7 @@ public class Initializer {
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(3)
                 .effect(100)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 20,
                         ResourceType.SILICONE, 10
@@ -347,7 +347,7 @@ public class Initializer {
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(4)
                 .effect(500)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 50,
                         ResourceType.SILICONE, 20
@@ -357,7 +357,7 @@ public class Initializer {
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(5)
                 .effect(50000)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 300,
                         ResourceType.SILICONE, 150,
@@ -369,14 +369,14 @@ public class Initializer {
                 .type(UpgradeableType.HANGAR)
                 .level(1)
                 .effect(2)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of())
                 .build();
         Level hangar2 = Level.builder()
                 .type(UpgradeableType.HANGAR)
                 .level(2)
                 .effect(4)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 5
                 ))
@@ -385,7 +385,7 @@ public class Initializer {
                 .type(UpgradeableType.HANGAR)
                 .level(3)
                 .effect(6)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 20,
                         ResourceType.SILICONE, 20
@@ -395,7 +395,7 @@ public class Initializer {
                 .type(UpgradeableType.HANGAR)
                 .level(4)
                 .effect(8)
-                .maxLevel(false)
+                .max(false)
                 .cost(Map.of(
                         ResourceType.METAL, 100,
                         ResourceType.SILICONE, 100,
@@ -406,7 +406,7 @@ public class Initializer {
                 .type(UpgradeableType.HANGAR)
                 .level(5)
                 .effect(10)
-                .maxLevel(true)
+                .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 500,
                         ResourceType.SILICONE, 150,
