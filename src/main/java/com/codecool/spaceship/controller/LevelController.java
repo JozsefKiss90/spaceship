@@ -32,9 +32,14 @@ public class LevelController {
         return levelService.getLevelsByType(type);
     }
 
+
     @PatchMapping("/{id}")
     public LevelDTO updateLevelById(@PathVariable Long id, @RequestBody NewLevelDTO newLevelDTO) {
         return levelService.updateLevelById(id, newLevelDTO);
+    }
+    @PostMapping
+    public LevelDTO addLewLevel(@RequestBody NewLevelDTO newLevelDTO) {
+        return levelService.addNewLevel(newLevelDTO);
     }
 
     @DeleteMapping

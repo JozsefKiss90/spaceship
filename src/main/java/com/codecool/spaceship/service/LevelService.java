@@ -45,6 +45,24 @@ public class LevelService {
         return new LevelDTO(level);
     }
 
+    public LevelDTO addNewLevel(NewLevelDTO newLevelDTO) {
+        Level prevMaxLevel = levelRepository.getLevelByTypeAndMax(newLevelDTO.type(), true)
+                .orElse(null);
+        Level newMaxLevel = Level.builder()
+                .level(prevMaxLevel == null ? 1 : prevMaxLevel.getLevel() + 1)
+                .type(newLevelDTO.type())
+                .effect(newLevelDTO.effect())
+                .cost(newLevelDTO.cost())
+                .max(true)
+                .build();
+        if (prevMaxLevel != null) {
+            prevMaxLevel.setMax(false);
+            levelRepository.save(prevMaxLevel);
+        }
+        newMaxLevel = levelRepository.save(newMaxLevel);
+        return new LevelDTO(newMaxLevel);
+    }
+
     public boolean deleteLastLevelOfType(UpgradeableType type) {
         Level maxLevel = levelRepository.getLevelByTypeAndMax(type, true)
                 .orElseThrow(() -> new RuntimeException("No max level has been set for %s type".formatted(type)));
@@ -58,4 +76,5 @@ public class LevelService {
         levelRepository.save(newMaxLevel);
         return true;
     }
+
 }

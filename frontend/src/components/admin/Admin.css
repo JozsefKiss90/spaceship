@@ -33,7 +33,7 @@
   margin: 10px;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: 1fr 1fr 1fr 0.75fr;
   align-items: center;
 }
 
@@ -54,21 +54,21 @@
   border-bottom: 2px solid white;
 }
 
-.admin-level-cost-edit {
+.admin-level-cost {
   display: grid;
   grid-template-columns: 1fr 1fr 0.2fr;
   gap: 5px;
   align-items: center;
 }
 
-.admin-level-cost-edit button {
+.admin-level-cost button {
   all: unset;
   color: rgba(255, 255, 255, 0.75);
   align-items: center;
   text-align: center;
 }
 
-.admin-level-cost-edit button:hover {
+.admin-level-cost button:hover {
   color: rgb(255, 255, 255);
   cursor: pointer;
 }

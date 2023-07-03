@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import useHandleFetchError from "../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../notifications/NotificationContext";
 import LevelRow from "./LevelRow";
+import AddNewLevel from "./AddNewLevel";
 
 export default function LevelListPage() {
   const { user } = useOutletContext();
@@ -44,6 +45,15 @@ export default function LevelListPage() {
     }
   }, [user, navigate, fetchLevels]);
 
+  function addLevel(newLevel) {
+    const newLevels = [...levels];
+    const oldMax = { ...newLevels.pop() };
+    oldMax.max = false;
+    newLevels.push(oldMax);
+    newLevels.push(newLevel);
+    setLevels(newLevels);
+  }
+
   function updateLevels(newLevel) {
     const newLevels = [...levels].map((level) => {
       if (level.id === newLevel.id) {
@@ -58,7 +68,7 @@ export default function LevelListPage() {
   function deleteLastLevel() {
     const newLevels = [...levels];
     newLevels.pop();
-    const newMax = {...newLevels.pop()};
+    const newMax = { ...newLevels.pop() };
     newMax.max = true;
     newLevels.push(newMax);
     setLevels(newLevels);
@@ -83,7 +93,14 @@ export default function LevelListPage() {
       {levels === null ? (
         <div>Not Available</div>
       ) : (
-        <LevelList levels={levels} updateLevels={updateLevels} deleteLastLevel={deleteLastLevel} />
+        <>
+          <LevelList
+            levels={levels}
+            updateLevels={updateLevels}
+            deleteLastLevel={deleteLastLevel}
+          />
+          <AddNewLevel type={type} levelCount={levels.length} addLevel={addLevel}/>
+        </>
       )}
     </div>
   );
@@ -96,7 +113,12 @@ function LevelList({ levels, updateLevels, deleteLastLevel }) {
     return (
       <>
         {levels.map((level) => (
-          <LevelRow key={level.id} level={level} updateLevels={updateLevels} deleteLastLevel={deleteLastLevel} />
+          <LevelRow
+            key={level.id}
+            level={level}
+            updateLevels={updateLevels}
+            deleteLastLevel={deleteLastLevel}
+          />
         ))}
       </>
     );

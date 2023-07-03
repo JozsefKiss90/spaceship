@@ -12,7 +12,6 @@ const Layout = () => {
   const jwtCookie = Cookies.get("jwt");
   const [user, setUser] = useState(null);
   const [stationId, setStationId] = useState(null);
-  console.log(user);
 
   useEffect(() => {
     if (jwtCookie) {
