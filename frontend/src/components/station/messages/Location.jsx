@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./Location.css";
 import { useNavigate } from "react-router-dom";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function Location({ location, availableShips }) {

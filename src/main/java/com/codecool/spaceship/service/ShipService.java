@@ -1,16 +1,14 @@
 package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.model.dto.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.dto.ShipDetailDTO;
 import com.codecool.spaceship.model.exception.*;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.mission.MissionManager;
+import com.codecool.spaceship.model.mission.MissionFactory;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.MinerShipManager;
-import com.codecool.spaceship.model.ship.ShipType;
-import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.model.ship.*;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.model.station.SpaceStationManager;
@@ -30,11 +28,17 @@ import java.util.stream.Collectors;
 public class ShipService {
     private final SpaceShipRepository spaceShipRepository;
     private final MissionRepository missionRepository;
+    private final ShipManagerFactory shipManagerFactory;
+    private final MissionFactory missionFactory;
+    private final LevelService levelService;
 
     @Autowired
-    public ShipService(SpaceShipRepository spaceShipRepository, MissionRepository missionRepository) {
+    public ShipService(SpaceShipRepository spaceShipRepository, MissionRepository missionRepository, ShipManagerFactory shipManagerFactory, MissionFactory missionFactory, LevelService levelService) {
         this.spaceShipRepository = spaceShipRepository;
         this.missionRepository = missionRepository;
+        this.shipManagerFactory = shipManagerFactory;
+        this.missionFactory = missionFactory;
+        this.levelService = levelService;
     }
 
     public List<ShipDTO> getShipsByStation(long stationId) {
@@ -52,33 +56,23 @@ public class ShipService {
         return new ShipDTO(getShipByIdAndCheckAccess(id));
     }
 
-    public MinerShipDTO getMinerShipById(long id) throws DataNotFoundException, IllegalArgumentException {
+    public ShipDetailDTO getShipDetailsById(long id) throws DataNotFoundException, IllegalArgumentException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
-        updateMissionIfExists(ship);
-
-        if (ship instanceof MinerShip) {
-            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
-        } else {
-            throw new IllegalArgumentException("Ship is not a miner ship.");
-        }
+        SpaceShipManager spaceShipManager = shipManagerFactory.getSpaceShipManager(ship);
+        updateMissionIfExists(spaceShipManager);
+        return spaceShipManager.getDetailedDTO();
     }
 
-    public MinerShipDTO upgradeMinerShip(Long id, ShipPart part) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
+    public ShipDetailDTO upgradeShipPart(Long id, ShipPart part) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException, StorageException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
-
-        if (ship instanceof MinerShip) {
-            MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
-
-            SpaceStationManager stationManager = new SpaceStationManager(ship.getStation());
-            if (stationManager.hasShipAvailable(ship)) {
-                stationManager.removeResources(minerShipManager.getUpgradeCost(part));
-                minerShipManager.upgradePart(part);
-                ship = spaceShipRepository.save(ship);
-            }
-            return new MinerShipManager((MinerShip) ship).getMinerShipDTO();
-        } else {
-            throw new IllegalArgumentException("Ship is not a miner ship");
+        SpaceShipManager spaceShipManager = shipManagerFactory.getSpaceShipManager(ship);
+        SpaceStationManager stationManager = new SpaceStationManager(ship.getStation(), levelService);
+        if (stationManager.hasShipAvailable(ship)) {
+            stationManager.removeResources(spaceShipManager.getUpgradeCost(part));
+            spaceShipManager.upgradePart(part);
+            spaceShipRepository.save(ship);
         }
+        return spaceShipManager.getDetailedDTO();
     }
 
     public ShipDTO updateShipAttributes(Long id, String name, Color color) throws DataNotFoundException {
@@ -101,14 +95,15 @@ public class ShipService {
             return null;
         }
     }
+
     public Color[] getColors() {
         return Color.values();
     }
 
     public Map<ResourceType, Integer> getShipPartUpgradeCost(Long id, ShipPart shipPart) throws DataNotFoundException, UpgradeNotAvailableException, NoSuchPartException {
         SpaceShip ship = getShipByIdAndCheckAccess(id);
-        MinerShipManager minerShipManager = new MinerShipManager((MinerShip) ship);
-        return minerShipManager.getUpgradeCost(shipPart);
+        SpaceShipManager spaceShipManager = shipManagerFactory.getSpaceShipManager(ship);
+        return spaceShipManager.getUpgradeCost(shipPart);
     }
 
     public boolean deleteShipById(Long id) throws StorageException, DataNotFoundException {
@@ -121,10 +116,11 @@ public class ShipService {
         return true;
     }
 
-    private void updateMissionIfExists(SpaceShip ship) {
-        Mission currentMission = ship.getCurrentMission();
+    private void updateMissionIfExists(SpaceShipManager spaceShipManager) {
+        Mission currentMission = spaceShipManager.getCurrentMission();
         if (currentMission != null) {
-            MissionManager missionManager = new MissionManager(currentMission);
+            MissionManager missionManager = missionFactory.getMissionManager(currentMission);
+            missionManager.setMinerShipManager((MinerShipManager) spaceShipManager);
             if (missionManager.updateStatus()) {
                 missionRepository.save(currentMission);
             }

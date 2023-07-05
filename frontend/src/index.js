@@ -21,6 +21,8 @@ import Issues from './components/Issues';
 import NotFoundPage from './components/errorPages/NotFoundPage';
 import AccessDeniedPage from './components/errorPages/AccessDeniedPage';
 import GenericErrorPage from './components/errorPages/GenericErrorPage';
+import LevelTypes from './components/admin/LevelTypes';
+import LevelListPage from './components/admin/LevelListPage';
 
 const router = createBrowserRouter([
     {
@@ -85,6 +87,14 @@ const router = createBrowserRouter([
             {
                 path: '/issues',
                 element: <Issues />
+            },
+            {
+                path: '/admin/levels',
+                element: <LevelTypes />
+            },
+            {
+                path: '/admin/levels/:type',
+                element: <LevelListPage />
             }
         ]
     },

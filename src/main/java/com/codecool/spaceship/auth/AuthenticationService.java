@@ -9,6 +9,7 @@ import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.UserRepository;
+import com.codecool.spaceship.service.LevelService;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final LevelService levelService;
 
     public Cookie register(RegisterRequest request) {
         checkUsernameAndEmailAvailability(request.getUsername(), request.getEmail());
@@ -62,7 +64,7 @@ public class AuthenticationService {
                 .build();
 
         SpaceStation spaceStation = SpaceStationManager.createNewSpaceStation("%s's Station".formatted(request.getUsername()));
-        MinerShip minerShip = MinerShipManager.createNewMinerShip("Miner Ship #1", Color.SAPPHIRE);
+        MinerShip minerShip = MinerShipManager.createNewMinerShip(levelService, "Miner Ship #1", Color.SAPPHIRE);
 
         user.setSpaceStation(spaceStation);
         spaceStation.setUser(user);

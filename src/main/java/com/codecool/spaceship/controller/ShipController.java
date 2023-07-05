@@ -1,7 +1,8 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.dto.MinerShipDTO;
+import com.codecool.spaceship.model.dto.NewShipDTO;
 import com.codecool.spaceship.model.dto.ShipDTO;
+import com.codecool.spaceship.model.dto.ShipDetailDTO;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -35,20 +36,20 @@ public class ShipController {
         return shipService.getShipByID(id);
     }
 
-    @GetMapping("/miner/{id}")
-    public MinerShipDTO getMinerShipById(@PathVariable Long id) {
-        return shipService.getMinerShipById(id);
+    @GetMapping("/{id}/detail")
+    public ShipDetailDTO getShipDetailsById(@PathVariable Long id) {
+        return shipService.getShipDetailsById(id);
 
     }
 
-    @GetMapping("/miner/{id}/upgrade")
-    public Map<ResourceType, Integer> getMinderShipShipPartUpgradeCost(@PathVariable Long id, @RequestParam ShipPart part) {
+    @GetMapping("/{id}/upgrade")
+    public Map<ResourceType, Integer> getShipPartUpgradeCost(@PathVariable Long id, @RequestParam ShipPart part) {
         return shipService.getShipPartUpgradeCost(id, part);
     }
 
-    @PatchMapping("/miner/{id}/upgrade")
-    public MinerShipDTO upgradeMinerShipShipPart(@PathVariable Long id, @RequestParam ShipPart part) {
-        return shipService.upgradeMinerShip(id, part);
+    @PatchMapping("/{id}/upgrade")
+    public ShipDetailDTO upgradeShipPart(@PathVariable Long id, @RequestParam ShipPart part) {
+        return shipService.upgradeShipPart(id, part);
     }
 
     @GetMapping("/color")
@@ -57,7 +58,7 @@ public class ShipController {
     }
 
     @PatchMapping("/{id}")
-    public ShipDTO updateShipAttributes(@PathVariable Long id, @RequestBody ShipDTO shipDTO) {
+    public ShipDTO updateShipAttributes(@PathVariable Long id, @RequestBody NewShipDTO shipDTO) {
         return shipService.updateShipAttributes(id, shipDTO.name(), shipDTO.color());
     }
 

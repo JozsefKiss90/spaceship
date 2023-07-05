@@ -3,14 +3,15 @@ package com.codecool.spaceship.model.station;
 import com.codecool.spaceship.model.dto.HangarDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
+import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.exception.StorageException;
-import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
+import com.codecool.spaceship.service.LevelService;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,11 +19,13 @@ import java.util.Set;
 public class SpaceStationManager {
 
     private final SpaceStation station;
+    private final LevelService levelService;
     private HangarManager hangar;
     private StationStorageManager storage;
 
-    public SpaceStationManager(SpaceStation station) {
+    public SpaceStationManager(SpaceStation station, LevelService levelService) {
         this.station = station;
+        this.levelService = levelService;
     }
 
     public static SpaceStation createNewSpaceStation(String name) {
@@ -31,7 +34,7 @@ public class SpaceStationManager {
         station.setHangarLevel(1);
         station.setHangar(new HashSet<>());
         station.setStorageLevel(1);
-        station.setResources(new HashSet<>());
+        station.setStoredResources(new HashMap<>());
         return station;
     }
 
@@ -84,9 +87,8 @@ public class SpaceStationManager {
         createStorageIfNotExists();
         return storage.addResource(resourceType, quantity);
     }
-    public boolean addResourcesFromShip(SpaceShip ship, Map<ResourceType, Integer> resources) throws StorageException {
-        MinerShipManager shipManager = new MinerShipManager((MinerShip) ship);
-        if (hasShipAvailable(ship) && shipManager.hasResourcesInStorage(resources)) {
+    public boolean addResourcesFromShip(MinerShipManager shipManager, Map<ResourceType, Integer> resources) throws StorageException {
+        if (hasShipAvailable(shipManager.getMinerShip()) && shipManager.hasResourcesInStorage(resources)) {
             int sum = resources.values().stream()
                     .mapToInt(i -> i)
                     .sum();
@@ -146,18 +148,18 @@ public class SpaceStationManager {
 
     public Map<ResourceType, Integer> getStoredResources() {
         createStorageIfNotExists();
-        return storage.getStoredItems();
+        return storage.getStoredResources();
     }
 
     private void createHangarIfNotExists() {
         if (hangar == null) {
-            hangar = new HangarManager(station.getHangarLevel(), station.getHangar());
+            hangar = new HangarManager(levelService, station.getHangarLevel(), station.getHangar());
         }
     }
 
     private void createStorageIfNotExists() {
         if (storage == null) {
-            storage = new StationStorageManager(station.getStorageLevel(), station.getResources());
+            storage = new StationStorageManager(levelService, station.getStorageLevel(), station.getStoredResources());
         }
     }
 

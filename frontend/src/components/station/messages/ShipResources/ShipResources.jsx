@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ResourceList from "../ResourceList";
 import MoveResources from "./MoveResources";
 import { useStorageDispatchContext } from "../../StorageContext";
@@ -26,9 +26,19 @@ export default function ShipResources({ ship, setShip }) {
     setMoveMode(false);
   }
 
+  const resources = useMemo(() => {
+    const resources = {...ship.resources};
+    for (const resource in resources) {
+      if (resources[resource] < 1) {
+        delete resources[resource];
+      }
+    }
+    return resources;
+  },[ship]);
+
   return (
     <div className="row" style={{ alignItems: "unset" }}>
-      {Object.entries(ship.resources).length > 0 ? (
+      {Object.entries(resources).length > 0 ? (
         moveMode ? (
           <>
             <MoveResources ship={ship} onApplyMove={applyMove} />
@@ -39,7 +49,7 @@ export default function ShipResources({ ship, setShip }) {
         ) : (
           <>
             <div>
-              <ResourceList resources={ship.resources} />
+              <ResourceList resources={resources} />
             </div>
             <button className="button" onClick={() => setMoveMode(true)}>
               Move

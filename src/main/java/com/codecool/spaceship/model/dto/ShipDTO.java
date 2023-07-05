@@ -6,11 +6,22 @@ import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
+import lombok.*;
 
-public record ShipDTO(Long id, String name, Color color, ShipType type, long missionId, int engineLevel, int shieldLevel, int shieldEnergy) {
+@Getter
+@AllArgsConstructor
+public class ShipDTO {
+    private final long id;
+    private final String name;
+    private final Color color;
+    private final ShipType type;
+    private final long missionId;
 
+    public ShipDTO(long id, String name, Color color, ShipType type, Mission mission) {
+        this(id, name, color, type, getCurrentMissionId(mission));
+    }
     public ShipDTO(SpaceShip ship) {
-        this(ship.getId(), ship.getName(), ship.getColor(), getShipType(ship), getCurrentMissionId(ship.getCurrentMission()), ship.getEngineLevel(), ship.getShieldLevel(), ship.getShieldEnergy());
+        this(ship.getId(), ship.getName(), ship.getColor(), getShipType(ship), getCurrentMissionId(ship.getCurrentMission()));
     }
 
     private static ShipType getShipType(SpaceShip ship) {

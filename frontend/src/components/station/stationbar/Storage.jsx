@@ -2,7 +2,7 @@ import "./Storage.css";
 import { useCallback, useEffect, useState } from "react";
 import { useStorageContext } from "../StorageContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 const Storage = () => {

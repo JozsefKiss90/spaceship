@@ -8,7 +8,7 @@ import java.util.Map;
 public record SpaceStationStorageDTO(Map<ResourceType, Integer> resources, int level, int capacity, int freeSpace) {
 
     public SpaceStationStorageDTO(StationStorageManager storage) {
-        this(storage.getStoredItems(), storage.getCurrentLevel(), storage.getCurrentCapacity(), storage.getCurrentAvailableStorageSpace());
+        this(storage.getStoredResources(), storage.getCurrentLevel(), storage.getCurrentCapacity(), storage.getCurrentAvailableStorageSpace());
     }
 
 }

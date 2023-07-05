@@ -4,7 +4,7 @@ import { useStorageDispatchContext } from "../StorageContext";
 import { useHangarDispatchContext } from "../HangarContext";
 import "./AddShip.css";
 import ResourceList from "./ResourceList";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function AddShip() {
@@ -188,7 +188,7 @@ export default function AddShip() {
             id="type"
             onChange={(e) => setShipType(e.target.value)}
           >
-            <option value="miner">Miner</option>
+            <option value="MINER">Miner</option>
           </select>
         </div>
         <div>

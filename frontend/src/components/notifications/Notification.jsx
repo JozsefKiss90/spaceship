@@ -31,6 +31,12 @@ export default function Notification({ notification }) {
                 boxShadow: "0 0 2px 2px rgba(77, 0, 0, 0.741)"
             };
             break;
+        case "admin":
+            background = {
+                background: "linear-gradient(#00065ae6, #003fbeea)",
+                boxShadow: "0 0 2px 2px rgba(4, 0, 77, 0.741)"
+            };
+            break;
         default:
             background = {
                 background: "linear-gradient(#004b00ec, #006400ea)",

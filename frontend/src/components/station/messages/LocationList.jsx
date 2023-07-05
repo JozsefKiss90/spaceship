@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import "./LocationList.css";
 import Location from "./Location";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function LocationList() {

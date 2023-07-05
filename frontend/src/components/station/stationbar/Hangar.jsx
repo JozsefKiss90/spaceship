@@ -2,7 +2,7 @@ import "./Hangar.css";
 import { useCallback, useEffect, useState } from "react";
 import { useHangarContext } from "../HangarContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 function Hangar() {

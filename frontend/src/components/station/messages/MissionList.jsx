@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "./MissionList.css";
 import { useNavigate } from "react-router-dom";
-import useHandleFetchError from "../../useHandleFetchError";
+import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 
 export default function MissionList() {

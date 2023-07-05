@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import ResourceRow from "./ResourceRow";
-import useHandleFetchError from "../../../useHandleFetchError";
+import useHandleFetchError from "../../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function MoveResources({ ship, onApplyMove }) {
@@ -55,7 +55,7 @@ export default function MoveResources({ ship, onApplyMove }) {
           notifDispatch({
             type: "add",
             message: "Resources moved.",
-            timer: 5
+            timer: 5,
           });
         }
       } else {
@@ -104,18 +104,24 @@ export default function MoveResources({ ship, onApplyMove }) {
             <td>Station</td>
           </tr>
           {Object.keys(ship.resources).map((resource) => {
-            return (
-              <ResourceRow
-                key={resource}
-                resource={resource}
-                ship={ship.resources[resource]}
-                moved={moveAmount[resource] ? moveAmount[resource] : 0}
-                station={
-                  storage.resources[resource] ? storage.resources[resource] : 0
-                }
-                onChange={updateMoveAmount}
-              />
-            );
+            if (ship.resources[resource] > 0) {
+              return (
+                <ResourceRow
+                  key={resource}
+                  resource={resource}
+                  ship={ship.resources[resource]}
+                  moved={moveAmount[resource] ? moveAmount[resource] : 0}
+                  station={
+                    storage.resources[resource]
+                      ? storage.resources[resource]
+                      : 0
+                  }
+                  onChange={updateMoveAmount}
+                />
+              );
+            } else {
+              return null;
+            }
           })}
         </tbody>
       </table>

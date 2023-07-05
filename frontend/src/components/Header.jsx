@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import "./Header.css";
-import useHandleFetchError from "./useHandleFetchError";
+import useHandleFetchError from "../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 const Header = ({ user, setUser }) => {
@@ -27,17 +27,24 @@ const Header = ({ user, setUser }) => {
     }
   }
 
+  const headerClass = window.location.pathname.includes("/admin/") ? "header header-blue" : "header";
+
   return (
     <>
-      <div className="header">
+      <div className={headerClass}>
         <p onClick={() => navigate("/")}>MINUEND SPACESHIP GAME</p>
         {user === null && (
           <span className="push" onClick={() => navigate("/login")}>
             Login
           </span>
         )}
+        {(user !== null && user.role === "ADMIN") && (
+          <span className="push" onClick={() => navigate("/admin/levels")}>
+          Levels
+        </span>
+        )}
         {user !== null && (
-          <span className="push" onClick={() => navigate("/station")}>
+          <span className={user.role === "ADMIN" ? "" : "push"} onClick={() => navigate("/station")}>
             {user.sub}
           </span>
         )}

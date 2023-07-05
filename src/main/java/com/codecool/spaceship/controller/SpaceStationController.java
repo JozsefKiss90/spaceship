@@ -1,13 +1,11 @@
 package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.HangarDTO;
+import com.codecool.spaceship.model.dto.NewShipDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.resource.ResourceType;
-import com.codecool.spaceship.model.ship.ShipType;
-import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.service.StationService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -48,11 +46,8 @@ public class SpaceStationController {
     }
 
     @PostMapping("/{baseId}/add/ship")
-    public Long addShip(@PathVariable long baseId, @RequestBody ObjectNode objectNode) {
-        return stationService.addShip(baseId,
-                objectNode.get("name").asText(),
-                Color.valueOf(objectNode.get("color").asText().toUpperCase()),
-                ShipType.valueOf(objectNode.get("type").asText().toUpperCase()));
+    public Long addShip(@PathVariable long baseId, @RequestBody NewShipDTO newShipDTO) {
+        return stationService.addShip(baseId, newShipDTO);
     }
 
     @GetMapping("/{baseId}/storage")
