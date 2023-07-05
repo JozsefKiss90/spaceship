@@ -1,17 +1,17 @@
 package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.mission.Mission;
-import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.shipparts.EngineManager;
 import com.codecool.spaceship.model.ship.shipparts.ShieldManager;
 import com.codecool.spaceship.model.ship.shipparts.ShipPart;
 import com.codecool.spaceship.service.LevelService;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public abstract class SpaceShipManager {
@@ -79,7 +79,7 @@ public abstract class SpaceShipManager {
     }
     public abstract ShipDetailDTO getDetailedDTO();
 
-    public abstract List<ShipPart> getPartTypes();
+    public abstract Set<ShipPart> getPartTypes();
 
     public abstract boolean upgradePart(ShipPart part) throws NoSuchPartException;
 

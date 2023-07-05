@@ -8,11 +8,11 @@ import com.codecool.spaceship.service.LevelService;
 
 public class ShieldManager extends Upgradeable {
 
-    private static final UpgradeableType type = UpgradeableType.SHIELD;
+    private static final UpgradeableType TYPE = UpgradeableType.SHIELD;
     private int currentEnergy;
 
     public ShieldManager(LevelService levelService, int currentLevel, int currentEnergy) {
-        super(levelService, type, currentLevel);
+        super(levelService, TYPE, currentLevel);
         if (currentEnergy < 0) {
             throw new IllegalArgumentException("Shield energy can't be lower than 0");
         } else if (currentEnergy > super.currentLevel.getEffect()) {
@@ -21,7 +21,7 @@ public class ShieldManager extends Upgradeable {
         this.currentEnergy = currentEnergy;
     }
     public ShieldManager(LevelService levelService) {
-        super(levelService, type, 1);
+        super(levelService, TYPE, 1);
         currentEnergy = super.currentLevel.getEffect();
     }
 

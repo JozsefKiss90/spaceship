@@ -414,13 +414,63 @@ public class Initializer {
                 ))
                 .build();
 
+        Level scanner1 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(1)
+                .effect(1)
+                .max(false)
+                .cost(Map.of())
+                .build();
+        Level scanner2 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(2)
+                .effect(2)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 10,
+                        ResourceType.CRYSTAL, 2
+                ))
+                .build();
+        Level scanner3 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(3)
+                .effect(5)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 20,
+                        ResourceType.CRYSTAL, 10
+                ))
+                .build();
+        Level scanner4 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(4)
+                .effect(10)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 50,
+                        ResourceType.CRYSTAL, 20
+                ))
+                .build();
+        Level scanner5 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(5)
+                .effect(25)
+                .max(true)
+                .cost(Map.of(
+                        ResourceType.METAL, 100,
+                        ResourceType.CRYSTAL, 50,
+                        ResourceType.PLUTONIUM, 10
+                ))
+                .build();
+
         levelRepository.saveAll(List.of(
                 engine1, engine2, engine3, engine4, engine5,
                 drill1, drill2, drill3, drill4, drill5,
                 shield1, shield2, shield3, shield4, shield5,
                 shipStorage1, shipStorage2, shipStorage3, shipStorage4, shipStorage5,
                 stationStorage1, stationStorage2, stationStorage3, stationStorage4, stationStorage5,
-                hangar1, hangar2, hangar3, hangar4, hangar5
+                hangar1, hangar2, hangar3, hangar4, hangar5,
+                scanner1, scanner2, scanner3, scanner4, scanner5
         ));
     }
 }

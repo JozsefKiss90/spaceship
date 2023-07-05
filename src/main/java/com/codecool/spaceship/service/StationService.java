@@ -77,8 +77,11 @@ public class StationService {
         if (newShipDTO.type() == ShipType.MINER) {
             ship = MinerShipManager.createNewMinerShip(levelService, newShipDTO.name(), newShipDTO.color());
             ship.setUser(station.getUser());
+        } else if (newShipDTO.type() == ShipType.SCOUT) {
+            ship = ScoutShipManager.createNewScoutShip(levelService, newShipDTO.name(), newShipDTO.color());
+            ship.setUser(station.getUser());
         } else {
-            return 0;
+            throw new IllegalArgumentException("Ship type not recognized");
         }
 
         SpaceStationManager stationManager = new SpaceStationManager(station, levelService);

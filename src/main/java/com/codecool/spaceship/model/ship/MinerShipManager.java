@@ -13,12 +13,7 @@ import java.util.*;
 
 public class MinerShipManager extends SpaceShipManager {
 
-    private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
-    private static final Map<ResourceType, Integer> COST = new HashMap<>() {{
-        put(ResourceType.METAL, 50);
-        put(ResourceType.CRYSTAL, 20);
-        put(ResourceType.SILICONE, 20);
-    }};
+    private static final Set<ShipPart> PARTS = Set.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
     private final MinerShip minerShip;
     private ShipStorageManager storage;
     private DrillManager drill;
@@ -102,7 +97,7 @@ public class MinerShipManager extends SpaceShipManager {
         return storage.removeResource(resourceType, amount);
     }
     @Override
-    public List<ShipPart> getPartTypes() {
+    public Set<ShipPart> getPartTypes() {
         return PARTS;
     }
 
@@ -160,7 +155,7 @@ public class MinerShipManager extends SpaceShipManager {
 
     @Override
     public Map<ResourceType, Integer> getCost() {
-        return new HashMap<>(COST);
+        return new HashMap<>(ShipType.MINER.getCost());
     }
 
     private void createStorageIfNotExists() {

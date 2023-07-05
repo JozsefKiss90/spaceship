@@ -3,6 +3,7 @@ package com.codecool.spaceship.model.dto;
 
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.ScoutShip;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.model.ship.shipparts.Color;
@@ -27,8 +28,10 @@ public class ShipDTO {
     private static ShipType getShipType(SpaceShip ship) {
         if (ship instanceof MinerShip) {
             return ShipType.MINER;
+        } else if (ship instanceof ScoutShip){
+            return ShipType.SCOUT;
         } else {
-            return null;
+            throw new RuntimeException("Unrecognized ship type");
         }
     }
 
