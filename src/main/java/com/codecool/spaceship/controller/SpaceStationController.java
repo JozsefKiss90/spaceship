@@ -1,7 +1,7 @@
 package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.HangarDTO;
-import com.codecool.spaceship.model.dto.NewShipDTO;
+import com.codecool.spaceship.model.dto.ship.NewShipDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.resource.ResourceType;

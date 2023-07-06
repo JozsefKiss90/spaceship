@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.dto;
+package com.codecool.spaceship.model.dto.ship;
 
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.ship.ShipType;

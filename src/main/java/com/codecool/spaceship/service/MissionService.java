@@ -2,7 +2,8 @@ package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.model.dto.MissionDTO;
+import com.codecool.spaceship.model.dto.mission.MissionDTO;
+import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.mission.Mission;
@@ -62,11 +63,16 @@ public class MissionService {
                 .toList();
     }
 
-    public MissionDTO getMissionById(Long id) throws DataNotFoundException {
-        return updateAndConvert(getMissionByIdAndCheckAccess(id));
+    public MissionDetailDTO getMissionById(Long id) throws DataNotFoundException {
+        Mission mission = getMissionByIdAndCheckAccess(id);
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
+        if (missionManager.updateStatus()) {
+            mission = missionRepository.save(mission);
+        }
+        return missionManager.getDetailedDTO();
     }
 
-    public MissionDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
+    public MissionDetailDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SpaceShip spaceShip = spaceShipRepository.findById(shipId)
                 .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(shipId)));
@@ -79,30 +85,30 @@ public class MissionService {
         mission = missionRepository.save(mission);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {
-            mission = missionRepository.save(mission);
+            missionRepository.save(mission);
         }
-        return new MissionDTO(mission);
+        return missionManager.getDetailedDTO();
     }
 
-    public MissionDTO archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
+    public MissionDetailDTO archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         if(missionManager.archiveMission()) {
-            mission = missionRepository.save(mission);
-            return new MissionDTO(mission);
+            missionRepository.save(mission);
+            return missionManager.getDetailedDTO();
         }
         return null;
     }
 
-    public MissionDTO abortMission(Long id) throws DataNotFoundException, IllegalOperationException {
+    public MissionDetailDTO abortMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {
-            mission = missionRepository.save(mission);
+            missionRepository.save(mission);
         }
         if (missionManager.abortMission()) {
-            mission = missionRepository.save(mission);
-            return new MissionDTO(mission);
+            missionRepository.save(mission);
+            return missionManager.getDetailedDTO();
         }
         return null;
     }

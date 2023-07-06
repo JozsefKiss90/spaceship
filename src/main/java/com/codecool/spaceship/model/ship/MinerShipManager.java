@@ -1,7 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.dto.MinerShipDTO;
-import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.MinerShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
@@ -34,10 +34,6 @@ public class MinerShipManager extends SpaceShipManager {
         ship.setStorageLevel(1);
         ship.setStoredResources(new HashMap<>());
         return ship;
-    }
-
-    public MinerShip getMinerShip() {
-        return minerShip;
     }
 
     @Override

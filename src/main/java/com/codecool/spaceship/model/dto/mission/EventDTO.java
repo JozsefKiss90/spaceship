@@ -1,4 +1,4 @@
-package com.codecool.spaceship.model.dto;
+package com.codecool.spaceship.model.dto.mission;
 
 import java.time.LocalDateTime;
 

@@ -1,7 +1,7 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.dto.ScoutShipDTO;
-import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.ScoutShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;

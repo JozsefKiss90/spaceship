@@ -1,8 +1,8 @@
 package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
 import com.codecool.spaceship.model.exception.*;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.mission.MissionManager;
@@ -120,7 +120,7 @@ public class ShipService {
         Mission currentMission = spaceShipManager.getCurrentMission();
         if (currentMission != null) {
             MissionManager missionManager = missionFactory.getMissionManager(currentMission);
-            missionManager.setMinerShipManager((MinerShipManager) spaceShipManager);
+            missionManager.setShipManager(spaceShipManager);
             if (missionManager.updateStatus()) {
                 missionRepository.save(currentMission);
             }

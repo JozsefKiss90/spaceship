@@ -1,6 +1,7 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.dto.MissionDTO;
+import com.codecool.spaceship.model.dto.mission.MissionDTO;
+import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
 import com.codecool.spaceship.service.MissionService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/mission")
-@CrossOrigin(origins = "http://localhost:3000")
 public class MissionController {
 
     private final MissionService missionService;
@@ -46,12 +46,12 @@ public class MissionController {
     }
 
     @GetMapping("/{id}")
-    public MissionDTO getMissionById(@PathVariable Long id) {
+    public MissionDetailDTO getMissionById(@PathVariable Long id) {
         return missionService.getMissionById(id);
     }
 
     @PostMapping()
-    public MissionDTO startNewMission(@RequestBody ObjectNode objectNode) {
+    public MissionDetailDTO startNewMission(@RequestBody ObjectNode objectNode) {
         return missionService.startNewMission(
                 objectNode.get("shipId").asLong(),
                 objectNode.get("locationId").asLong(),
@@ -60,12 +60,12 @@ public class MissionController {
     }
 
     @PatchMapping("/{id}/archive")
-    public MissionDTO archiveMission(@PathVariable Long id) {
+    public MissionDetailDTO archiveMission(@PathVariable Long id) {
         return missionService.archiveMission(id);
     }
 
     @PatchMapping("/{id}/abort")
-    public MissionDTO abortMission(@PathVariable Long id) {
+    public MissionDetailDTO abortMission(@PathVariable Long id) {
         return missionService.abortMission(id);
     }
 }

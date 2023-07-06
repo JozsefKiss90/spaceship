@@ -19,7 +19,7 @@ public class MissionFactory {
     public Mission startNewMission(SpaceShip spaceShip, Location location, long activityDurationInSecs) {
         SpaceShipManager spaceShipManager = shipManagerFactory.getSpaceShipManager(spaceShip);
         if (spaceShipManager instanceof MinerShipManager) {
-            return MissionManager.startMiningMission((MinerShipManager) spaceShipManager, location, activityDurationInSecs);
+            return MiningMissionManager.startMiningMission((MinerShipManager) spaceShipManager, location, activityDurationInSecs);
         } else {
             throw new RuntimeException("Ship type is not recognized");
         }
@@ -27,9 +27,10 @@ public class MissionFactory {
     public MissionManager getMissionManager(Mission mission) {
         SpaceShipManager spaceShipManager = shipManagerFactory.getSpaceShipManager(mission.getShip());
         if (spaceShipManager instanceof MinerShipManager) {
-            return new MissionManager(mission, (MinerShipManager) spaceShipManager);
+            return new MiningMissionManager(mission, (MinerShipManager) spaceShipManager);
         } else {
             throw new RuntimeException("Ship type is not recognized");
         }
     }
+
 }

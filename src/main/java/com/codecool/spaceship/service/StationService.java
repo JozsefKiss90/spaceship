@@ -2,7 +2,7 @@ package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.HangarDTO;
-import com.codecool.spaceship.model.dto.NewShipDTO;
+import com.codecool.spaceship.model.dto.ship.NewShipDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
