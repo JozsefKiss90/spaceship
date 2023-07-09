@@ -2,6 +2,10 @@ package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.dto.ship.MinerShipDTO;
 import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.part.DrillDTO;
+import com.codecool.spaceship.model.dto.ship.part.EngineDTO;
+import com.codecool.spaceship.model.dto.ship.part.ShieldDTO;
+import com.codecool.spaceship.model.dto.ship.part.ShipStorageDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
@@ -38,23 +42,20 @@ public class MinerShipManager extends SpaceShipManager {
 
     @Override
     public ShipDetailDTO getDetailedDTO() {
+        createEngineIfNotExists();
+        createShieldIfNotExists();
+        createDrillIfNotExists();
+        createStorageIfNotExists();
         return new MinerShipDTO(
                 minerShip.getId(),
                 minerShip.getName(),
                 minerShip.getColor(),
                 ShipType.MINER,
                 minerShip.getCurrentMission(),
-                minerShip.getEngineLevel(),
-                getSpeed(),
-                minerShip.getShieldLevel(),
-                getShieldEnergy(),
-                getShieldMaxEnergy(),
-                minerShip.getDrillLevel(),
-                getDrillEfficiency(),
-                minerShip.getStorageLevel(),
-                getMaxStorageCapacity(),
-                getStorageContents()
-        );
+                new EngineDTO(engine),
+                new ShieldDTO(shield),
+                new DrillDTO(drill),
+                new ShipStorageDTO(storage));
     }
 
     public int getDrillEfficiency() {

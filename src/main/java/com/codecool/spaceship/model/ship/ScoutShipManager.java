@@ -2,6 +2,9 @@ package com.codecool.spaceship.model.ship;
 
 import com.codecool.spaceship.model.dto.ship.ScoutShipDTO;
 import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.part.EngineDTO;
+import com.codecool.spaceship.model.dto.ship.part.ScannerDTO;
+import com.codecool.spaceship.model.dto.ship.part.ShieldDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
 import com.codecool.spaceship.model.resource.ResourceType;
@@ -43,19 +46,18 @@ public class ScoutShipManager extends SpaceShipManager{
 
     @Override
     public ShipDetailDTO getDetailedDTO() {
+        createEngineIfNotExists();
+        createShieldIfNotExists();
+        createScannerIfNotExists();
         return new ScoutShipDTO(
                 scoutShip.getId(),
                 scoutShip.getName(),
                 scoutShip.getColor(),
                 ShipType.SCOUT,
                 scoutShip.getCurrentMission(),
-                scoutShip.getEngineLevel(),
-                getSpeed(),
-                scoutShip.getShieldLevel(),
-                getShieldEnergy(),
-                getShieldMaxEnergy(),
-                scoutShip.getScannerLevel(),
-                getScannerEfficiency()
+                new EngineDTO(engine),
+                new ShieldDTO(shield),
+                new ScannerDTO(scanner)
         );
     }
 
