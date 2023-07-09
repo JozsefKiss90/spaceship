@@ -1,6 +1,7 @@
 package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;

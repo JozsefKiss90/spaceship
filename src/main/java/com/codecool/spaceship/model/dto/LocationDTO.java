@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.dto;
 
-import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.resource.ResourceType;
 

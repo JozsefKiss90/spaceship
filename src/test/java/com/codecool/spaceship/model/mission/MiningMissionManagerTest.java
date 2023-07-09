@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.mission;
 
-import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.resource.ResourceType;
@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -31,6 +32,8 @@ class MiningMissionManagerTest {
     Location locationMock;
     @Mock
     Event eventMock;
+    @Mock
+    Random randomMock;
 
     @Test
     void missionCreationTest() throws IllegalOperationException {
@@ -41,12 +44,11 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .startTime(now)
                 .currentObjectiveTime(now.plusSeconds(9000L))
                 .approxEndTime(now.plusSeconds(19800L))
                 .currentStatus(MissionStatus.EN_ROUTE)
-                .missionType(MissionType.MINING)
                 .location(locationMock)
                 .ship(minerShipMock)
                 .travelDurationInSecs(9000L)
@@ -54,7 +56,7 @@ class MiningMissionManagerTest {
                 .events(new ArrayList<>())
                 .build();
 
-        Mission actual = MiningMissionManager.startMiningMission(minerShipManagerMock, locationMock, 1800L, clock);
+        MiningMission actual = MiningMissionManager.startMiningMission(minerShipManagerMock, locationMock, 1800L, clock);
 
         assertEquals(expected, actual);
     }
@@ -62,12 +64,13 @@ class MiningMissionManagerTest {
     @Test
     void noUpdateStatusBeforeNextUpdateTest() {
         when(minerShipManagerMock.getShip()).thenReturn(minerShipMock);
-        Mission mission = MiningMission.builder()
+        when(eventMock.getEndTime()).thenReturn(LocalDateTime.now().plusSeconds(1));
+
+        MiningMission mission = MiningMission.builder()
                 .ship(minerShipMock)
                 .events(new ArrayList<>())
                 .build();
         mission.getEvents().add(eventMock);
-        when(eventMock.getEndTime()).thenReturn(LocalDateTime.now().plusSeconds(1));
 
         MiningMissionManager missionManager = new MiningMissionManager(mission, minerShipManagerMock);
         missionManager.updateStatus();
@@ -78,7 +81,7 @@ class MiningMissionManagerTest {
     @Test
     void noUpdateStatusWhenMissionIsOverTest() {
         when(minerShipManagerMock.getShip()).thenReturn(minerShipMock);
-        Mission mission = MiningMission.builder()
+        MiningMission mission = MiningMission.builder()
                 .ship(minerShipMock)
                 .currentStatus(MissionStatus.OVER)
                 .events(new ArrayList<>())
@@ -97,7 +100,7 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .ship(minerShipMock)
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.plusSeconds(5))
@@ -114,7 +117,7 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(event2);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .ship(minerShipMock)
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.plusSeconds(5))
@@ -122,7 +125,7 @@ class MiningMissionManagerTest {
                 .build();
         actual.getEvents().add(event1);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.updateStatus();
 
         assertEquals(expected, actual);
@@ -137,11 +140,10 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
                 .currentObjectiveTime(now.plusSeconds(7195))
                 .activityDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
@@ -153,16 +155,15 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent1);
         Event expectedEvent2 = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.plusSeconds(5755))
                 .build();
         expected.getEvents().add(expectedEvent2);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.minusSeconds(5))
                 .activityDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
@@ -173,7 +174,7 @@ class MiningMissionManagerTest {
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 
@@ -189,11 +190,10 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
                 .currentObjectiveTime(now.plusSeconds(7195))
                 .activityDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
@@ -205,16 +205,15 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent1);
         Event expectedEvent2  = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.plusSeconds(7195))
                 .build();
         expected.getEvents().add(expectedEvent2);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(now.minusSeconds(5))
                 .activityDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
@@ -225,7 +224,7 @@ class MiningMissionManagerTest {
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 
@@ -240,18 +239,17 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .currentStatus(MissionStatus.RETURNING)
                 .currentObjectiveTime(now.plusSeconds(7196))
                 .approxEndTime(now.plusSeconds(7200L))
                 .travelDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .eventMessage("Storage is full. Mined 8 CRYSTAL(s). Returning to station.")
                 .build();
@@ -262,22 +260,21 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent2);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
                 .currentObjectiveTime(now.minusSeconds(5))
                 .travelDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 
@@ -294,18 +291,17 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .currentStatus(MissionStatus.RETURNING)
                 .currentObjectiveTime(now.plusSeconds(7196))
                 .activityDurationInSecs(7200L)
                 .travelDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event expectedEvent1 = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .eventMessage("Mining complete. Mined 2 CRYSTAL(s). Returning to station.")
                 .build();
@@ -316,23 +312,22 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent2);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .currentStatus(MissionStatus.IN_PROGRESS)
                 .currentObjectiveTime(now.minusSeconds(4))
                 .activityDurationInSecs(7200L)
                 .travelDurationInSecs(7200L)
-                .missionType(MissionType.MINING)
                 .ship(minerShipMock)
                 .location(locationMock)
                 .events(new ArrayList<>())
                 .build();
         Event actualEvent = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.minusSeconds(4))
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 
@@ -346,7 +341,7 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .ship(minerShipMock)
                 .currentStatus(MissionStatus.OVER)
                 .currentObjectiveTime(now.minusSeconds(5))
@@ -360,7 +355,7 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent);
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .ship(minerShipMock)
                 .currentStatus(MissionStatus.RETURNING)
                 .currentObjectiveTime(now.minusSeconds(5))
@@ -373,7 +368,7 @@ class MiningMissionManagerTest {
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 
@@ -391,11 +386,10 @@ class MiningMissionManagerTest {
         Clock clock = Clock.fixed(Instant.parse("2022-08-15T09:00:00.00Z"), ZoneId.of("UTC"));
         LocalDateTime now = LocalDateTime.now(clock);
 
-        Mission expected = MiningMission.builder()
+        MiningMission expected = MiningMission.builder()
                 .startTime(now.minusSeconds(20000L))
                 .currentObjectiveTime(now.minusSeconds(2900L))
                 .currentStatus(MissionStatus.OVER)
-                .missionType(MissionType.MINING)
                 .location(locationMock)
                 .ship(minerShipMock)
                 .travelDurationInSecs(5400L)
@@ -415,7 +409,7 @@ class MiningMissionManagerTest {
                 .build();
         expected.getEvents().add(expectedEvent2);
         Event expectedEvent3 = Event.builder()
-                .eventType(EventType.MINING_COMPLETE)
+                .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(now.minusSeconds(8300L))
                 .eventMessage("Mining complete. Mined 8 CRYSTAL(s). Returning to station.")
                 .build();
@@ -428,11 +422,10 @@ class MiningMissionManagerTest {
         expected.getEvents().add(expectedEvent4);
 
 
-        Mission actual = MiningMission.builder()
+        MiningMission actual = MiningMission.builder()
                 .startTime(now.minusSeconds(20000L))
                 .currentObjectiveTime(now.minusSeconds(14600L))
                 .currentStatus(MissionStatus.EN_ROUTE)
-                .missionType(MissionType.MINING)
                 .location(locationMock)
                 .ship(minerShipMock)
                 .travelDurationInSecs(5400L)
@@ -446,7 +439,7 @@ class MiningMissionManagerTest {
                 .build();
         actual.getEvents().add(actualEvent);
 
-        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, minerShipManagerMock);
+        MiningMissionManager missionManager = new MiningMissionManager(actual, clock, randomMock, minerShipManagerMock);
         missionManager.setShipManager(minerShipManagerMock);
         missionManager.updateStatus();
 

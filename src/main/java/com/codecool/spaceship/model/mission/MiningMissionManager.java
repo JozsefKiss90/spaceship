@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.mission;
 
-import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.dto.mission.MiningMissionDTO;
 import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
@@ -12,18 +12,19 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MiningMissionManager extends MissionManager {
 
-    public MiningMissionManager(Mission mission, Clock clock, MinerShipManager minerShipManager) {
-        super(mission, clock, minerShipManager);
+    public MiningMissionManager(MiningMission mission, Clock clock, Random random, MinerShipManager minerShipManager) {
+        super(mission, clock, random, minerShipManager);
     }
 
-    public MiningMissionManager(Mission mission, MinerShipManager minerShipManager) {
-        this(mission, Clock.systemUTC(), minerShipManager);
+    public MiningMissionManager(MiningMission mission, MinerShipManager minerShipManager) {
+        this(mission, Clock.systemUTC(), new Random(), minerShipManager);
     }
 
-    public static Mission startMiningMission(MinerShipManager minerShipManager, Location location, long activityDurationInSecs, Clock clock) throws IllegalOperationException {
+    public static MiningMission startMiningMission(MinerShipManager minerShipManager, Location location, long activityDurationInSecs, Clock clock) throws IllegalOperationException {
         if (!minerShipManager.isAvailable()) {
             throw new IllegalOperationException("This ship is already on a mission");
         }
@@ -34,14 +35,13 @@ public class MiningMissionManager extends MissionManager {
         long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location.getDistanceFromStation());
         long approxMissionDurationInSecs = travelDurationInSecs * 2 + activityDurationInSecs;
 
-        Mission mission = MiningMission.builder()
+        MiningMission mission = MiningMission.builder()
                 .startTime(startTime)
                 .activityDurationInSecs(activityDurationInSecs)
                 .travelDurationInSecs(travelDurationInSecs)
                 .currentStatus(MissionStatus.EN_ROUTE)
                 .currentObjectiveTime(startTime.plusSeconds(travelDurationInSecs))
                 .approxEndTime(startTime.plusSeconds(approxMissionDurationInSecs))
-                .missionType(MissionType.MINING)
                 .ship(minerShipManager.getShip())
                 .location(location)
                 .user(minerShipManager.getShip().getUser())
@@ -52,36 +52,13 @@ public class MiningMissionManager extends MissionManager {
         return mission;
     }
 
-    public static Mission startMiningMission(MinerShipManager minerShipManager, Location location, long activityDurationInSecs) throws IllegalOperationException {
+    public static MiningMission startMiningMission(MinerShipManager minerShipManager, Location location, long activityDurationInSecs) throws IllegalOperationException {
         return startMiningMission(minerShipManager, location, activityDurationInSecs, Clock.systemUTC());
     }
 
     @Override
     public MissionDetailDTO getDetailedDTO() {
         return new MiningMissionDTO((MiningMission) mission);
-    }
-
-    @Override
-    public boolean updateStatus() {
-        if (mission.getEvents().isEmpty()) {
-            addStartEvent();
-        }
-        Event lastEvent = peekLastEvent();
-        if (mission.getCurrentStatus() == MissionStatus.OVER
-                || mission.getCurrentStatus() == MissionStatus.ARCHIVED
-                || lastEvent.getEndTime().isAfter(LocalDateTime.now(clock))) {
-            return false;
-        }
-        switch (lastEvent.getEventType()) {
-            case START -> generateEnRouteEvents();
-            case ARRIVAL_AT_LOCATION -> startActivity();
-            case MINING_COMPLETE -> finishMining();
-            case RETURNED_TO_STATION -> endMission();
-            case PIRATE_ATTACK -> simulatePirateAttack();
-            case METEOR_STORM -> simulateMeteorStorm();
-        }
-        updateStatus();
-        return true;
     }
 
     @Override
@@ -97,15 +74,13 @@ public class MiningMissionManager extends MissionManager {
                 .endTime(now)
                 .build();
 
-        if (abortedEvent.getEventType() == EventType.MINING_COMPLETE) {
+        if (abortedEvent.getEventType() == EventType.ACTIVITY_COMPLETE) {
             long abortedEventProgressInSecs = Duration.between(peekLastEvent().getEndTime(), now).getSeconds();
             int minedResources = calculateMinedResources(((MinerShipManager) shipManager), abortedEventProgressInSecs);
             ResourceType resourceType = ((MiningMission) mission).getLocation().getResourceType();
             ((MinerShipManager) shipManager).addResourceToStorage(resourceType, minedResources);
             abortEvent.setEventMessage("Mission aborted by Command. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
-        }
-
-        if (abortEvent.getEventMessage() == null) {
+        } else {
             abortEvent.setEventMessage("Mission aborted by Command. Returning to station.");
         }
 
@@ -115,8 +90,8 @@ public class MiningMissionManager extends MissionManager {
         return true;
     }
 
-
-    private void addStartEvent() {
+    @Override
+    protected void addStartEvent() {
         Event startEvent = Event.builder()
                 .endTime(mission.getStartTime())
                 .eventType(EventType.START)
@@ -125,38 +100,24 @@ public class MiningMissionManager extends MissionManager {
         pushNewEvent(startEvent);
     }
 
-    private void generateEnRouteEvents() {
-        //TODO add pirateAttack/Meteor Storm based on chance
-        //else event for arrival at destination gets added
-        EventType travelEventType = (mission.getCurrentStatus() == MissionStatus.EN_ROUTE)
-                ? EventType.ARRIVAL_AT_LOCATION
-                : EventType.RETURNED_TO_STATION;
-        Event travelEvent = Event.builder()
-                .endTime(mission.getCurrentObjectiveTime())
-                .eventType(travelEventType)
-                .build();
-        pushNewEvent(travelEvent);
-    }
-
-    private void startActivity() {
+    @Override
+    protected void startActivity() {
         mission.setCurrentStatus(MissionStatus.IN_PROGRESS);
 
         LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(mission.getActivityDurationInSecs()));
-        if (mission.getMissionType() == MissionType.MINING) {
-            peekLastEvent().setEventMessage("Arrived on %s. Starting mining operation.".formatted(((MiningMission) mission).getLocation().getName()));
-            long miningDurationInSecs = calculateMiningDurationInSecs(((MinerShipManager) shipManager), mission.getActivityDurationInSecs());
-            Event miningEvent = Event.builder()
-                    .eventType(EventType.MINING_COMPLETE)
-                    .endTime(lastEventTime.plusSeconds(miningDurationInSecs))
-                    .build();
-            pushNewEvent(miningEvent);
-        } else {
-            throw new RuntimeException("Unknown mission type");
-        }
+        peekLastEvent().setEventMessage("Arrived on %s. Starting mining operation.".formatted(((MiningMission) mission).getLocation().getName()));
+        long miningDurationInSecs = calculateMiningDurationInSecs(((MinerShipManager) shipManager), mission.getActivityDurationInSecs());
+        Event activityEvent = Event.builder()
+                .eventType(EventType.ACTIVITY_COMPLETE)
+                .endTime(lastEventTime.plusSeconds(miningDurationInSecs))
+                .build();
+        pushNewEvent(activityEvent);
+
     }
 
-    private void finishMining() {
+    @Override
+    protected void finishActivity() {
         int minedResources;
         LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         if (mission.getCurrentObjectiveTime().isEqual(lastEventTime)) {
@@ -181,20 +142,8 @@ public class MiningMissionManager extends MissionManager {
         startReturnTravel();
     }
 
-    private void startReturnTravel() {
-        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
-        long returnDurationInSecs;
-        if (mission.getCurrentStatus() == MissionStatus.EN_ROUTE) {
-            returnDurationInSecs = Duration.between(mission.getStartTime(), lastEventTime).getSeconds();
-        } else {
-            returnDurationInSecs = mission.getTravelDurationInSecs();
-        }
-        mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(returnDurationInSecs));
-        mission.setCurrentStatus(MissionStatus.RETURNING);
-        generateEnRouteEvents();
-    }
-
-    private void endMission() {
+    @Override
+    protected void endMission() {
         peekLastEvent().setEventMessage("Returned to station.");
         mission.setCurrentStatus(MissionStatus.OVER);
         shipManager.endMission();

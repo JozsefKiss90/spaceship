@@ -1,6 +1,6 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.mission.MissionDTO;
 import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
@@ -10,6 +10,7 @@ import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.mission.MissionFactory;
 import com.codecool.spaceship.model.mission.MissionManager;
 import com.codecool.spaceship.model.mission.MissionStatus;
+import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.repository.LocationRepository;
 import com.codecool.spaceship.repository.MissionRepository;
@@ -72,16 +73,19 @@ public class MissionService {
         return missionManager.getDetailedDTO();
     }
 
-    public MissionDetailDTO startNewMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
+    public MissionDetailDTO startNewMinerMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SpaceShip spaceShip = spaceShipRepository.findById(shipId)
-                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d".formatted(shipId)));
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d.".formatted(shipId)));
         if (!Objects.equals(user.getId(), spaceShip.getUser().getId())) {
-            throw new SecurityException("You don't have authority to send this ship");
+            throw new SecurityException("You don't have authority to send this ship.");
+        }
+        if (!(spaceShip instanceof MinerShip)) {
+            throw new IllegalArgumentException("Ship is not a miner ship.");
         }
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new DataNotFoundException("No location found with id %d".formatted(locationId)));
-        Mission mission = missionFactory.startNewMission(spaceShip, location, activityDurationInSecs);
+                .orElseThrow(() -> new DataNotFoundException("No location found with id %d.".formatted(locationId)));
+        Mission mission = missionFactory.startNewMiningMission((MinerShip) spaceShip, location, activityDurationInSecs);
         mission = missionRepository.save(mission);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {

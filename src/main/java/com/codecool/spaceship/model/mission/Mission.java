@@ -29,8 +29,6 @@ public abstract class Mission {
     private LocalDateTime approxEndTime;
     @Enumerated(value = EnumType.STRING)
     private MissionStatus currentStatus;
-    @Enumerated(value = EnumType.STRING)
-    private MissionType missionType;
     private long travelDurationInSecs;
     private long activityDurationInSecs;
     @ManyToOne(cascade = CascadeType.MERGE)

@@ -50,9 +50,9 @@ public class MissionController {
         return missionService.getMissionById(id);
     }
 
-    @PostMapping()
-    public MissionDetailDTO startNewMission(@RequestBody ObjectNode objectNode) {
-        return missionService.startNewMission(
+    @PostMapping("/miner")
+    public MissionDetailDTO startNewMinerMission(@RequestBody ObjectNode objectNode) {
+        return missionService.startNewMinerMission(
                 objectNode.get("shipId").asLong(),
                 objectNode.get("locationId").asLong(),
                 objectNode.get("activityDuration").asLong()

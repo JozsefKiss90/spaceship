@@ -1,5 +1,6 @@
-package com.codecool.spaceship.model;
+package com.codecool.spaceship.model.location;
 
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.resource.ResourceType;
 import jakarta.persistence.*;
@@ -22,6 +23,9 @@ public class Location {
     private int distanceFromStation;
     @Enumerated(value = EnumType.STRING)
     private ResourceType resourceType;
+    private int resourceReserve;
     @OneToOne
     private Mission currentMission;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private UserEntity user;
 }

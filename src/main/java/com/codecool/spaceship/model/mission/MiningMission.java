@@ -1,6 +1,6 @@
 package com.codecool.spaceship.model.mission;
 
-import com.codecool.spaceship.model.Location;
+import com.codecool.spaceship.model.location.Location;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

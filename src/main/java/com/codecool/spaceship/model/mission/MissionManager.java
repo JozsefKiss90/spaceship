@@ -5,17 +5,23 @@ import com.codecool.spaceship.model.exception.IllegalOperationException;
 import com.codecool.spaceship.model.ship.SpaceShipManager;
 
 import java.time.Clock;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 public abstract class MissionManager {
 
     protected final Mission mission;
     protected final Clock clock;
+
+    protected final Random random;
     protected SpaceShipManager shipManager;
 
-    public MissionManager(Mission mission, Clock clock, SpaceShipManager spaceShipManager) {
+    public MissionManager(Mission mission, Clock clock, Random random, SpaceShipManager spaceShipManager) {
         this.mission = mission;
         this.clock = clock;
+        this.random = random;
         if (!mission.getShip().equals(spaceShipManager.getShip())) {
             throw new IllegalArgumentException("Ship is not the one on this mission.");
         }
@@ -31,9 +37,49 @@ public abstract class MissionManager {
 
     public abstract MissionDetailDTO getDetailedDTO();
 
-    public abstract boolean updateStatus();
+    public boolean updateStatus() {
+        if (mission.getEvents().isEmpty()) {
+            addStartEvent();
+        }
+        Event lastEvent = peekLastEvent();
+        if (mission.getCurrentStatus() == MissionStatus.OVER
+                || mission.getCurrentStatus() == MissionStatus.ARCHIVED
+                || lastEvent.getEndTime().isAfter(LocalDateTime.now(clock))) {
+            return false;
+        }
+        switch (lastEvent.getEventType()) {
+            case START -> generateEnRouteEvents();
+            case ARRIVAL_AT_LOCATION -> startActivity();
+            case ACTIVITY_COMPLETE -> finishActivity();
+            case RETURNED_TO_STATION -> endMission();
+            default -> throw new RuntimeException("Unknown activity type");
+        }
+        updateStatus();
+        return true;
+    }
 
     public abstract boolean abortMission() throws IllegalOperationException;
+
+    protected abstract void addStartEvent();
+
+    protected abstract void startActivity();
+
+    protected abstract void finishActivity();
+
+    protected abstract void endMission();
+
+    protected void startReturnTravel() {
+        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
+        long returnDurationInSecs;
+        if (mission.getCurrentStatus() == MissionStatus.EN_ROUTE) {
+            returnDurationInSecs = Duration.between(mission.getStartTime(), lastEventTime).getSeconds();
+        } else {
+            returnDurationInSecs = mission.getTravelDurationInSecs();
+        }
+        mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(returnDurationInSecs));
+        mission.setCurrentStatus(MissionStatus.RETURNING);
+        generateEnRouteEvents();
+    }
 
     public boolean archiveMission() throws IllegalOperationException {
         if (mission.getCurrentStatus() == MissionStatus.ARCHIVED) {
@@ -46,7 +92,7 @@ public abstract class MissionManager {
         }
     }
 
-    private void generateEnRouteEvents() {
+    protected void generateEnRouteEvents() {
         //TODO add pirateAttack/Meteor Storm based on chance
         //else event for arrival at destination gets added
         EventType travelEventType = (mission.getCurrentStatus() == MissionStatus.EN_ROUTE)
