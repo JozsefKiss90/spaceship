@@ -77,9 +77,13 @@ public class MiningMissionManager extends MissionManager {
             MinerShipManager minerShipManager = (MinerShipManager) shipManager;
             long updatedActivityTime = Duration.between(peekLastEvent().getEndTime(), now).getSeconds();
             mission.setActivityDurationInSecs(updatedActivityTime);
+
             int minedResources = calculateMinedResources();
-            ResourceType resourceType = ((MiningMission) mission).getLocation().getResourceType();
+            Location location = ((MiningMission) mission).getLocation();
+            location.setResourceReserve(location.getResourceReserve() - minedResources);
+            ResourceType resourceType = location.getResourceType();
             minerShipManager.addResourceToStorage(resourceType, minedResources);
+
             abortEvent.setEventMessage("Mission aborted by Command. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
         } else {
             abortEvent.setEventMessage("Mission aborted by Command. Returning to station.");
