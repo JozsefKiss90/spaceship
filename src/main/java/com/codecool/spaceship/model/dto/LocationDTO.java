@@ -4,10 +4,10 @@ import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.mission.Mission;
 import com.codecool.spaceship.model.resource.ResourceType;
 
-public record LocationDTO(long id, String name, ResourceType resourceType, int distanceFromStation, long missionId) {
+public record LocationDTO(long id, String name, ResourceType resourceType, int resourceReserve, int distanceFromStation, long missionId) {
 
     public LocationDTO(Location location) {
-        this(location.getId(), location.getName(), location.getResourceType(), location.getDistanceFromStation(),getMissionId(location.getCurrentMission()));
+        this(location.getId(), location.getName(), location.getResourceType(), location.getResourceReserve(), location.getDistanceFromStation(),getMissionId(location.getCurrentMission()));
     }
 
     private static Long getMissionId(Mission mission) {

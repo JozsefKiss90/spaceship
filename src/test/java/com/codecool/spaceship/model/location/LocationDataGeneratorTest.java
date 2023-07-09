@@ -17,8 +17,9 @@ class LocationDataGeneratorTest {
         double activityHours = 2;
         int distance = 10;
         List<Boolean> results = new ArrayList<>();
+        LocationDataGenerator locationDataGenerator = new LocationDataGenerator(new Random());
         for (int i = 0; i < 1000; i++) {
-            results.add(LocationDataGenerator.determinePlanetFound(scannerEfficiency, activityHours, distance, new Random()));
+            results.add(locationDataGenerator.determinePlanetFound(scannerEfficiency, activityHours, distance));
         }
         double successful = results.stream().filter(b -> b).count() / ((double)results.size());
         System.out.println(successful);
@@ -31,8 +32,9 @@ class LocationDataGeneratorTest {
         double activityHours = 2;
         boolean prioritize = true;
         List<Integer> results = new ArrayList<>();
+        LocationDataGenerator locationDataGenerator = new LocationDataGenerator(new Random());
         for (int i = 0; i < 1000; i++) {
-            results.add(LocationDataGenerator.determineResourceReserves(scannerEfficiency, activityHours, prioritize, new Random()));
+            results.add(locationDataGenerator.determineResourceReserves(scannerEfficiency, activityHours, prioritize));
         }
         int min = results.stream().mapToInt(i -> i).min().getAsInt();
         int max = results.stream().mapToInt(i -> i).max().getAsInt();
@@ -50,9 +52,10 @@ class LocationDataGeneratorTest {
         int scannerEfficiency = 25;
         double activityHours = 2;
         boolean prioritize = true;
+        LocationDataGenerator locationDataGenerator = new LocationDataGenerator(new Random());
         List<Integer> results = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            results.add(LocationDataGenerator.determineResourceReserves(scannerEfficiency, activityHours, prioritize, new Random()));
+            results.add(locationDataGenerator.determineResourceReserves(scannerEfficiency, activityHours, prioritize));
         }
         int min = results.stream().mapToInt(i -> i).min().getAsInt();
         int max = results.stream().mapToInt(i -> i).max().getAsInt();
@@ -60,7 +63,6 @@ class LocationDataGeneratorTest {
         System.out.println(min);
         System.out.println(max);
         System.out.println(average);
-        System.out.println(LocationDataGenerator.determineName(new Random()));
         assertTrue(400 < min && min < 500);
         assertTrue(900 < max && max <= 1000);
         assertTrue(700 < average && average < 800);
@@ -72,8 +74,9 @@ class LocationDataGeneratorTest {
         int distance = 15;
         boolean prioritize = true;
         List<Integer> results = new ArrayList<>();
+        LocationDataGenerator locationDataGenerator = new LocationDataGenerator(new Random());
         for (int i = 0; i < 1000; i++) {
-            results.add(LocationDataGenerator.determineDistance(scannerEfficiency, distance, prioritize, new Random()));
+            results.add(locationDataGenerator.determineDistance(scannerEfficiency, distance, prioritize));
         }
         int min = results.stream().mapToInt(i -> i).min().getAsInt();
         int max = results.stream().mapToInt(i -> i).max().getAsInt();
@@ -91,8 +94,9 @@ class LocationDataGeneratorTest {
         int distance = 15;
         boolean prioritize = true;
         List<Integer> results = new ArrayList<>();
+        LocationDataGenerator locationDataGenerator = new LocationDataGenerator(new Random());
         for (int i = 0; i < 1000; i++) {
-            results.add(LocationDataGenerator.determineDistance(scannerEfficiency, distance, prioritize, new Random()));
+            results.add(locationDataGenerator.determineDistance(scannerEfficiency, distance, prioritize));
         }
         int min = results.stream().mapToInt(i -> i).min().getAsInt();
         int max = results.stream().mapToInt(i -> i).max().getAsInt();

@@ -20,7 +20,7 @@ public class LocationController {
     }
 
     @GetMapping()
-    public List<LocationDTO> getAllLocationsByUser(@RequestParam Long user) {
-        return locationService.getAllLocationsByUser(user);
+    public List<LocationDTO> getAllLocationsForCurrentUser() {
+        return locationService.getAllLocationsForCurrentUser();
     }
 }

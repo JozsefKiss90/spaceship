@@ -1,7 +1,11 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.Role;
+import com.codecool.spaceship.model.UpgradeableType;
+import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.location.Location;
+import com.codecool.spaceship.model.location.LocationDataGenerator;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
@@ -27,14 +31,16 @@ public class Initializer {
     private final LevelRepository levelRepository;
     private final PasswordEncoder passwordEncoder;
     private final LevelService levelService;
+    private final LocationDataGenerator locationDataGenerator;
 
     @Autowired
-    public Initializer(UserRepository userRepository, LocationRepository locationRepository, LevelRepository levelRepository, PasswordEncoder passwordEncoder, LevelService levelService) {
+    public Initializer(UserRepository userRepository, LocationRepository locationRepository, LevelRepository levelRepository, PasswordEncoder passwordEncoder, LevelService levelService, LocationDataGenerator locationDataGenerator) {
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.levelRepository = levelRepository;
         this.passwordEncoder = passwordEncoder;
         this.levelService = levelService;
+        this.locationDataGenerator = locationDataGenerator;
     }
 
     public void initialize() {
@@ -42,18 +48,18 @@ public class Initializer {
             return;
         }
         initLevels();
-        initUsers();
-        initLocations();
+        initAdmin();
+        initDemoUser();
     }
 
-    private void initUsers() {
+    private void initAdmin() {
         UserEntity admin = UserEntity.builder()
                 .username("Mr. Admin")
                 .email("admin@admail.min")
                 .password(passwordEncoder.encode("password"))
                 .role(Role.ADMIN)
                 .build();
-        MinerShip minerShip1 = MinerShipManager.createNewMinerShip(levelService,"Adminship", Color.DIAMOND);
+        MinerShip minerShip1 = MinerShipManager.createNewMinerShip(levelService, "Adminship", Color.DIAMOND);
         SpaceStation spaceStation1 = SpaceStationManager.createNewSpaceStation("Admin-i-station");
 
         minerShip1.setUser(admin);
@@ -65,6 +71,39 @@ public class Initializer {
         admin.setSpaceStation(spaceStation1);
         userRepository.save(admin);
 
+        Location metalPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(1)
+                .resourceType(ResourceType.METAL)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location crystalPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(2)
+                .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location siliconePlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(3)
+                .resourceType(ResourceType.SILICONE)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location plutoniumPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(4)
+                .resourceType(ResourceType.PLUTONIUM)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet));
+    }
+
+    public void initDemoUser() {
+
         UserEntity user = UserEntity.builder()
                 .username("TestGuy")
                 .email("test@testmail.tst")
@@ -72,7 +111,7 @@ public class Initializer {
                 .role(Role.USER)
                 .build();
 
-        MinerShip minerShip2 = MinerShipManager.createNewMinerShip(levelService,"Built2Mine", Color.DIAMOND);
+        MinerShip minerShip2 = MinerShipManager.createNewMinerShip(levelService, "Built2Mine", Color.DIAMOND);
         minerShip2.setEngineLevel(1);
         minerShip2.setShieldEnergy(20);
         minerShip2.setDrillLevel(2);
@@ -96,30 +135,36 @@ public class Initializer {
 
         userRepository.save(user);
 
-    }
-
-    private void initLocations() {
-        Location morpheus = Location.builder()
-                .name("Morpheus")
+        Location metalPlanet = Location.builder()
+                .name("Metal Planet")
                 .distanceFromStation(1)
                 .resourceType(ResourceType.METAL)
+                .resourceReserve(1000)
+                .user(user)
                 .build();
-        Location koboh = Location.builder()
-                .name("Koboh")
-                .distanceFromStation(4)
+        Location crystalPlanet = Location.builder()
+                .name("Crystal Planet")
+                .distanceFromStation(2)
                 .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(500)
+                .user(user)
                 .build();
-        Location palaven = Location.builder()
-                .name("Palaven")
-                .distanceFromStation(11)
+        Location siliconePlanet = Location.builder()
+                .name("Silicone Planet")
+                .distanceFromStation(3)
                 .resourceType(ResourceType.SILICONE)
+                .resourceReserve(100)
+                .user(user)
                 .build();
-        Location crosie = Location.builder()
-                .name("Crosie 3W")
-                .distanceFromStation(13)
+        Location plutoniumPlanet = Location.builder()
+                .name("Plutonium Planet")
+                .distanceFromStation(4)
                 .resourceType(ResourceType.PLUTONIUM)
+                .resourceReserve(10)
+                .user(user)
                 .build();
-        locationRepository.saveAll(Set.of(morpheus, koboh, palaven, crosie));
+        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet));
+
     }
 
     private void initLevels() {

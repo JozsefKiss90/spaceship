@@ -1,10 +1,9 @@
 package com.codecool.spaceship.model.mission;
 
-import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.dto.mission.MiningMissionDTO;
 import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
-import com.codecool.spaceship.model.exception.StorageException;
+import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShipManager;
 
@@ -75,10 +74,12 @@ public class MiningMissionManager extends MissionManager {
                 .build();
 
         if (abortedEvent.getEventType() == EventType.ACTIVITY_COMPLETE) {
-            long abortedEventProgressInSecs = Duration.between(peekLastEvent().getEndTime(), now).getSeconds();
-            int minedResources = calculateMinedResources(((MinerShipManager) shipManager), abortedEventProgressInSecs);
+            MinerShipManager minerShipManager = (MinerShipManager) shipManager;
+            long updatedActivityTime = Duration.between(peekLastEvent().getEndTime(), now).getSeconds();
+            mission.setActivityDurationInSecs(updatedActivityTime);
+            int minedResources = calculateMinedResources();
             ResourceType resourceType = ((MiningMission) mission).getLocation().getResourceType();
-            ((MinerShipManager) shipManager).addResourceToStorage(resourceType, minedResources);
+            minerShipManager.addResourceToStorage(resourceType, minedResources);
             abortEvent.setEventMessage("Mission aborted by Command. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
         } else {
             abortEvent.setEventMessage("Mission aborted by Command. Returning to station.");
@@ -106,8 +107,10 @@ public class MiningMissionManager extends MissionManager {
 
         LocalDateTime lastEventTime = peekLastEvent().getEndTime();
         mission.setCurrentObjectiveTime(lastEventTime.plusSeconds(mission.getActivityDurationInSecs()));
-        peekLastEvent().setEventMessage("Arrived on %s. Starting mining operation.".formatted(((MiningMission) mission).getLocation().getName()));
-        long miningDurationInSecs = calculateMiningDurationInSecs(((MinerShipManager) shipManager), mission.getActivityDurationInSecs());
+        Location location = ((MiningMission) mission).getLocation();
+        peekLastEvent().setEventMessage("Arrived on %s. Starting mining operation.".formatted(location.getName()));
+        long miningDurationInSecs = calculateMiningDurationInSecs();
+        mission.setActivityDurationInSecs(miningDurationInSecs);
         Event activityEvent = Event.builder()
                 .eventType(EventType.ACTIVITY_COMPLETE)
                 .endTime(lastEventTime.plusSeconds(miningDurationInSecs))
@@ -118,25 +121,22 @@ public class MiningMissionManager extends MissionManager {
 
     @Override
     protected void finishActivity() {
-        int minedResources;
-        LocalDateTime lastEventTime = peekLastEvent().getEndTime();
-        if (mission.getCurrentObjectiveTime().isEqual(lastEventTime)) {
-            minedResources = calculateMinedResources(((MinerShipManager) shipManager), mission.getActivityDurationInSecs());
-        } else {
-            minedResources = ((MinerShipManager) shipManager).getEmptyStorageSpace();
-        }
+        MinerShipManager minerShipManager = (MinerShipManager) shipManager;
+        int minedResources = calculateMinedResources();
 
-        ResourceType resourceType = ((MiningMission) mission).getLocation().getResourceType();
-        try {
-            ((MinerShipManager) shipManager).addResourceToStorage(resourceType, minedResources);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
-        if (((MinerShipManager) shipManager).getEmptyStorageSpace() > 0) {
-            peekLastEvent().setEventMessage("Mining complete. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
-        } else {
+        Location location = ((MiningMission) mission).getLocation();
+        ResourceType resourceType = location.getResourceType();
+        location.setResourceReserve(location.getResourceReserve() - minedResources);
+        minerShipManager.addResourceToStorage(resourceType, minedResources);
+
+        if (location.getResourceReserve() <= 0) {
+            peekLastEvent().setEventMessage("Planet depleted. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
+            mission.setApproxEndTime(peekLastEvent().getEndTime().plusSeconds(mission.getTravelDurationInSecs()));
+        } else if (minerShipManager.getEmptyStorageSpace() == 0) {
             peekLastEvent().setEventMessage("Storage is full. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
-            mission.setApproxEndTime(LocalDateTime.now(clock).plusSeconds(mission.getTravelDurationInSecs()));
+            mission.setApproxEndTime(peekLastEvent().getEndTime().plusSeconds(mission.getTravelDurationInSecs()));
+        } else {
+            peekLastEvent().setEventMessage("Mining complete. Mined %d %s(s). Returning to station.".formatted(minedResources, resourceType));
         }
 
         startReturnTravel();
@@ -160,21 +160,26 @@ public class MiningMissionManager extends MissionManager {
         generateEnRouteEvents();
     }
 
-    private static long calculateMiningDurationInSecs(MinerShipManager minerShip, long activityDurationInSecs) {
-        double activityDurationInHours = activityDurationInSecs / 60.0 / 60.0;
-        int resourceMinedPerHour = minerShip.getDrillEfficiency();
-        int emptyStorageSpace = minerShip.getEmptyStorageSpace();
-        if (Math.floor(resourceMinedPerHour * activityDurationInHours) <= emptyStorageSpace) {
-            return activityDurationInSecs;
-        } else {
+    private long calculateMiningDurationInSecs() {
+        MinerShipManager minerShipManager = (MinerShipManager) shipManager;
+        int resourceReserve = ((MiningMission) mission).getLocation().getResourceReserve();
+        int resourceMinedPerHour = minerShipManager.getDrillEfficiency();
+        int resourceMinedInSetTime = calculateMinedResources();
+        int emptyStorageSpace = minerShipManager.getEmptyStorageSpace();
+        if (resourceMinedInSetTime <= emptyStorageSpace && resourceMinedInSetTime <= resourceReserve) {
+            return mission.getActivityDurationInSecs();
+        } else if (emptyStorageSpace <= resourceReserve) {
             double hoursNeededToFillStorage = (double) emptyStorageSpace / resourceMinedPerHour;
+            return (long) Math.ceil(hoursNeededToFillStorage * 60 * 60);
+        } else {
+            double hoursNeededToFillStorage = (double) resourceReserve / resourceMinedPerHour;
             return (long) Math.ceil(hoursNeededToFillStorage * 60 * 60);
         }
     }
 
-    private static int calculateMinedResources(MinerShipManager minerShip, long activityDurationInSecs) {
-        double activityDurationInHours = activityDurationInSecs / 60.0 / 60.0;
-        int resourceMinedPerHour = minerShip.getDrillEfficiency();
+    private int calculateMinedResources() {
+        int resourceMinedPerHour = ((MinerShipManager) shipManager).getDrillEfficiency();
+        double activityDurationInHours = mission.getActivityDurationInSecs() / 60.0 / 60.0;
         return (int) Math.floor(resourceMinedPerHour * activityDurationInHours);
     }
 

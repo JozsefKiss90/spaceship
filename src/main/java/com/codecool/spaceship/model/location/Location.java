@@ -26,6 +26,6 @@ public class Location {
     private int resourceReserve;
     @OneToOne
     private Mission currentMission;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne
     private UserEntity user;
 }

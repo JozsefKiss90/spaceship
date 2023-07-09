@@ -1,21 +1,26 @@
 package com.codecool.spaceship.model.location;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 
+@Component
 public class LocationDataGenerator {
 
     private static final String[] NAMES = {"Mebbomia", "Cruxeliv", "Zeron", "Etov", "Cueter", "Soiter", "Ogantu", "Lorix",
             "Vothagantu", "Tiliea", "Brosie", "Ema", "Vegenov", "Nomia", "Hietania", "Iclite", "Draloturn", "Thomone", "Nion",
-    "Drypso", "Euruta", "Corsie", "Noveria", "Abatov", "Ferrix"};
+    "Drypso", "Euruta", "Crosie", "Noveria", "Abatov", "Ferrix", "Rakis"};
     private static final String[] GREEK = {"Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa",
             "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega"};
     private final Random random;
 
+    @Autowired
     public LocationDataGenerator(Random random) {
         this.random = random;
     }
 
-    public static String determineName(Random random) {
+    public String determineName() {
         StringBuilder nameBuilder = new StringBuilder(NAMES[random.nextInt(NAMES.length)]);
         nameBuilder.append("-");
         nameBuilder.append(random.nextInt(1, 100));
@@ -28,21 +33,14 @@ public class LocationDataGenerator {
         return nameBuilder.toString();
     }
 
-    public String determineName() {
-        return determineName(random);
-    }
 
-    public static boolean determinePlanetFound(int efficiency, double hours, int distance, Random random) {
+    public boolean determinePlanetFound(int efficiency, double hours, int distance) {
         double base = hours * distance * efficiency;
         double randomNum = random.nextDouble(10.0);
         return base * randomNum > 50;
     }
 
-    public boolean determinePlanetFound(int efficiency, double hours, int distance) {
-        return determinePlanetFound(efficiency, hours, distance, random);
-    }
-
-    public static int determineResourceReserves(int efficiency, double hours, boolean prioritize, Random random) {
+    public int determineResourceReserves(int efficiency, double hours, boolean prioritize) {
         double weighedEfficiency = efficiency * (prioritize ? 15 : 0.5);
         double weighedHours = hours * (prioritize ? 40 : 5);
         double base = weighedEfficiency + weighedHours;
@@ -52,19 +50,11 @@ public class LocationDataGenerator {
         return Math.min(1000, generatedNumber);
     }
 
-    public int determineResourceReserves(int efficiency, double hours, boolean prioritize) {
-        return determineResourceReserves(efficiency, hours, prioritize, random);
-    }
-
-    public static int determineDistance(int efficiency, int distance, boolean prioritize, Random random) {
+    public int determineDistance(int efficiency, int distance, boolean prioritize) {
         double weighedEfficiency = efficiency * (prioritize ? 1 : 0.5);
         double weighedDistance = distance * (prioritize ? 0.25 : 0.75);
         int origin = Math.max(1, (int) (distance - weighedEfficiency));
         int bound = (int) (distance + weighedDistance);
         return random.nextInt(origin, bound);
-    }
-
-    public int determineDistance(int efficiency, int distance, boolean prioritize) {
-        return determineDistance(efficiency, distance, prioritize, new Random());
     }
 }
