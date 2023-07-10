@@ -7,8 +7,7 @@ import ErrorPage from './components/errorPages/ErrorPage';
 import Home from './components/Home';
 import Station from './components/station/Station';
 import Welcome from './components/station/messages/Welcome';
-import AddShip from './components/station/messages/AddShip';
-import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
+import AddShip from './components/station/messages/Spaceship/AddShip';
 import LocationList from './components/station/messages/LocationList';
 import MissionList from './components/station/messages/MissionList';
 import Mission from './components/station/messages/Mission';
@@ -23,6 +22,7 @@ import AccessDeniedPage from './components/errorPages/AccessDeniedPage';
 import GenericErrorPage from './components/errorPages/GenericErrorPage';
 import LevelTypes from './components/admin/LevelTypes';
 import LevelListPage from './components/admin/LevelListPage';
+import SpaceShip from './components/station/messages/Spaceship/SpaceShip';
 
 const router = createBrowserRouter([
     {
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/station/ship/:id',
-                        element: <DisplayMinerShip />
+                        element: <SpaceShip />
                     },
                     {
                         path: '/station/locations',

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import ResourceList from "../ResourceList";
+import ResourceList from "../../../ResourceList";
 import MoveResources from "./MoveResources";
-import { useStorageDispatchContext } from "../../StorageContext";
+import { useStorageDispatchContext } from "../../../../StorageContext";
 import "./ShipResources.css";
 
 export default function ShipResources({ ship, setShip }) {
@@ -16,7 +16,7 @@ export default function ShipResources({ ship, setShip }) {
     storageSetter({ type: "update" });
     const newShip = { ...ship };
     for (const resource of Object.keys(moveAmount)) {
-      const resources = newShip.resources;
+      const resources = newShip.storage.resources;
       resources[resource] -= moveAmount[resource];
       if (resources[resource] === 0) {
         delete resources[resource];
@@ -27,7 +27,7 @@ export default function ShipResources({ ship, setShip }) {
   }
 
   const resources = useMemo(() => {
-    const resources = {...ship.resources};
+    const resources = {...ship.storage.resources};
     for (const resource in resources) {
       if (resources[resource] < 1) {
         delete resources[resource];

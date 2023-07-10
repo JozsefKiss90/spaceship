@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import ResourceRow from "./ResourceRow";
-import useHandleFetchError from "../../../../hooks/useHandleFetchError";
-import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
+import useHandleFetchError from "../../../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../../../notifications/NotificationContext";
 
 export default function MoveResources({ ship, onApplyMove }) {
   const { stationId } = useOutletContext();
@@ -103,15 +103,15 @@ export default function MoveResources({ ship, onApplyMove }) {
             <td>{"->"}</td>
             <td>Station</td>
           </tr>
-          {Object.keys(ship.resources).map((resource) => {
-            if (ship.resources[resource] > 0) {
+          {Object.keys(ship.storage.resources).map((resource) => {
+            if (ship.storage.resources[resource] > 0) {
               return (
                 <ResourceRow
                   key={resource}
                   resource={resource}
-                  ship={ship.resources[resource]}
-                  moved={moveAmount[resource] ? moveAmount[resource] : 0}
-                  station={
+                  shipResource={ship.storage.resources[resource]}
+                  movedResource={moveAmount[resource] ? moveAmount[resource] : 0}
+                  stationResource={
                     storage.resources[resource]
                       ? storage.resources[resource]
                       : 0

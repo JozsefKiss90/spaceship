@@ -1,12 +1,12 @@
 export default function ResourceRow({
   resource,
-  ship,
-  moved,
-  station,
+  shipResource,
+  movedResource,
+  stationResource,
   onChange,
 }) {
   function filterInput(e) {
-    const input = Math.max(0, Math.min(ship, parseInt(e.target.value)));
+    const input = Math.max(0, Math.min(shipResource, parseInt(e.target.value)));
     return (Number.isNaN(input)) ? 0 : input;
   }
   return (
@@ -19,17 +19,17 @@ export default function ResourceRow({
         />
       </td>
       <td>{resource}</td>
-      <td>{ship - moved}</td>
+      <td>{shipResource - movedResource}</td>
       <td>
         <input
           type="number"
           min={0}
-          max={ship}
-          value={moved}
+          max={shipResource}
+          value={movedResource}
           onChange={(e) => onChange(resource, filterInput(e))}
         />
       </td>
-      <td>{station + moved}</td>
+      <td>{stationResource + movedResource}</td>
     </tr>
   );
 }

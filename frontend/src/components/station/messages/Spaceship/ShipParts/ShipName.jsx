@@ -1,8 +1,8 @@
 import "./ShipName.css";
-import { useHangarDispatchContext } from "../HangarContext";
+import { useHangarDispatchContext } from "../../../HangarContext";
 import { useEffect, useState } from "react";
-import useHandleFetchError from "../../../hooks/useHandleFetchError";
-import { useNotificationsDispatch } from "../../notifications/NotificationContext";
+import useHandleFetchError from "../../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../../notifications/NotificationContext";
 
 export function ShipName({ ship, setShip }) {
     const hangarSetter = useHangarDispatchContext();

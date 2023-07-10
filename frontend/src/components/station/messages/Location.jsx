@@ -27,7 +27,7 @@ export default function Location({ location, availableShips }) {
 
   async function startMission(details) {
     try {
-      const res = await fetch("/api/v1/mission", {
+      const res = await fetch("/api/v1/mission/miner", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,6 +60,7 @@ export default function Location({ location, availableShips }) {
           <div className="loc-name">Name: {location.name}</div>
           <div>Resource: {location.resourceType}</div>
           <div>Distance: {location.distanceFromStation} astronomical units</div>
+          <div>Reserves: {location.resourceReserve}</div>
         </div>
         {!missionMenuToggle && (
           <div className="loc-actions">

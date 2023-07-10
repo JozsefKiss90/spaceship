@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./ShipColor.css";
-import { useNotificationsDispatch } from "../../notifications/NotificationContext";
-import useHandleFetchError from "../../../hooks/useHandleFetchError";
+import useHandleFetchError from "../../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../../notifications/NotificationContext";
 
 export function ShipColor({ ship, setShip }) {
     const notifDispatch = useNotificationsDispatch();
