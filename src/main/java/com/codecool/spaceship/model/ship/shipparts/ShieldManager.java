@@ -33,6 +33,10 @@ public class ShieldManager extends Upgradeable {
         return currentEnergy;
     }
 
+    public void setEnergyToMax() {
+        currentEnergy = getMaxEnergy();
+    }
+
     public void repair(int amount) {
         currentEnergy = Math.min(currentEnergy + amount, getMaxEnergy());
     }

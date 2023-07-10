@@ -78,8 +78,9 @@ public class ScoutShipManager extends SpaceShipManager{
             case SHIELD -> {
                 createShieldIfNotExists();
                 shield.upgrade();
+                shield.setEnergyToMax();
                 scoutShip.setShieldLevel(shield.getCurrentLevel());
-                scoutShip.setShieldEnergy(shield.getMaxEnergy());
+                scoutShip.setShieldEnergy(shield.getCurrentEnergy());
             }
             case SCANNER -> {
                 createScannerIfNotExists();

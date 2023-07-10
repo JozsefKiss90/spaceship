@@ -132,8 +132,9 @@ public class MinerShipManager extends SpaceShipManager {
             case SHIELD -> {
                 createShieldIfNotExists();
                 shield.upgrade();
+                shield.setEnergyToMax();
                 minerShip.setShieldLevel(shield.getCurrentLevel());
-                minerShip.setShieldEnergy(shield.getMaxEnergy());
+                minerShip.setShieldEnergy(shield.getCurrentEnergy());
             }
             case DRILL -> {
                 createDrillIfNotExists();

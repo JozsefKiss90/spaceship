@@ -28,7 +28,7 @@ public class LocationDataGenerator {
             nameBuilder.append((char) random.nextInt(65, 91));
         } else {
             nameBuilder.append("-");
-            nameBuilder.append(GREEK[random.nextInt(NAMES.length)]);
+            nameBuilder.append(GREEK[random.nextInt(GREEK.length)]);
         }
         return nameBuilder.toString();
     }
