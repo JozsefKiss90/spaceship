@@ -1,6 +1,6 @@
 export default function Drill({ drill, onClick }) {
   return (
-    <div className="ship-drill row">
+    <div className="row">
       <div>
         Drill | lvl: {drill.level} | resource/hour: {drill.efficiency}
       </div>

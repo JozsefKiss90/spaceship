@@ -1,4 +1,3 @@
-import "./DisplayMinerShip.css";
 import Drill from "./ShipParts/Drill";
 import Engine from "./ShipParts/Engine";
 import Shield from "./ShipParts/Shield";

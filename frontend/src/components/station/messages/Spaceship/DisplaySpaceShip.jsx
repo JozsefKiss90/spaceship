@@ -2,6 +2,7 @@ import { ShipColor } from "./ShipParts/ShipColor";
 import { ShipName } from "./ShipParts/ShipName";
 import { ShipStatus } from "./ShipParts/ShipStatus";
 import { ResourceNeeded } from "../ResourceNeeded";
+import "./DisplaySpaceShip.css";
 
 export default function DisplaySpaceShip({ children, ship, setShip, cost, part, upgradePart }) {
     

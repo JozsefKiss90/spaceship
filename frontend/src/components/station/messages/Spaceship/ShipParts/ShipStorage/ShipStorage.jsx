@@ -8,7 +8,7 @@ export default function ShipStorage({ ship, setShip, onClick }) {
   );
   return (
     <>
-      <div className="ship-storage row">
+      <div className="row">
         <div>
           Storage | lvl: {storage.level} | {resourceSum} / {storage.maxCapacity}
         </div>
