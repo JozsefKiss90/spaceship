@@ -2,8 +2,9 @@ package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.mission.MissionDTO;
 import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
+import com.codecool.spaceship.model.dto.mission.NewMiningMissionDTO;
+import com.codecool.spaceship.model.dto.mission.NewScoutingMissionDTO;
 import com.codecool.spaceship.service.MissionService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -51,12 +52,13 @@ public class MissionController {
     }
 
     @PostMapping("/miner")
-    public MissionDetailDTO startNewMinerMission(@RequestBody ObjectNode objectNode) {
-        return missionService.startNewMinerMission(
-                objectNode.get("shipId").asLong(),
-                objectNode.get("locationId").asLong(),
-                objectNode.get("activityDuration").asLong()
-        );
+    public MissionDetailDTO startNewMiningMission(@RequestBody NewMiningMissionDTO newMissionDTO) {
+        return missionService.startNewMiningMission(newMissionDTO);
+    }
+
+    @PostMapping("/scout")
+    public MissionDetailDTO startNewScoutingMission(@RequestBody NewScoutingMissionDTO newMissionDTO) {
+        return missionService.startNewScoutingMission(newMissionDTO);
     }
 
     @PatchMapping("/{id}/archive")

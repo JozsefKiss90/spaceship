@@ -1,16 +1,16 @@
 package com.codecool.spaceship.service;
 
+import com.codecool.spaceship.model.dto.mission.NewMiningMissionDTO;
+import com.codecool.spaceship.model.dto.mission.NewScoutingMissionDTO;
 import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.mission.MissionDTO;
 import com.codecool.spaceship.model.dto.mission.MissionDetailDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
 import com.codecool.spaceship.model.exception.IllegalOperationException;
-import com.codecool.spaceship.model.mission.Mission;
-import com.codecool.spaceship.model.mission.MissionFactory;
-import com.codecool.spaceship.model.mission.MissionManager;
-import com.codecool.spaceship.model.mission.MissionStatus;
+import com.codecool.spaceship.model.mission.*;
 import com.codecool.spaceship.model.ship.MinerShip;
+import com.codecool.spaceship.model.ship.ScoutShip;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import com.codecool.spaceship.repository.LocationRepository;
 import com.codecool.spaceship.repository.MissionRepository;
@@ -38,6 +38,7 @@ public class MissionService {
         this.spaceShipRepository = spaceShipRepository;
         this.locationRepository = locationRepository;
     }
+
     public List<MissionDTO> getAllActiveMissionsForCurrentUser() {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return missionRepository.getMissionsByUserIdAndCurrentStatusNot(user.getId(), MissionStatus.ARCHIVED).stream()
@@ -68,36 +69,53 @@ public class MissionService {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         if (missionManager.updateStatus()) {
-            mission = missionRepository.save(mission);
+            missionRepository.save(mission);
         }
         return missionManager.getDetailedDTO();
     }
 
-    public MissionDetailDTO startNewMinerMission(long shipId, long locationId, long activityDurationInSecs) throws DataNotFoundException, IllegalOperationException {
+    public MissionDetailDTO startNewMiningMission(NewMiningMissionDTO newMissionDTO) throws DataNotFoundException, IllegalOperationException {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        SpaceShip spaceShip = spaceShipRepository.findById(shipId)
-                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d.".formatted(shipId)));
+        SpaceShip spaceShip = spaceShipRepository.findById(newMissionDTO.shipId())
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d.".formatted(newMissionDTO.shipId())));
         if (!Objects.equals(user.getId(), spaceShip.getUser().getId())) {
             throw new SecurityException("You don't have authority to send this ship.");
         }
         if (!(spaceShip instanceof MinerShip)) {
             throw new IllegalArgumentException("Ship is not a miner ship.");
         }
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new DataNotFoundException("No location found with id %d.".formatted(locationId)));
-        Mission mission = missionFactory.startNewMiningMission((MinerShip) spaceShip, location, activityDurationInSecs);
+        Location location = locationRepository.findById(newMissionDTO.locationId())
+                .orElseThrow(() -> new DataNotFoundException("No location found with id %d.".formatted(newMissionDTO.locationId())));
+        Mission mission = missionFactory.startNewMiningMission((MinerShip) spaceShip, location, newMissionDTO.activityTime());
         mission = missionRepository.save(mission);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
-        if (missionManager.updateStatus()) {
-            missionRepository.save(mission);
+        missionManager.updateStatus();
+        missionRepository.save(mission);
+        return missionManager.getDetailedDTO();
+    }
+
+    public MissionDetailDTO startNewScoutingMission(NewScoutingMissionDTO newMissionDTO) {
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SpaceShip spaceShip = spaceShipRepository.findById(newMissionDTO.shipId())
+                .orElseThrow(() -> new DataNotFoundException("No ship found with id %d.".formatted(newMissionDTO.shipId())));
+        if (!Objects.equals(user.getId(), spaceShip.getUser().getId())) {
+            throw new SecurityException("You don't have authority to send this ship.");
         }
+        if (!(spaceShip instanceof ScoutShip)) {
+            throw new IllegalArgumentException("Ship is not a scout ship.");
+        }
+        ScoutingMission mission = missionFactory.startNewScoutingMission((ScoutShip) spaceShip, newMissionDTO.distance(),
+                newMissionDTO.activityTime(), newMissionDTO.targetResource(), newMissionDTO.prioritizingDistance());
+        MissionManager missionManager = missionFactory.getMissionManager(mission);
+        missionManager.updateStatus();
+        missionRepository.save(mission);
         return missionManager.getDetailedDTO();
     }
 
     public MissionDetailDTO archiveMission(Long id) throws DataNotFoundException, IllegalOperationException {
         Mission mission = getMissionByIdAndCheckAccess(id);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
-        if(missionManager.archiveMission()) {
+        if (missionManager.archiveMission()) {
             missionRepository.save(mission);
             return missionManager.getDetailedDTO();
         }

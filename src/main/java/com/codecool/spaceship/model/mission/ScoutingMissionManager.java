@@ -33,6 +33,15 @@ public class ScoutingMissionManager extends MissionManager {
         if (!scoutShipManager.isAvailable()) {
             throw new IllegalOperationException("This ship is already on a mission");
         }
+        if (distance <= 0) {
+            throw new IllegalArgumentException("Distance can't be 0 or less");
+        }
+        if (activityDurationInSecs <= 0) {
+            throw new IllegalArgumentException("Activity duration can't be 0 or less");
+        }
+        if (targetResource == null) {
+            throw new IllegalArgumentException("Target resource can't be null");
+        }
         LocalDateTime startTime = LocalDateTime.now(clock);
         long travelDurationInSecs = calculateTravelDurationInSecs(scoutShipManager, distance);
         long approxMissionDurationInSecs = travelDurationInSecs * 2 + activityDurationInSecs;

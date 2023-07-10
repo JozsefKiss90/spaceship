@@ -30,6 +30,9 @@ public class MiningMissionManager extends MissionManager {
         if (location.getCurrentMission() != null) {
             throw new IllegalOperationException("There is a mission already in progress at this location");
         }
+        if (activityDurationInSecs <= 0) {
+            throw new IllegalArgumentException("Activity duration can't be 0 or less");
+        }
         LocalDateTime startTime = LocalDateTime.now(clock);
         long travelDurationInSecs = calculateTravelDurationInSecs(minerShipManager, location.getDistanceFromStation());
         long approxMissionDurationInSecs = travelDurationInSecs * 2 + activityDurationInSecs;
