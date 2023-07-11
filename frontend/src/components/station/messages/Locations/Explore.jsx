@@ -48,6 +48,7 @@ export default function Explore() {
       acc[k] = v;
       return acc;
     }, {});
+    details.activityTime = details.activityTime * 60 * 60;
     startMission(details);
   }
 
