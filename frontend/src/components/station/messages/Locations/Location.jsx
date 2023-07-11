@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./Location.css";
 import { useNavigate } from "react-router-dom";
-import useHandleFetchError from "../../../hooks/useHandleFetchError";
-import { useNotificationsDispatch } from "../../notifications/NotificationContext";
+import useHandleFetchError from "../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function Location({ location, availableShips }) {
   const navigate = useNavigate();
@@ -51,11 +51,7 @@ export default function Location({ location, availableShips }) {
   return (
     <div className="location">
       <div className="loc-details">
-        <img
-          src="/planet.png"
-          alt="planet"
-          style={{ width: "100px", height: "100px" }}
-        />
+        <img src="/planet.png" alt="planet" style={{ width: "100px", height: "100px" }} />
         <div className="loc-data">
           <div className="loc-name">Name: {location.name}</div>
           <div>Resource: {location.resourceType}</div>
@@ -65,18 +61,13 @@ export default function Location({ location, availableShips }) {
         {!missionMenuToggle && (
           <div className="loc-actions">
             {location.missionId === 0 ? (
-              <button
-                className="button"
-                onClick={() => setMissionMenuToggle(true)}
-              >
+              <button className="button" onClick={() => setMissionMenuToggle(true)}>
                 Start mission
               </button>
             ) : (
               <button
                 className="button"
-                onClick={() =>
-                  navigate(`/station/mission/${location.missionId}`)
-                }
+                onClick={() => navigate(`/station/mission/${location.missionId}`)}
               >
                 Check mission
               </button>
@@ -96,13 +87,13 @@ export default function Location({ location, availableShips }) {
                   </option>
                 ))
               ) : (
-                <option disabled>No available ships</option>
+                <option disabled>No available miner ships</option>
               )}
             </select>
           </div>
           <div>
-            <label htmlFor="activityDuration">Mine for: </label>
-            <select name="activityDuration" required>
+            <label htmlFor="activityTime">Mine for: </label>
+            <select name="activityTime" required>
               <option value={3600}>1 hour</option>
               <option value={7200}>2 hours</option>
               <option value={10800}>3 hours</option>
@@ -114,10 +105,7 @@ export default function Location({ location, availableShips }) {
             <button className="button" type="submit" disabled={submitting}>
               Start
             </button>
-            <button
-              className="button red"
-              onClick={() => setMissionMenuToggle(false)}
-            >
+            <button className="button red" onClick={() => setMissionMenuToggle(false)}>
               Cancel
             </button>
           </div>

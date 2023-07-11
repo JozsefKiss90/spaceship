@@ -86,7 +86,7 @@ public class MissionService {
         }
         Location location = locationRepository.findById(newMissionDTO.locationId())
                 .orElseThrow(() -> new DataNotFoundException("No location found with id %d.".formatted(newMissionDTO.locationId())));
-        Mission mission = missionFactory.startNewMiningMission((MinerShip) spaceShip, location, newMissionDTO.activityTime());
+        MiningMission mission = missionFactory.startNewMiningMission((MinerShip) spaceShip, location, newMissionDTO.activityTime());
         mission = missionRepository.save(mission);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         missionManager.updateStatus();
@@ -106,6 +106,7 @@ public class MissionService {
         }
         ScoutingMission mission = missionFactory.startNewScoutingMission((ScoutShip) spaceShip, newMissionDTO.distance(),
                 newMissionDTO.activityTime(), newMissionDTO.targetResource(), newMissionDTO.prioritizingDistance());
+        mission = missionRepository.save(mission);
         MissionManager missionManager = missionFactory.getMissionManager(mission);
         missionManager.updateStatus();
         missionRepository.save(mission);

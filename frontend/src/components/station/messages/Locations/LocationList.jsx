@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "./LocationList.css";
 import Location from "./Location";
-import useHandleFetchError from "../../../hooks/useHandleFetchError";
-import { useNotificationsDispatch } from "../../notifications/NotificationContext";
+import useHandleFetchError from "../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function LocationList() {
   const { user, stationId } = useOutletContext();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
+  const navigate = useNavigate();
   const [locations, setLocations] = useState(null);
   const [availableShips, setAvailableShips] = useState(null);
 
@@ -31,7 +32,7 @@ export default function LocationList() {
       setLocations(locations.sort((a, b) => a.id - b.id));
       setAvailableShips(
         hangar.ships
-          .filter((ship) => ship.missionId === 0)
+          .filter((ship) => ship.missionId === 0 && ship.type === "MINER")
           .sort((a, b) => a.id - b.id)
       );
     } catch (err) {
@@ -46,20 +47,23 @@ export default function LocationList() {
     fetchLocationsAndShips();
   }, [fetchLocationsAndShips]);
 
-  if (locations === null || availableShips === null) {
-    return <div>Loading...</div>;
-  }
+  const loaded = locations !== null && availableShips !== null;
 
   return (
     <div className="location-list">
       <div>Available locations:</div>
-      {locations.map((location) => (
-        <Location
-          key={location.id}
-          location={location}
-          availableShips={availableShips}
-        />
-      ))}
+      <button className="button" onClick={() => navigate("/station/locations/explore")}>Explore</button>
+      {loaded ? (
+        locations.map((location) => (
+          <Location
+            key={location.id}
+            location={location}
+            availableShips={availableShips}
+          />
+        ))
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 }
