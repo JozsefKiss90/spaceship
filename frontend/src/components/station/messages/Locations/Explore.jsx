@@ -192,7 +192,7 @@ function PrioritySelect() {
         <div>Priority:</div>
         <div>
           <div>
-            <input type="radio" name="prioritizingDistance" id="close" value={true} checked/>
+            <input type="radio" name="prioritizingDistance" id="close" value={true} defaultChecked/>
             <label htmlFor="close">Closeness</label>
           </div>
           <div>

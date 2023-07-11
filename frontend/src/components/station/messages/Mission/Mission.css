@@ -19,6 +19,10 @@
   padding: 20px 5px;
 }
 
+.mission-scout-data {
+  grid-template-columns: 1fr 1fr !important;
+}
+
 .mission-data > div {
   display: flex;
   flex-direction: column;

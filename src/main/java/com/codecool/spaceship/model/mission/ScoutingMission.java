@@ -2,10 +2,7 @@ package com.codecool.spaceship.model.mission;
 
 import com.codecool.spaceship.model.location.Location;
 import com.codecool.spaceship.model.resource.ResourceType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +21,7 @@ public class ScoutingMission extends Mission {
     private ResourceType targetResource;
     private int distance;
     private boolean prioritizingDistance;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Location discoveredLocation;
 
 }

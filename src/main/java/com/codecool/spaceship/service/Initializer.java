@@ -473,8 +473,8 @@ public class Initializer {
                 .effect(2)
                 .max(false)
                 .cost(Map.of(
-                        ResourceType.METAL, 10,
-                        ResourceType.CRYSTAL, 2
+                        ResourceType.METAL, 50,
+                        ResourceType.CRYSTAL, 5
                 ))
                 .build();
         Level scanner3 = Level.builder()
@@ -483,7 +483,7 @@ public class Initializer {
                 .effect(5)
                 .max(false)
                 .cost(Map.of(
-                        ResourceType.METAL, 20,
+                        ResourceType.METAL, 100,
                         ResourceType.CRYSTAL, 10
                 ))
                 .build();
@@ -493,8 +493,8 @@ public class Initializer {
                 .effect(10)
                 .max(false)
                 .cost(Map.of(
-                        ResourceType.METAL, 50,
-                        ResourceType.CRYSTAL, 20
+                        ResourceType.METAL, 200,
+                        ResourceType.CRYSTAL, 50
                 ))
                 .build();
         Level scanner5 = Level.builder()
@@ -503,9 +503,9 @@ public class Initializer {
                 .effect(25)
                 .max(true)
                 .cost(Map.of(
-                        ResourceType.METAL, 100,
-                        ResourceType.CRYSTAL, 50,
-                        ResourceType.PLUTONIUM, 10
+                        ResourceType.METAL, 400,
+                        ResourceType.CRYSTAL, 100,
+                        ResourceType.PLUTONIUM, 50
                 ))
                 .build();
 

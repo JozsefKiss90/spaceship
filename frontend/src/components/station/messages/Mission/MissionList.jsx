@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import "./MissionList.css";
 import { useNavigate } from "react-router-dom";
-import useHandleFetchError from "../../../hooks/useHandleFetchError";
-import { useNotificationsDispatch } from "../../notifications/NotificationContext";
+import useHandleFetchError from "../../../../hooks/useHandleFetchError";
+import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function MissionList() {
-  const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
   const [missions, setMissions] = useState(null);
@@ -97,36 +96,31 @@ export default function MissionList() {
       );
     }
   }
+}
 
-  function ActiveMissionListItem({ mission }) {
-    const formattedStatus = mission.status.replaceAll("_", " ");
-    const nextReport = new Date(mission.currentObjectiveTime + "Z");
-    return (
-      <div
-        className="ml-li ml-li-active"
-        onClick={() => navigate(`/station/mission/${mission.id}`)}
-      >
-        <div>
-          <div>{`${mission.missionType} mission on ${mission.location}`}</div>
-          {mission.status !== "OVER" && (
-            <div>Next report : {nextReport.toLocaleString("hu-HU")}</div>
-          )}
-        </div>
-        <div>{formattedStatus}</div>
+function ActiveMissionListItem({ mission }) {
+  const navigate = useNavigate();
+  const formattedStatus = mission.status.replaceAll("_", " ");
+  const nextReport = new Date(mission.currentObjectiveTime + "Z");
+  return (
+    <div className="ml-li ml-li-active" onClick={() => navigate(`/station/mission/${mission.id}`)}>
+      <div>
+        <div>{mission.title}</div>
+        {mission.status !== "OVER" && <div>Next report : {nextReport.toLocaleString("hu-HU")}</div>}
       </div>
-    );
-  }
+      <div>{formattedStatus}</div>
+    </div>
+  );
+}
 
-  function ArchivedMissionListItem({ mission }) {
-    const endTime = new Date(mission.approxEndTime + "Z");
-    return (
-      <div
-        className="ml-li"
-        onClick={() => navigate(`/station/mission/${mission.id}`)}
-      >
-        <div>{`${mission.missionType} mission on ${mission.location}`}</div>
-        <div>Ended: {endTime.toLocaleString("hu-HU")}</div>
-      </div>
-    );
-  }
+function ArchivedMissionListItem({ mission }) {
+  const navigate = useNavigate();
+  const endTime = new Date(mission.approxEndTime + "Z");
+
+  return (
+    <div className="ml-li" onClick={() => navigate(`/station/mission/${mission.id}`)}>
+      <div>{mission.title}</div>
+      <div>Ended: {endTime.toLocaleString("hu-HU")}</div>
+    </div>
+  );
 }
