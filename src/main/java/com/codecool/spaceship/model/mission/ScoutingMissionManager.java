@@ -99,8 +99,7 @@ public class ScoutingMissionManager extends MissionManager {
         pushNewEvent(abortEvent);
         mission.setApproxEndTime(now.plusSeconds(mission.getTravelDurationInSecs()));
         startReturnTravel();
-
-        return false;
+        return true;
     }
 
     @Override
