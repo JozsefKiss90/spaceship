@@ -163,7 +163,7 @@ public class ScoutingMissionManager extends MissionManager {
         return Location.builder()
                 .name(locationDataGenerator.determineName())
                 .distanceFromStation(distanceFromStation)
-                .discovered(LocalDateTime.now(clock))
+                .discovered(peekLastEvent().getEndTime())
                 .resourceType(((ScoutingMission) mission).getTargetResource())
                 .resourceReserve(resourceReserves)
                 .user(mission.getUser())

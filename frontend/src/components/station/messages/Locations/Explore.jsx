@@ -157,7 +157,7 @@ function ResourceSelect() {
         <label htmlFor="targetResource">Resource: </label>
         <select name="targetResource" id="targetResource" required>
           <option value="METAL">Metal</option>
-          <option value="CRYSTAl">Crystal</option>
+          <option value="CRYSTAL">Crystal</option>
           <option value="SILICONE">Silicone</option>
           <option value="PLUTONIUM">Plutonioum</option>
         </select>
@@ -192,7 +192,13 @@ function PrioritySelect() {
         <div>Priority:</div>
         <div>
           <div>
-            <input type="radio" name="prioritizingDistance" id="close" value={true} defaultChecked/>
+            <input
+              type="radio"
+              name="prioritizingDistance"
+              id="close"
+              value={true}
+              defaultChecked
+            />
             <label htmlFor="close">Closeness</label>
           </div>
           <div>

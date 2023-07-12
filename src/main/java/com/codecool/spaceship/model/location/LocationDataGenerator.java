@@ -23,7 +23,7 @@ public class LocationDataGenerator {
     public String determineName() {
         StringBuilder nameBuilder = new StringBuilder(NAMES[random.nextInt(NAMES.length)]);
         nameBuilder.append("-");
-        nameBuilder.append(random.nextInt(1, 100));
+        nameBuilder.append(random.nextInt(1, 1000));
         if (random.nextInt(2) == 1) {
             nameBuilder.append((char) random.nextInt(65, 91));
         } else {

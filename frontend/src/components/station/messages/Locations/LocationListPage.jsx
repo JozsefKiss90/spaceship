@@ -104,8 +104,8 @@ export default function LocationListPage() {
             <option value="ALL">All</option>
             <option value="METAL">Metal</option>
             <option value="CRYSTAL">Crystal</option>
-            <option value="Silicone">Silicone</option>
-            <option value="Plutonium">Plutonium</option>
+            <option value="SILICONE">Silicone</option>
+            <option value="PLUTONIUM">Plutonium</option>
           </select>
         </div>
         <div>
