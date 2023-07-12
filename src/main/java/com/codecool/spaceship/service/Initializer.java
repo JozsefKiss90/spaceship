@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +55,8 @@ public class Initializer {
     }
 
     private void initAdmin() {
+        LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
+
         UserEntity admin = UserEntity.builder()
                 .username("Mr. Admin")
                 .email("admin@admail.min")
@@ -74,6 +78,7 @@ public class Initializer {
         Location metalPlanet = Location.builder()
                 .name(locationDataGenerator.determineName())
                 .distanceFromStation(1)
+                .discovered(now)
                 .resourceType(ResourceType.METAL)
                 .resourceReserve(200)
                 .user(admin)
@@ -81,6 +86,7 @@ public class Initializer {
         Location crystalPlanet = Location.builder()
                 .name(locationDataGenerator.determineName())
                 .distanceFromStation(2)
+                .discovered(now)
                 .resourceType(ResourceType.CRYSTAL)
                 .resourceReserve(200)
                 .user(admin)
@@ -88,6 +94,7 @@ public class Initializer {
         Location siliconePlanet = Location.builder()
                 .name(locationDataGenerator.determineName())
                 .distanceFromStation(3)
+                .discovered(now)
                 .resourceType(ResourceType.SILICONE)
                 .resourceReserve(200)
                 .user(admin)
@@ -95,6 +102,7 @@ public class Initializer {
         Location plutoniumPlanet = Location.builder()
                 .name(locationDataGenerator.determineName())
                 .distanceFromStation(4)
+                .discovered(now)
                 .resourceType(ResourceType.PLUTONIUM)
                 .resourceReserve(200)
                 .user(admin)
@@ -103,6 +111,7 @@ public class Initializer {
     }
 
     public void initDemoUser() {
+        LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
 
         UserEntity user = UserEntity.builder()
                 .username("TestGuy")
@@ -138,6 +147,7 @@ public class Initializer {
         Location metalPlanet = Location.builder()
                 .name("Metal Planet")
                 .distanceFromStation(1)
+                .discovered(now.minusHours(5))
                 .resourceType(ResourceType.METAL)
                 .resourceReserve(1000)
                 .user(user)
@@ -145,6 +155,7 @@ public class Initializer {
         Location crystalPlanet = Location.builder()
                 .name("Crystal Planet")
                 .distanceFromStation(2)
+                .discovered(now.minusHours(2))
                 .resourceType(ResourceType.CRYSTAL)
                 .resourceReserve(500)
                 .user(user)
@@ -152,6 +163,7 @@ public class Initializer {
         Location siliconePlanet = Location.builder()
                 .name("Silicone Planet")
                 .distanceFromStation(3)
+                .discovered(now.minusHours(10))
                 .resourceType(ResourceType.SILICONE)
                 .resourceReserve(100)
                 .user(user)
@@ -159,11 +171,20 @@ public class Initializer {
         Location plutoniumPlanet = Location.builder()
                 .name("Plutonium Planet")
                 .distanceFromStation(4)
+                .discovered(now)
                 .resourceType(ResourceType.PLUTONIUM)
                 .resourceReserve(10)
                 .user(user)
                 .build();
-        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet));
+        Location depletedPlanet = Location.builder()
+                .name("Depleted Planet")
+                .distanceFromStation(4)
+                .discovered(now.minusHours(20))
+                .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(0)
+                .user(user)
+                .build();
+        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet, depletedPlanet));
 
     }
 

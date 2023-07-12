@@ -8,7 +8,7 @@ import Home from './components/Home';
 import Station from './components/station/Station';
 import Welcome from './components/station/messages/Welcome';
 import AddShip from './components/station/messages/Spaceship/AddShip';
-import LocationList from './components/station/messages/Locations/LocationList';
+import LocationListPage from './components/station/messages/Locations/LocationListPage';
 import MissionList from './components/station/messages/Mission/MissionList';
 import Mission from './components/station/messages/Mission/Mission';
 import StationUpgrade from './components/station/messages/StationUpgrade';
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/station/locations',
-                        element: <LocationList />
+                        element: <LocationListPage />
                     },
                     {
                         path: '/station/locations/explore',

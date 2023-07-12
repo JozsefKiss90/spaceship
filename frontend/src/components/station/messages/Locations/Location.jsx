@@ -25,6 +25,10 @@ export default function Location({ location, availableShips }) {
     startMission(details);
   }
 
+  function onCancel() {
+    setMissionMenuToggle(false);
+  }
+
   async function startMission(details) {
     try {
       const res = await fetch("/api/v1/mission/miner", {
@@ -48,69 +52,107 @@ export default function Location({ location, availableShips }) {
     setSubmitting(false);
   }
 
+  const formattedDate = new Date(location.discovered + "Z").toLocaleString("hu-HU");
   return (
     <div className="location">
       <div className="loc-details">
         <img src="/planet.png" alt="planet" style={{ width: "100px", height: "100px" }} />
         <div className="loc-data">
-          <div className="loc-name">Name: {location.name}</div>
-          <div>Resource: {location.resourceType}</div>
-          <div>Distance: {location.distanceFromStation} astronomical units</div>
-          <div>Reserves: {location.resourceReserve}</div>
-        </div>
-        {!missionMenuToggle && (
-          <div className="loc-actions">
-            {location.missionId === 0 ? (
-              <button className="button" onClick={() => setMissionMenuToggle(true)}>
-                Start mission
-              </button>
-            ) : (
-              <button
-                className="button"
-                onClick={() => navigate(`/station/mission/${location.missionId}`)}
-              >
-                Check mission
-              </button>
+          <div className="loc-top">
+            <div className="loc-name">{location.name}</div>
+            {!missionMenuToggle && (
+              <MenuButton location={location} setMissionMenuToggle={setMissionMenuToggle} />
             )}
           </div>
-        )}
+          <div className="loc-secondary-data">
+            <div>
+              <div className="loc-data-label">Resource:</div>
+              <div>{location.resourceType}</div>
+            </div>
+            <div>
+              <div className="loc-data-label">Reserves:</div> <div>{location.resourceReserve}</div>
+            </div>
+            <div>
+              <div className="loc-data-label">Distance:</div>{" "}
+              <div>{location.distanceFromStation} AUs</div>
+            </div>
+            <div>
+              <div className="loc-data-label">Discovered:</div> <div>{formattedDate}</div>
+            </div>
+          </div>
+        </div>
       </div>
       {missionMenuToggle && (
-        <form className="loc-mission-menu" onSubmit={onSubmitMission}>
-          <div>
-            <label htmlFor="shipId">Ship: </label>
-            <select name="shipId" required>
-              {availableShips.length > 0 ? (
-                availableShips.map((ship) => (
-                  <option key={ship.id} value={ship.id}>
-                    {ship.name}
-                  </option>
-                ))
-              ) : (
-                <option disabled>No available miner ships</option>
-              )}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="activityTime">Mine for: </label>
-            <select name="activityTime" required>
-              <option value={3600}>1 hour</option>
-              <option value={7200}>2 hours</option>
-              <option value={10800}>3 hours</option>
-              <option value={14400}>4 hours</option>
-              <option value={60}>DEMO</option>
-            </select>
-          </div>
-          <div className="loc-mission-actions">
-            <button className="button" type="submit" disabled={submitting}>
-              Start
-            </button>
-            <button className="button red" onClick={() => setMissionMenuToggle(false)}>
-              Cancel
-            </button>
-          </div>
-        </form>
+        <MissionMenu
+          availableShips={availableShips}
+          submitting={submitting}
+          onSubmitMission={onSubmitMission}
+          onCancel={onCancel}
+        />
       )}
     </div>
+  );
+}
+
+function MenuButton({ location, setMissionMenuToggle }) {
+  const navigate = useNavigate();
+  if (location.missionId === 0) {
+    return (
+      <div>
+        <button className="button" onClick={() => setMissionMenuToggle(true)}>
+          Start mission
+        </button>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <button
+          className="button"
+          onClick={() => navigate(`/station/mission/${location.missionId}`)}
+        >
+          Check mission
+        </button>
+      </div>
+    );
+  }
+}
+
+function MissionMenu({ availableShips, submitting, onSubmitMission, onCancel }) {
+  return (
+    <form className="loc-mission-menu" onSubmit={onSubmitMission}>
+      <div>
+        <label htmlFor="shipId">Ship: </label>
+        <select name="shipId" required>
+          {availableShips.length > 0 ? (
+            availableShips.map((ship) => (
+              <option key={ship.id} value={ship.id}>
+                {ship.name}
+              </option>
+            ))
+          ) : (
+            <option disabled>No available miner ships</option>
+          )}
+        </select>
+      </div>
+      <div>
+        <label htmlFor="activityTime">Mine for: </label>
+        <select name="activityTime" required>
+          <option value={3600}>1 hour</option>
+          <option value={7200}>2 hours</option>
+          <option value={10800}>3 hours</option>
+          <option value={14400}>4 hours</option>
+          <option value={60}>DEMO</option>
+        </select>
+      </div>
+      <div className="loc-mission-actions">
+        <button className="button" type="submit" disabled={submitting}>
+          Start
+        </button>
+        <button className="button red" onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }
