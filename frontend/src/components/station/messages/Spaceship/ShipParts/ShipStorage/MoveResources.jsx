@@ -5,7 +5,7 @@ import useHandleFetchError from "../../../../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../../../../notifications/NotificationContext";
 
 export default function MoveResources({ ship, onApplyMove }) {
-  const { stationId } = useOutletContext();
+  const { station } = useOutletContext();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
   const [storage, setStorage] = useState(null);
@@ -15,7 +15,7 @@ export default function MoveResources({ ship, onApplyMove }) {
   const fetchStorage = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/storage`);
+      const res = await fetch(`/api/v1/base/${station.id}/storage`);
       if (res.ok) {
         const data = await res.json();
         setStorage(data);
@@ -29,7 +29,7 @@ export default function MoveResources({ ship, onApplyMove }) {
       });
     }
     setLoading(false);
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchStorage();
@@ -38,16 +38,13 @@ export default function MoveResources({ ship, onApplyMove }) {
   const confirmMove = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/v1/base/${stationId}/add/resource-from-ship?ship=${ship.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(moveAmount),
-        }
-      );
+      const res = await fetch(`/api/v1/base/${station.id}/add/resource-from-ship?ship=${ship.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(moveAmount),
+      });
       if (res.ok) {
         const data = await res.json();
         if (data === true) {
@@ -68,14 +65,7 @@ export default function MoveResources({ ship, onApplyMove }) {
       });
     }
     setLoading(false);
-  }, [
-    stationId,
-    ship,
-    moveAmount,
-    onApplyMove,
-    handleFetchError,
-    notifDispatch,
-  ]);
+  }, [station, ship, moveAmount, onApplyMove, handleFetchError, notifDispatch]);
 
   function updateMoveAmount(resource, amount) {
     const newMoveAmount = { ...moveAmount };
@@ -87,10 +77,7 @@ export default function MoveResources({ ship, onApplyMove }) {
     return <div>Loading...</div>;
   }
 
-  const totalMoved = Object.values(moveAmount).reduce(
-    (sum, next) => sum + next,
-    0
-  );
+  const totalMoved = Object.values(moveAmount).reduce((sum, next) => sum + next, 0);
   const freeSpace = storage.freeSpace - totalMoved;
 
   return (
@@ -111,11 +98,7 @@ export default function MoveResources({ ship, onApplyMove }) {
                   resource={resource}
                   shipResource={ship.storage.resources[resource]}
                   movedResource={moveAmount[resource] ? moveAmount[resource] : 0}
-                  stationResource={
-                    storage.resources[resource]
-                      ? storage.resources[resource]
-                      : 0
-                  }
+                  stationResource={storage.resources[resource] ? storage.resources[resource] : 0}
                   onChange={updateMoveAmount}
                 />
               );
@@ -125,11 +108,7 @@ export default function MoveResources({ ship, onApplyMove }) {
           })}
         </tbody>
       </table>
-      <div
-        style={
-          freeSpace >= 0 ? {} : { color: "red", textShadow: "1px 1px black" }
-        }
-      >
+      <div style={freeSpace >= 0 ? {} : { color: "red", textShadow: "1px 1px black" }}>
         Free space: {freeSpace}
       </div>
       {freeSpace >= 0 && (

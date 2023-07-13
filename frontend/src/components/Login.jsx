@@ -5,7 +5,7 @@ import useHandleFetchError from "../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 const Login = () => {
-  const { user } = useOutletContext();
+  const { user, update, setUpdate } = useOutletContext();
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -40,6 +40,7 @@ const Login = () => {
       if (res.ok) {
         const data = await res.json();
         if (data) {
+          setUpdate(!update);
           navigate("/station");
         }
       } else {
@@ -58,18 +59,8 @@ const Login = () => {
     <div className="lrform-container">
       <form onSubmit={onSubmit}>
         <h2>Login</h2>
-        <input
-          name="username"
-          type="text"
-          required
-          placeholder="Username"
-        ></input>
-        <input
-          name="password"
-          type="password"
-          required
-          placeholder="Password"
-        ></input>
+        <input name="username" type="text" required placeholder="Username"></input>
+        <input name="password" type="password" required placeholder="Password"></input>
         <button className="button" type="submit" disabled={submitting}>
           Login
         </button>

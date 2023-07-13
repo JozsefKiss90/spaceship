@@ -5,7 +5,7 @@ import useHandleFetchError from "../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "./notifications/NotificationContext";
 
 export default function Register() {
-  const { user } = useOutletContext();
+  const { user, update, setUpdate } = useOutletContext();
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -41,6 +41,7 @@ export default function Register() {
       if (res.ok) {
         const data = await res.json();
         if (data) {
+          setUpdate(!update);
           navigate("/station");
         }
       } else {
@@ -49,7 +50,7 @@ export default function Register() {
     } catch (err) {
       console.error(err);
       notifDispatch({
-        type: "generic error"
+        type: "generic error",
       });
     }
     setSubmitting(false);
@@ -60,18 +61,8 @@ export default function Register() {
       <form onSubmit={onSubmit}>
         <h2>Register</h2>
         <input name="email" type="email" required placeholder="Email"></input>
-        <input
-          name="username"
-          type="text"
-          required
-          placeholder="Username"
-        ></input>
-        <input
-          name="password"
-          type="Password"
-          required
-          placeholder="password"
-        ></input>
+        <input name="username" type="text" required placeholder="Username"></input>
+        <input name="password" type="Password" required placeholder="password"></input>
         <div>
           <input type="checkbox" required />
           <span>
@@ -79,8 +70,7 @@ export default function Register() {
             <a className="clickable" href="/terms" target="blank">
               Terms and Conditions
             </a>{" "}
-            &{" "}
-            <br />
+            & <br />
             <a className="clickable" href="/privacy" target="blank">
               Privacy Policy
             </a>

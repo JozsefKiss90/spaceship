@@ -8,7 +8,7 @@ import useHandleFetchError from "../../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function AddShip() {
-  const { stationId } = useOutletContext();
+  const { station } = useOutletContext();
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -44,8 +44,8 @@ export default function AddShip() {
       try {
         const urls = [
           `/api/v1/ship/color`,
-          `/api/v1/base/${stationId}/storage/resources`,
-          `/api/v1/base/${stationId}/hangar`,
+          `/api/v1/base/${station.id}/storage/resources`,
+          `/api/v1/base/${station.id}/hangar`,
         ];
         const [colors, resources, hangar] = await Promise.all(
           urls.map(async (url) => {
@@ -67,14 +67,7 @@ export default function AddShip() {
         });
       }
     }
-  }, [
-    colors,
-    storage,
-    hasAvailableDock,
-    stationId,
-    handleFetchError,
-    notifDispatch,
-  ]);
+  }, [colors, storage, hasAvailableDock, station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     getStationData();
@@ -109,7 +102,7 @@ export default function AddShip() {
 
   async function addShip(shipData) {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/add/ship`, {
+      const res = await fetch(`/api/v1/base/${station.id}/add/ship`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +116,7 @@ export default function AddShip() {
         notifDispatch({
           type: "add",
           message: "New ship built.",
-          timer: 5
+          timer: 5,
         });
         navigate(`/station/ship/${data}`);
       } else {
@@ -141,16 +134,10 @@ export default function AddShip() {
   function AddButton() {
     if (!hasAvailableDock) {
       return (
-        <div style={{ color: "red", textShadow: "1px 1px black" }}>
-          No available dock in hangar
-        </div>
+        <div style={{ color: "red", textShadow: "1px 1px black" }}>No available dock in hangar</div>
       );
     } else if (!checkStorage()) {
-      return (
-        <div style={{ color: "red", textShadow: "1px 1px black" }}>
-          Not enough resources
-        </div>
-      );
+      return <div style={{ color: "red", textShadow: "1px 1px black" }}>Not enough resources</div>;
     } else {
       return (
         <div>
@@ -183,11 +170,7 @@ export default function AddShip() {
         </div>
         <div>
           <label htmlFor="type">Type: </label>
-          <select
-            name="type"
-            id="type"
-            onChange={(e) => setShipType(e.target.value)}
-          >
+          <select name="type" id="type" onChange={(e) => setShipType(e.target.value)}>
             <option value="MINER">Miner</option>
             <option value="SCOUT">Scout</option>
           </select>

@@ -1,6 +1,6 @@
 .station-bar {
   display: grid;
-  grid-template-rows: 1fr 5fr 7fr;
+  grid-template-rows: 85px 3fr 4fr;
   gap: 20px;
 }
 

@@ -6,7 +6,7 @@ import useHandleFetchError from "../../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../../notifications/NotificationContext";
 
 export default function LocationListPage() {
-  const { stationId } = useOutletContext();
+  const { station } = useOutletContext();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export default function LocationListPage() {
 
   const fetchShips = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/hangar`);
+      const res = await fetch(`/api/v1/base/${station.id}/hangar`);
       if (res.ok) {
         const data = await res.json();
         setAvailableShips(
@@ -67,7 +67,7 @@ export default function LocationListPage() {
         type: "generic error",
       });
     }
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchShips();

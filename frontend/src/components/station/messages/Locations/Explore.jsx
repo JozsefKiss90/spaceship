@@ -6,7 +6,7 @@ import useHandleFetchError from "../../../../hooks/useHandleFetchError";
 import "./Explore.css";
 
 export default function Explore() {
-  const { stationId } = useOutletContext();
+  const { station } = useOutletContext();
   const notifDispatch = useNotificationsDispatch();
   const handleFetchError = useHandleFetchError();
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function Explore() {
 
   const fetchScoutShips = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/hangar`);
+      const res = await fetch(`/api/v1/base/${station.id}/hangar`);
       if (res.ok) {
         const data = await res.json();
         setAvailableShips(
@@ -32,7 +32,7 @@ export default function Explore() {
         type: "generic error",
       });
     }
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station.id, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchScoutShips();

@@ -1,6 +1,6 @@
 .lvl-display {
   text-align: center;
-  border: 2px solid green;
+  border: 2px solid rgba(0, 204, 0, 0.95);
   border-radius: 5px;
   padding: 2px 8px;
   box-sizing: border-box;

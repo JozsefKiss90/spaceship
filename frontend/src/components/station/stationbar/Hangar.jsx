@@ -1,13 +1,12 @@
 import "./Hangar.css";
 import { useCallback, useEffect, useState } from "react";
 import { useHangarContext } from "../HangarContext";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 import LevelDisplay from "./LevelDisplay";
 
-export default function Hangar() {
-  const { stationId } = useOutletContext();
+export default function Hangar({ station }) {
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -16,7 +15,7 @@ export default function Hangar() {
 
   const fetchHangar = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/hangar`);
+      const res = await fetch(`/api/v1/base/${station.id}/hangar`);
       if (res.ok) {
         const data = await res.json();
         setHangar(data);
@@ -29,7 +28,7 @@ export default function Hangar() {
         type: "generic error",
       });
     }
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchHangar();

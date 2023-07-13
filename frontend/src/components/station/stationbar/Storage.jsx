@@ -1,13 +1,12 @@
 import "./Storage.css";
 import { useCallback, useEffect, useState } from "react";
 import { useStorageContext } from "../StorageContext";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
 import LevelDisplay from "./LevelDisplay";
 
-export default function Storage() {
-  const { stationId } = useOutletContext();
+export default function Storage({ station }) {
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -16,7 +15,7 @@ export default function Storage() {
 
   const fetchStorage = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/storage`);
+      const res = await fetch(`/api/v1/base/${station.id}/storage`);
       if (res.ok) {
         const data = await res.json();
         setStorage(data);
@@ -29,7 +28,7 @@ export default function Storage() {
         type: "generic error",
       });
     }
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchStorage();
@@ -70,7 +69,7 @@ export default function Storage() {
 }
 
 function StorageList({ resources }) {
-  if (resources.length === 0) {
+  if (Object.keys(resources).length === 0) {
     return (
       <div className="stbar-list">
         <div className="resource-row">No resources yet</div>
