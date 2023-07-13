@@ -1,17 +1,4 @@
-.message-log {
-  min-width: fit-content;
-  width: -moz-available;
-  width: 100%;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-evenly;
-  margin: 10px;
-  height: 80vh;
-}
-
 .messages {
-  width: 50vw;
-  height: 92%;
   background-image: -webkit-linear-gradient(
     rgba(0, 89, 0, 0.75),
     rgba(0, 96, 0, 0.35),
@@ -46,11 +33,3 @@
   justify-content: flex-start;
   align-items: center;
 }
-
-/*.container>div {*/
-/*    height: 45px;*/
-/*    display: flex;*/
-/*    justify-content: flex-start;*/
-/*    align-items: center;*/
-/*    justify-items: center;*/
-/*}*/

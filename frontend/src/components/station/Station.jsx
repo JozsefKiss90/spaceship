@@ -17,16 +17,14 @@ const Station = () => {
   return (
     <>
       <div className="station">
-          <StorageStationContext>
-            <HangarStationContext>
-              <StationBar></StationBar>
-              <div className="message-log">
-                <div className="messages">
-                  <Outlet context={{ ...context }} />
-                </div>
-              </div>
-            </HangarStationContext>
-          </StorageStationContext>
+        <StorageStationContext>
+          <HangarStationContext>
+            <StationBar></StationBar>
+            <div className="messages">
+              <Outlet context={{ ...context }} />
+            </div>
+          </HangarStationContext>
+        </StorageStationContext>
       </div>
     </>
   );
