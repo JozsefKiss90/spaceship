@@ -2,7 +2,8 @@ package com.codecool.spaceship.service;
 
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.dto.HangarDTO;
-import com.codecool.spaceship.model.dto.NewShipDTO;
+import com.codecool.spaceship.model.dto.SpaceStationDataDTO;
+import com.codecool.spaceship.model.dto.ship.NewShipDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.exception.DataNotFoundException;
@@ -45,18 +46,11 @@ public class StationService {
         return stationManager.getStationDTO();
     }
 
-    public SpaceStationDTO getBaseByUserId(long userId) throws DataNotFoundException {
+    public SpaceStationDataDTO getBaseDataForCurrentUser() throws DataNotFoundException {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                || Objects.equals(user.getId(), userId)) {
-            SpaceStation station = spaceStationRepository.getSpaceStationByUserId(userId)
-                    .orElseThrow(() -> new DataNotFoundException("No station found with user id %d".formatted(userId)));
-            SpaceStationManager stationManager = new SpaceStationManager(station, levelService);
-            return stationManager.getStationDTO();
-        } else {
-            throw new SecurityException("You don't have authority to access this station");
-        }
-
+            SpaceStation station = spaceStationRepository.getSpaceStationByUser(user)
+                    .orElseThrow(() -> new DataNotFoundException("No station found for user"));
+            return new SpaceStationDataDTO(station);
     }
 
     public boolean addResources(long stationId, Map<ResourceType, Integer> resources) throws StorageException, DataNotFoundException {
@@ -77,8 +71,11 @@ public class StationService {
         if (newShipDTO.type() == ShipType.MINER) {
             ship = MinerShipManager.createNewMinerShip(levelService, newShipDTO.name(), newShipDTO.color());
             ship.setUser(station.getUser());
+        } else if (newShipDTO.type() == ShipType.SCOUT) {
+            ship = ScoutShipManager.createNewScoutShip(levelService, newShipDTO.name(), newShipDTO.color());
+            ship.setUser(station.getUser());
         } else {
-            return 0;
+            throw new IllegalArgumentException("Ship type not recognized");
         }
 
         SpaceStationManager stationManager = new SpaceStationManager(station, levelService);

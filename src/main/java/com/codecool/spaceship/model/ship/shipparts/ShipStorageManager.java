@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class ShipStorageManager extends AbstractStorageManager {
 
-    private static final UpgradeableType type = UpgradeableType.SHIP_STORAGE;
+    private static final UpgradeableType TYPE = UpgradeableType.SHIP_STORAGE;
 
     public ShipStorageManager(LevelService levelService, int currentLevel, Map<ResourceType, Integer> storedResources) {
-        super(levelService, type, currentLevel, storedResources);
+        super(levelService, TYPE, currentLevel, storedResources);
     }
     public ShipStorageManager(LevelService levelService) {
         this(levelService, 1, new HashMap<>());

@@ -1,7 +1,8 @@
 package com.codecool.spaceship.controller;
 
 import com.codecool.spaceship.model.dto.HangarDTO;
-import com.codecool.spaceship.model.dto.NewShipDTO;
+import com.codecool.spaceship.model.dto.SpaceStationDataDTO;
+import com.codecool.spaceship.model.dto.ship.NewShipDTO;
 import com.codecool.spaceship.model.dto.SpaceStationDTO;
 import com.codecool.spaceship.model.dto.SpaceStationStorageDTO;
 import com.codecool.spaceship.model.resource.ResourceType;
@@ -29,9 +30,9 @@ public class SpaceStationController {
         return stationService.getBaseById(baseId);
     }
 
-    @GetMapping({"/user/{userId}"})
-    public SpaceStationDTO getBaseByUserId(@PathVariable long userId) {
-        return stationService.getBaseByUserId(userId);
+    @GetMapping({"/"})
+    public SpaceStationDataDTO getBaseDataForCurrentUser() {
+        return stationService.getBaseDataForCurrentUser();
     }
 
     @PostMapping("/{baseId}/add/resources")

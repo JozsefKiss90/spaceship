@@ -15,6 +15,8 @@ public class ShipManagerFactory {
     public SpaceShipManager getSpaceShipManager(SpaceShip ship) {
         if (ship instanceof MinerShip) {
             return new MinerShipManager(levelService, (MinerShip) ship);
+        } else if (ship instanceof ScoutShip) {
+            return new ScoutShipManager(levelService, (ScoutShip) ship);
         } else {
             throw new IllegalArgumentException("This ship type is not supported.");
         }

@@ -1,13 +1,13 @@
 package com.codecool.spaceship.model.mission;
 
-import com.codecool.spaceship.model.Location;
 import com.codecool.spaceship.model.UserEntity;
 import com.codecool.spaceship.model.ship.SpaceShip;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,9 +15,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
-public class Mission {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Transactional
+public abstract class Mission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +29,8 @@ public class Mission {
     private LocalDateTime approxEndTime;
     @Enumerated(value = EnumType.STRING)
     private MissionStatus currentStatus;
-    @Enumerated(value = EnumType.STRING)
-    private MissionType missionType;
     private long travelDurationInSecs;
     private long activityDurationInSecs;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Location location;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ship_id")
     private SpaceShip ship;

@@ -11,11 +11,11 @@ import java.util.Set;
 
 public class HangarManager extends Upgradeable {
 
-    private static final UpgradeableType type = UpgradeableType.HANGAR;
+    private static final UpgradeableType TYPE = UpgradeableType.HANGAR;
     private final Set<SpaceShip> shipSet;
 
     public HangarManager(LevelService levelService, int currentLevel, Set<SpaceShip> shipSet) {
-        super(levelService, type, currentLevel);
+        super(levelService, TYPE, currentLevel);
         if (shipSet.size() > super.currentLevel.getEffect()) {
             throw new StorageException("Ships in hangar can't exceed %d at this level.".formatted(super.currentLevel.getEffect()));
         }

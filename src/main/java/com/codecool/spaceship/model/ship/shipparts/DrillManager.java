@@ -6,10 +6,10 @@ import com.codecool.spaceship.service.LevelService;
 
 public class DrillManager extends Upgradeable {
 
-    private static final UpgradeableType type = UpgradeableType.DRILL;
+    private static final UpgradeableType TYPE = UpgradeableType.DRILL;
 
     public DrillManager(LevelService levelService, int currentLevel) {
-        super(levelService, type, currentLevel);
+        super(levelService, TYPE, currentLevel);
     }
     public DrillManager(LevelService levelService) {
         this(levelService, 1);

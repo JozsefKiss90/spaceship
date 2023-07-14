@@ -1,12 +1,12 @@
 import "./Hangar.css";
 import { useCallback, useEffect, useState } from "react";
 import { useHangarContext } from "../HangarContext";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useHandleFetchError from "../../../hooks/useHandleFetchError";
 import { useNotificationsDispatch } from "../../notifications/NotificationContext";
+import LevelDisplay from "./LevelDisplay";
 
-function Hangar() {
-  const { stationId } = useOutletContext();
+export default function Hangar({ station }) {
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -15,7 +15,7 @@ function Hangar() {
 
   const fetchHangar = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/hangar`);
+      const res = await fetch(`/api/v1/base/${station.id}/hangar`);
       if (res.ok) {
         const data = await res.json();
         setHangar(data);
@@ -28,7 +28,7 @@ function Hangar() {
         type: "generic error",
       });
     }
-  }, [stationId, handleFetchError, notifDispatch]);
+  }, [station, handleFetchError, notifDispatch]);
 
   useEffect(() => {
     fetchHangar();
@@ -37,51 +37,35 @@ function Hangar() {
   if (hangar === null) {
     return (
       <div className="hangar">
-        <div className="menu">HANGAR loading...</div>
+        <div className="menu">
+          <LevelDisplay level={"/"} />
+          <div>
+            <div>HANGAR</div>
+            <div>Loading...</div>
+          </div>
+        </div>
       </div>
     );
   }
   return (
     <div className="hangar">
       <div className="menu">
+        <LevelDisplay level={hangar.level} />
         <div>
-          {"HANGAR | lvl: " +
-            hangar.level +
-            " | " +
-            (hangar.capacity - hangar.freeDocks) +
-            " / " +
-            hangar.capacity}
+          <div>HANGAR</div>
+          <div>{`${hangar.capacity - hangar.freeDocks}/${hangar.capacity}`}</div>
         </div>
         <button
-          className="button"
+          className="button push"
           onClick={() => {
             navigate("/station/upgrade/hangar");
           }}
+          disabled={hangar.fullyUpgraded}
         >
-          Upgrade
+          {hangar.fullyUpgraded ? "Max level" : "Upgrade"}
         </button>
       </div>
-      <div className="ship-list">
-        {Object.keys(hangar.ships).length === 0 ? (
-          <p>No ships yet</p>
-        ) : (
-          hangar.ships
-            .sort((a, b) => a.id - b.id)
-            .map((ship) => {
-              return (
-                <div
-                  className="shiplist"
-                  onClick={() => {
-                    navigate(`ship/${ship.id}`);
-                  }}
-                  key={ship.id}
-                >
-                  {ship.name} - {ship.type}
-                </div>
-              );
-            })
-        )}
-      </div>
+      <ShipList ships={hangar.ships} />
       <div className="add-ship-btn">
         <button
           className="button"
@@ -96,4 +80,34 @@ function Hangar() {
   );
 }
 
-export default Hangar;
+function ShipList({ ships }) {
+  const navigate = useNavigate();
+
+  if (ships.length === 0) {
+    return (
+      <div className="ship-list stbar-list">
+        <p>No ships yet</p>
+      </div>
+    );
+  } else {
+    return (
+      <div className="ship-list stbar-list">
+        {ships
+          .sort((a, b) => a.id - b.id)
+          .map((ship) => {
+            return (
+              <div
+                className="shiplist"
+                onClick={() => {
+                  navigate(`ship/${ship.id}`);
+                }}
+                key={ship.id}
+              >
+                {ship.name} - {ship.type}
+              </div>
+            );
+          })}
+      </div>
+    );
+  }
+}

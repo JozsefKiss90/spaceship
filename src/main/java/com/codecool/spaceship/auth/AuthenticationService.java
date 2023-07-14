@@ -1,38 +1,28 @@
 package com.codecool.spaceship.auth;
 
 import com.codecool.spaceship.config.JwtService;
-import com.codecool.spaceship.model.Role;
 import com.codecool.spaceship.model.UserEntity;
-import com.codecool.spaceship.model.ship.MinerShip;
-import com.codecool.spaceship.model.ship.MinerShipManager;
-import com.codecool.spaceship.model.ship.shipparts.Color;
-import com.codecool.spaceship.model.station.SpaceStation;
-import com.codecool.spaceship.model.station.SpaceStationManager;
 import com.codecool.spaceship.repository.UserRepository;
-import com.codecool.spaceship.service.LevelService;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final LevelService levelService;
+    private final NewUserService newUserService;
 
     public Cookie register(RegisterRequest request) {
         checkUsernameAndEmailAvailability(request.getUsername(), request.getEmail());
-        UserEntity user = createUser(request);
+        UserEntity user = newUserService.createUser(request);
         String jwtToken = jwtService.generateToken(user);
         return createCookie(jwtToken);
     }
@@ -53,25 +43,6 @@ public class AuthenticationService {
         jwtCookie.setDomain(System.getenv("domain"));
         jwtCookie.setPath("/");
         return jwtCookie;
-    }
-
-    private UserEntity createUser(RegisterRequest request) {
-        UserEntity user = UserEntity.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
-
-        SpaceStation spaceStation = SpaceStationManager.createNewSpaceStation("%s's Station".formatted(request.getUsername()));
-        MinerShip minerShip = MinerShipManager.createNewMinerShip(levelService, "Miner Ship #1", Color.SAPPHIRE);
-
-        user.setSpaceStation(spaceStation);
-        spaceStation.setUser(user);
-        spaceStation.setHangar(Set.of(minerShip));
-        minerShip.setStation(spaceStation);
-        minerShip.setUser(user);
-        return userRepository.save(user);
     }
 
     private void checkUsernameAndEmailAvailability(String username, String email) {

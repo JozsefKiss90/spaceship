@@ -10,9 +10,15 @@ public enum ShipType {
             ResourceType.METAL, 50,
             ResourceType.CRYSTAL, 20,
             ResourceType.SILICONE, 20
+    )),
+
+    SCOUT(Map.of(
+            ResourceType.METAL, 10,
+            ResourceType.CRYSTAL, 10,
+            ResourceType.SILICONE, 10
     ));
 
-    private Map<ResourceType, Integer> cost;
+    private final Map<ResourceType, Integer> cost;
 
     ShipType(Map<ResourceType, Integer> cost) {
         this.cost = cost;

@@ -8,7 +8,7 @@ import { useNotificationsDispatch } from "../../notifications/NotificationContex
 
 export default function StationUpgrade() {
   const { stationModule } = useParams();
-  const { stationId } = useOutletContext();
+  const { station } = useOutletContext();
   const navigate = useNavigate();
   const handleFetchError = useHandleFetchError();
   const notifDispatch = useNotificationsDispatch();
@@ -26,32 +26,25 @@ export default function StationUpgrade() {
       setCost(null);
       setLoading(true);
       try {
-        const res = await fetch(
-          `/api/v1/base/${stationId}/${stationModule}/upgrade`,
-          { signal }
-        );
+        const res = await fetch(`/api/v1/base/${station.id}/${stationModule}/upgrade`, { signal });
         if (res.ok) {
           const data = await res.json();
           setCost(data);
         } else {
           handleFetchError(res);
         }
+        setLoading(false);
       } catch (err) {
-        console.error(err);
-        notifDispatch({
-          type: "generic error",
-        });
+        if (err.name !== "AbortError") {
+          console.error(err);
+          notifDispatch({
+            type: "generic error",
+          });
+          setLoading(false);
+        }
       }
-      setLoading(false);
     },
-    [
-      modules,
-      stationModule,
-      navigate,
-      stationId,
-      handleFetchError,
-      notifDispatch,
-    ]
+    [modules, stationModule, navigate, station, handleFetchError, notifDispatch]
   );
 
   useEffect(() => {
@@ -67,7 +60,7 @@ export default function StationUpgrade() {
 
   async function onConfirm() {
     try {
-      const res = await fetch(`/api/v1/base/${stationId}/${stationModule}/upgrade`, {
+      const res = await fetch(`/api/v1/base/${station.id}/${stationModule}/upgrade`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,16 +68,16 @@ export default function StationUpgrade() {
         body: JSON.stringify({}),
       });
       if (res.ok) {
-          storageSetter({ type: "update" });
-          if (stationModule === "hangar") {
-            hangarSetter({ type: "update" });
-          }
-          notifDispatch({
-            type: "add",
-            message: `${stationModule.toUpperCase()} upgraded.`,
-            timer: 5
-          });
-          navigate("/station");
+        storageSetter({ type: "update" });
+        if (stationModule === "hangar") {
+          hangarSetter({ type: "update" });
+        }
+        notifDispatch({
+          type: "add",
+          message: `${stationModule.toUpperCase()} upgraded.`,
+          timer: 5,
+        });
+        navigate("/station");
       } else {
         handleFetchError(res);
       }
@@ -102,7 +95,5 @@ export default function StationUpgrade() {
   if (cost === null) {
     return <div>Not available</div>;
   }
-  return (
-    <ResourceNeeded cost={cost} item={stationModule} onConfirm={onConfirm} />
-  );
+  return <ResourceNeeded cost={cost} item={stationModule} onConfirm={onConfirm} />;
 }

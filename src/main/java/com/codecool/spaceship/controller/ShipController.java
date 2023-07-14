@@ -1,8 +1,8 @@
 package com.codecool.spaceship.controller;
 
-import com.codecool.spaceship.model.dto.NewShipDTO;
-import com.codecool.spaceship.model.dto.ShipDTO;
-import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.NewShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.ShipType;
 import com.codecool.spaceship.model.ship.shipparts.Color;

@@ -88,7 +88,7 @@ public class SpaceStationManager {
         return storage.addResource(resourceType, quantity);
     }
     public boolean addResourcesFromShip(MinerShipManager shipManager, Map<ResourceType, Integer> resources) throws StorageException {
-        if (hasShipAvailable(shipManager.getMinerShip()) && shipManager.hasResourcesInStorage(resources)) {
+        if (hasShipAvailable(shipManager.getShip()) && shipManager.hasResourcesInStorage(resources)) {
             int sum = resources.values().stream()
                     .mapToInt(i -> i)
                     .sum();

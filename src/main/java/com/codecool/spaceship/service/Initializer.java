@@ -1,9 +1,16 @@
 package com.codecool.spaceship.service;
 
-import com.codecool.spaceship.model.*;
+import com.codecool.spaceship.model.Level;
+import com.codecool.spaceship.model.Role;
+import com.codecool.spaceship.model.UpgradeableType;
+import com.codecool.spaceship.model.UserEntity;
+import com.codecool.spaceship.model.location.Location;
+import com.codecool.spaceship.model.location.LocationDataGenerator;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
+import com.codecool.spaceship.model.ship.ScoutShip;
+import com.codecool.spaceship.model.ship.ScoutShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
@@ -14,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,14 +35,16 @@ public class Initializer {
     private final LevelRepository levelRepository;
     private final PasswordEncoder passwordEncoder;
     private final LevelService levelService;
+    private final LocationDataGenerator locationDataGenerator;
 
     @Autowired
-    public Initializer(UserRepository userRepository, LocationRepository locationRepository, LevelRepository levelRepository, PasswordEncoder passwordEncoder, LevelService levelService) {
+    public Initializer(UserRepository userRepository, LocationRepository locationRepository, LevelRepository levelRepository, PasswordEncoder passwordEncoder, LevelService levelService, LocationDataGenerator locationDataGenerator) {
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.levelRepository = levelRepository;
         this.passwordEncoder = passwordEncoder;
         this.levelService = levelService;
+        this.locationDataGenerator = locationDataGenerator;
     }
 
     public void initialize() {
@@ -41,18 +52,20 @@ public class Initializer {
             return;
         }
         initLevels();
-        initUsers();
-        initLocations();
+        initAdmin();
+        initDemoUser();
     }
 
-    private void initUsers() {
+    private void initAdmin() {
+        LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
+
         UserEntity admin = UserEntity.builder()
                 .username("Mr. Admin")
                 .email("admin@admail.min")
                 .password(passwordEncoder.encode("password"))
                 .role(Role.ADMIN)
                 .build();
-        MinerShip minerShip1 = MinerShipManager.createNewMinerShip(levelService,"Adminship", Color.DIAMOND);
+        MinerShip minerShip1 = MinerShipManager.createNewMinerShip(levelService, "Adminship", Color.DIAMOND);
         SpaceStation spaceStation1 = SpaceStationManager.createNewSpaceStation("Admin-i-station");
 
         minerShip1.setUser(admin);
@@ -64,30 +77,83 @@ public class Initializer {
         admin.setSpaceStation(spaceStation1);
         userRepository.save(admin);
 
+        Location metalPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(1)
+                .discovered(now)
+                .resourceType(ResourceType.METAL)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location crystalPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(2)
+                .discovered(now)
+                .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location siliconePlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(3)
+                .discovered(now)
+                .resourceType(ResourceType.SILICONE)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        Location plutoniumPlanet = Location.builder()
+                .name(locationDataGenerator.determineName())
+                .distanceFromStation(4)
+                .discovered(now)
+                .resourceType(ResourceType.PLUTONIUM)
+                .resourceReserve(200)
+                .user(admin)
+                .build();
+        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet));
+    }
+
+    public void initDemoUser() {
+        LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
+
         UserEntity user = UserEntity.builder()
-                .username("TestGuy")
-                .email("test@testmail.tst")
+                .username("DemoGuy")
+                .email("demo@demomail.dm")
                 .password(passwordEncoder.encode("password"))
                 .role(Role.USER)
                 .build();
 
-        MinerShip minerShip2 = MinerShipManager.createNewMinerShip(levelService,"Built2Mine", Color.DIAMOND);
-        minerShip2.setEngineLevel(1);
-        minerShip2.setShieldEnergy(20);
-        minerShip2.setDrillLevel(2);
+        SpaceStation spaceStation2 = SpaceStationManager.createNewSpaceStation("Demo-n-station");
 
-        SpaceStation spaceStation2 = SpaceStationManager.createNewSpaceStation("Station ONE");
+        MinerShip minerDemo = MinerShipManager.createNewMinerShip(levelService, "Miner Demo", Color.DIAMOND);
+        minerDemo.setEngineLevel(5);
+        minerDemo.setShieldLevel(5);
+        minerDemo.setShieldEnergy(200);
+        minerDemo.setDrillLevel(5);
+        minerDemo.setStorageLevel(5);
+        minerDemo.setStoredResources(Map.of(
+                ResourceType.METAL, 50,
+                ResourceType.PLUTONIUM, 10
+        ));
+
+        minerDemo.setUser(user);
+        minerDemo.setStation(spaceStation2);
+
+        ScoutShip scoutDemo = ScoutShipManager.createNewScoutShip(levelService, "Scout Demo", Color.RUBY);
+        scoutDemo.setEngineLevel(5);
+        scoutDemo.setShieldLevel(5);
+        scoutDemo.setShieldEnergy(200);
+        scoutDemo.setScannerLevel(5);
+
+        scoutDemo.setUser(user);
+        scoutDemo.setStation(spaceStation2);
+
+        spaceStation2.setHangar(Set.of(minerDemo, scoutDemo));
         spaceStation2.setStorageLevel(5);
-
-        minerShip2.setUser(user);
-        minerShip2.setStation(spaceStation2);
-
-        spaceStation2.setHangar(Set.of(minerShip2));
         spaceStation2.setStoredResources(Map.of(
-                ResourceType.METAL, 10000,
-                ResourceType.CRYSTAL, 10000,
-                ResourceType.PLUTONIUM, 10000,
-                ResourceType.SILICONE, 10000
+                ResourceType.METAL, 500,
+                ResourceType.CRYSTAL, 400,
+                ResourceType.SILICONE, 400,
+                ResourceType.PLUTONIUM, 150
         ));
         spaceStation2.setUser(user);
 
@@ -95,37 +161,55 @@ public class Initializer {
 
         userRepository.save(user);
 
-    }
-
-    private void initLocations() {
-        Location morpheus = Location.builder()
-                .name("Morpheus")
+        Location metalPlanet = Location.builder()
+                .name("Metal Planet")
                 .distanceFromStation(1)
+                .discovered(now.minusHours(5))
                 .resourceType(ResourceType.METAL)
+                .resourceReserve(1000)
+                .user(user)
                 .build();
-        Location koboh = Location.builder()
-                .name("Koboh")
-                .distanceFromStation(4)
+        Location crystalPlanet = Location.builder()
+                .name("Crystal Planet")
+                .distanceFromStation(2)
+                .discovered(now.minusHours(2))
                 .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(500)
+                .user(user)
                 .build();
-        Location palaven = Location.builder()
-                .name("Palaven")
-                .distanceFromStation(11)
+        Location siliconePlanet = Location.builder()
+                .name("Silicone Planet")
+                .distanceFromStation(3)
+                .discovered(now.minusHours(10))
                 .resourceType(ResourceType.SILICONE)
+                .resourceReserve(100)
+                .user(user)
                 .build();
-        Location crosie = Location.builder()
-                .name("Crosie 3W")
-                .distanceFromStation(13)
+        Location plutoniumPlanet = Location.builder()
+                .name("Plutonium Planet")
+                .distanceFromStation(4)
+                .discovered(now)
                 .resourceType(ResourceType.PLUTONIUM)
+                .resourceReserve(10)
+                .user(user)
                 .build();
-        locationRepository.saveAll(Set.of(morpheus, koboh, palaven, crosie));
+        Location depletedPlanet = Location.builder()
+                .name("Depleted Planet")
+                .distanceFromStation(4)
+                .discovered(now.minusHours(20))
+                .resourceType(ResourceType.CRYSTAL)
+                .resourceReserve(0)
+                .user(user)
+                .build();
+        locationRepository.saveAll(List.of(metalPlanet, crystalPlanet, siliconePlanet, plutoniumPlanet, depletedPlanet));
+
     }
 
     private void initLevels() {
         Level engine1 = Level.builder()
                 .type(UpgradeableType.ENGINE)
                 .level(1)
-                .effect(400)
+                .effect(1)
                 .max(false)
                 .cost(Map.of())
                 .build();
@@ -174,7 +258,7 @@ public class Initializer {
         Level drill1 = Level.builder()
                 .type(UpgradeableType.DRILL)
                 .level(1)
-                .effect(1200)
+                .effect(5)
                 .max(false)
                 .cost(Map.of())
                 .build();
@@ -356,7 +440,7 @@ public class Initializer {
         Level stationStorage5 = Level.builder()
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(5)
-                .effect(50000)
+                .effect(1500)
                 .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 300,
@@ -414,13 +498,63 @@ public class Initializer {
                 ))
                 .build();
 
+        Level scanner1 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(1)
+                .effect(1)
+                .max(false)
+                .cost(Map.of())
+                .build();
+        Level scanner2 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(2)
+                .effect(2)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 50,
+                        ResourceType.CRYSTAL, 5
+                ))
+                .build();
+        Level scanner3 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(3)
+                .effect(5)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 100,
+                        ResourceType.CRYSTAL, 10
+                ))
+                .build();
+        Level scanner4 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(4)
+                .effect(10)
+                .max(false)
+                .cost(Map.of(
+                        ResourceType.METAL, 200,
+                        ResourceType.CRYSTAL, 50
+                ))
+                .build();
+        Level scanner5 = Level.builder()
+                .type(UpgradeableType.SCANNER)
+                .level(5)
+                .effect(25)
+                .max(true)
+                .cost(Map.of(
+                        ResourceType.METAL, 400,
+                        ResourceType.CRYSTAL, 100,
+                        ResourceType.PLUTONIUM, 50
+                ))
+                .build();
+
         levelRepository.saveAll(List.of(
                 engine1, engine2, engine3, engine4, engine5,
                 drill1, drill2, drill3, drill4, drill5,
                 shield1, shield2, shield3, shield4, shield5,
                 shipStorage1, shipStorage2, shipStorage3, shipStorage4, shipStorage5,
                 stationStorage1, stationStorage2, stationStorage3, stationStorage4, stationStorage5,
-                hangar1, hangar2, hangar3, hangar4, hangar5
+                hangar1, hangar2, hangar3, hangar4, hangar5,
+                scanner1, scanner2, scanner3, scanner4, scanner5
         ));
     }
 }

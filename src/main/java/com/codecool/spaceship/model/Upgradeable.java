@@ -16,8 +16,12 @@ public abstract class Upgradeable {
         this.currentLevel = levelService.getLevelByTypeAndLevel(type, level);
     }
 
+    public boolean isFullyUpgraded() {
+        return currentLevel.isMax();
+    }
+
     public Map<ResourceType,Integer> getUpgradeCost() throws UpgradeNotAvailableException {
-        if (currentLevel.isMax()) {
+        if (isFullyUpgraded()) {
             throw new UpgradeNotAvailableException("Already at max level");
         } else {
             Integer level = currentLevel.getLevel();
@@ -28,7 +32,7 @@ public abstract class Upgradeable {
     }
 
     public boolean upgrade() {
-        if (currentLevel.isMax()) {
+        if (isFullyUpgraded()) {
             throw new UpgradeNotAvailableException("Already at max level");
         } else {
             Integer level = currentLevel.getLevel();

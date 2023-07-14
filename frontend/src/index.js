@@ -7,11 +7,10 @@ import ErrorPage from './components/errorPages/ErrorPage';
 import Home from './components/Home';
 import Station from './components/station/Station';
 import Welcome from './components/station/messages/Welcome';
-import AddShip from './components/station/messages/AddShip';
-import DisplayMinerShip from './components/station/messages/DisplayMinerShip';
-import LocationList from './components/station/messages/LocationList';
-import MissionList from './components/station/messages/MissionList';
-import Mission from './components/station/messages/Mission';
+import AddShip from './components/station/messages/Spaceship/AddShip';
+import LocationListPage from './components/station/messages/Locations/LocationListPage';
+import MissionList from './components/station/messages/Mission/MissionList';
+import Mission from './components/station/messages/Mission/Mission';
 import StationUpgrade from './components/station/messages/StationUpgrade';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -23,6 +22,8 @@ import AccessDeniedPage from './components/errorPages/AccessDeniedPage';
 import GenericErrorPage from './components/errorPages/GenericErrorPage';
 import LevelTypes from './components/admin/LevelTypes';
 import LevelListPage from './components/admin/LevelListPage';
+import SpaceShip from './components/station/messages/Spaceship/SpaceShip';
+import Explore from './components/station/messages/Locations/Explore';
 
 const router = createBrowserRouter([
     {
@@ -48,11 +49,15 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/station/ship/:id',
-                        element: <DisplayMinerShip />
+                        element: <SpaceShip />
                     },
                     {
                         path: '/station/locations',
-                        element: <LocationList />
+                        element: <LocationListPage />
+                    },
+                    {
+                        path: '/station/locations/explore',
+                        element: <Explore />
                     },
                     {
                         path: '/station/missions',

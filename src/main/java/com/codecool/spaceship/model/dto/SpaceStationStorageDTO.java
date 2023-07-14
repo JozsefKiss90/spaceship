@@ -5,10 +5,11 @@ import com.codecool.spaceship.model.station.StationStorageManager;
 
 import java.util.Map;
 
-public record SpaceStationStorageDTO(Map<ResourceType, Integer> resources, int level, int capacity, int freeSpace) {
+public record SpaceStationStorageDTO(Map<ResourceType, Integer> resources, int level, int capacity, int freeSpace, boolean fullyUpgraded) {
 
     public SpaceStationStorageDTO(StationStorageManager storage) {
-        this(storage.getStoredResources(), storage.getCurrentLevel(), storage.getCurrentCapacity(), storage.getCurrentAvailableStorageSpace());
+        this(storage.getStoredResources(), storage.getCurrentLevel(), storage.getCurrentCapacity(),
+                storage.getCurrentAvailableStorageSpace(), storage.isFullyUpgraded());
     }
 
 }

@@ -1,7 +1,11 @@
 package com.codecool.spaceship.model.ship;
 
-import com.codecool.spaceship.model.dto.MinerShipDTO;
-import com.codecool.spaceship.model.dto.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.MinerShipDTO;
+import com.codecool.spaceship.model.dto.ship.ShipDetailDTO;
+import com.codecool.spaceship.model.dto.ship.part.DrillDTO;
+import com.codecool.spaceship.model.dto.ship.part.EngineDTO;
+import com.codecool.spaceship.model.dto.ship.part.ShieldDTO;
+import com.codecool.spaceship.model.dto.ship.part.ShipStorageDTO;
 import com.codecool.spaceship.model.exception.NoSuchPartException;
 import com.codecool.spaceship.model.exception.StorageException;
 import com.codecool.spaceship.model.exception.UpgradeNotAvailableException;
@@ -13,12 +17,7 @@ import java.util.*;
 
 public class MinerShipManager extends SpaceShipManager {
 
-    private static final List<ShipPart> PARTS = List.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
-    private static final Map<ResourceType, Integer> COST = new HashMap<>() {{
-        put(ResourceType.METAL, 50);
-        put(ResourceType.CRYSTAL, 20);
-        put(ResourceType.SILICONE, 20);
-    }};
+    private static final Set<ShipPart> PARTS = Set.of(ShipPart.ENGINE, ShipPart.SHIELD, ShipPart.DRILL, ShipPart.STORAGE);
     private final MinerShip minerShip;
     private ShipStorageManager storage;
     private DrillManager drill;
@@ -41,29 +40,22 @@ public class MinerShipManager extends SpaceShipManager {
         return ship;
     }
 
-    public MinerShip getMinerShip() {
-        return minerShip;
-    }
-
     @Override
     public ShipDetailDTO getDetailedDTO() {
+        createEngineIfNotExists();
+        createShieldIfNotExists();
+        createDrillIfNotExists();
+        createStorageIfNotExists();
         return new MinerShipDTO(
                 minerShip.getId(),
                 minerShip.getName(),
                 minerShip.getColor(),
                 ShipType.MINER,
                 minerShip.getCurrentMission(),
-                minerShip.getEngineLevel(),
-                getSpeed(),
-                minerShip.getShieldLevel(),
-                getShieldEnergy(),
-                getShieldMaxEnergy(),
-                minerShip.getDrillLevel(),
-                getDrillEfficiency(),
-                minerShip.getStorageLevel(),
-                getMaxStorageCapacity(),
-                getStorageContents()
-        );
+                new EngineDTO(engine),
+                new ShieldDTO(shield),
+                new DrillDTO(drill),
+                new ShipStorageDTO(storage));
     }
 
     public int getDrillEfficiency() {
@@ -102,7 +94,7 @@ public class MinerShipManager extends SpaceShipManager {
         return storage.removeResource(resourceType, amount);
     }
     @Override
-    public List<ShipPart> getPartTypes() {
+    public Set<ShipPart> getPartTypes() {
         return PARTS;
     }
 
@@ -140,8 +132,9 @@ public class MinerShipManager extends SpaceShipManager {
             case SHIELD -> {
                 createShieldIfNotExists();
                 shield.upgrade();
+                shield.setEnergyToMax();
                 minerShip.setShieldLevel(shield.getCurrentLevel());
-                minerShip.setShieldEnergy(shield.getMaxEnergy());
+                minerShip.setShieldEnergy(shield.getCurrentEnergy());
             }
             case DRILL -> {
                 createDrillIfNotExists();
@@ -160,7 +153,7 @@ public class MinerShipManager extends SpaceShipManager {
 
     @Override
     public Map<ResourceType, Integer> getCost() {
-        return new HashMap<>(COST);
+        return new HashMap<>(ShipType.MINER.getCost());
     }
 
     private void createStorageIfNotExists() {
