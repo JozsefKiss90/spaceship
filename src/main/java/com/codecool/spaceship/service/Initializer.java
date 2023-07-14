@@ -9,6 +9,8 @@ import com.codecool.spaceship.model.location.LocationDataGenerator;
 import com.codecool.spaceship.model.resource.ResourceType;
 import com.codecool.spaceship.model.ship.MinerShip;
 import com.codecool.spaceship.model.ship.MinerShipManager;
+import com.codecool.spaceship.model.ship.ScoutShip;
+import com.codecool.spaceship.model.ship.ScoutShipManager;
 import com.codecool.spaceship.model.ship.shipparts.Color;
 import com.codecool.spaceship.model.station.SpaceStation;
 import com.codecool.spaceship.model.station.SpaceStationManager;
@@ -114,29 +116,44 @@ public class Initializer {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
 
         UserEntity user = UserEntity.builder()
-                .username("TestGuy")
-                .email("test@testmail.tst")
+                .username("DemoGuy")
+                .email("demo@demomail.dm")
                 .password(passwordEncoder.encode("password"))
                 .role(Role.USER)
                 .build();
 
-        MinerShip minerShip2 = MinerShipManager.createNewMinerShip(levelService, "Built2Mine", Color.DIAMOND);
-        minerShip2.setEngineLevel(1);
-        minerShip2.setShieldEnergy(20);
-        minerShip2.setDrillLevel(2);
+        SpaceStation spaceStation2 = SpaceStationManager.createNewSpaceStation("Demo-n-station");
 
-        SpaceStation spaceStation2 = SpaceStationManager.createNewSpaceStation("Station ONE");
+        MinerShip minerDemo = MinerShipManager.createNewMinerShip(levelService, "Miner Demo", Color.DIAMOND);
+        minerDemo.setEngineLevel(5);
+        minerDemo.setShieldLevel(5);
+        minerDemo.setShieldEnergy(200);
+        minerDemo.setDrillLevel(5);
+        minerDemo.setStorageLevel(5);
+        minerDemo.setStoredResources(Map.of(
+                ResourceType.METAL, 50,
+                ResourceType.PLUTONIUM, 10
+        ));
+
+        minerDemo.setUser(user);
+        minerDemo.setStation(spaceStation2);
+
+        ScoutShip scoutDemo = ScoutShipManager.createNewScoutShip(levelService, "Scout Demo", Color.RUBY);
+        scoutDemo.setEngineLevel(5);
+        scoutDemo.setShieldLevel(5);
+        scoutDemo.setShieldEnergy(200);
+        scoutDemo.setScannerLevel(5);
+
+        scoutDemo.setUser(user);
+        scoutDemo.setStation(spaceStation2);
+
+        spaceStation2.setHangar(Set.of(minerDemo, scoutDemo));
         spaceStation2.setStorageLevel(5);
-
-        minerShip2.setUser(user);
-        minerShip2.setStation(spaceStation2);
-
-        spaceStation2.setHangar(Set.of(minerShip2));
         spaceStation2.setStoredResources(Map.of(
-                ResourceType.METAL, 10000,
-                ResourceType.CRYSTAL, 10000,
-                ResourceType.PLUTONIUM, 10000,
-                ResourceType.SILICONE, 10000
+                ResourceType.METAL, 500,
+                ResourceType.CRYSTAL, 400,
+                ResourceType.SILICONE, 400,
+                ResourceType.PLUTONIUM, 150
         ));
         spaceStation2.setUser(user);
 
@@ -192,7 +209,7 @@ public class Initializer {
         Level engine1 = Level.builder()
                 .type(UpgradeableType.ENGINE)
                 .level(1)
-                .effect(400)
+                .effect(1)
                 .max(false)
                 .cost(Map.of())
                 .build();
@@ -241,7 +258,7 @@ public class Initializer {
         Level drill1 = Level.builder()
                 .type(UpgradeableType.DRILL)
                 .level(1)
-                .effect(1200)
+                .effect(5)
                 .max(false)
                 .cost(Map.of())
                 .build();
@@ -423,7 +440,7 @@ public class Initializer {
         Level stationStorage5 = Level.builder()
                 .type(UpgradeableType.STATION_STORAGE)
                 .level(5)
-                .effect(50000)
+                .effect(1500)
                 .max(true)
                 .cost(Map.of(
                         ResourceType.METAL, 300,

@@ -38,6 +38,9 @@
   align-items: center;
 }
 
+.exp-form input {
+  max-width: 40px;
+}
 .exp-ships {
   grid-area: ship;
 }
