@@ -4,6 +4,15 @@ Browser-based strategy game, the user can act as a space station commander. The 
 ships and upgrade their parts. Ships can be used to discover locations and collect resources, which are necessary for building
 and upgrading.
 
+## Features
+ - After creating an account and logging in, the user can play the game
+ - Scout ships can be sent on missions to discover new planets
+ - Mining ships can be sent on missions to planets, which yield resources, but drain the planets
+ - Ships can be upgraded, their stats effect the results of the missions they are sent on
+ - New ships can be built, which allows for more missions to be run at the same time
+ - The station can be upgraded, increasing the resources and ships it can store
+ - Admins can edit the cost and effect of upgrades
+
 ## Stack
 - Frontend: JavaScript React
 - Backend: Java SpringBoot + Spring Security + JPA
@@ -38,3 +47,8 @@ Frontend:
 - The frontend will assume you're running the backend on localhost:8080, if you changed that, you need to update the proxy in the bottom of the package.json file
 - You can start the frontend with the `npm run` command, which will make the frontend reachable on localhost:3000, if you want to change that, create a .env.local file, and write PORT={port_you_want} into it before starting the frontend
 
+## After running
+
+- Play the game by creating your own user with registering
+- Play around with the demo user (username: DemoMan, password: password)
+- Try the admin features with the admin user (username: Mr. Admin, password: password)
