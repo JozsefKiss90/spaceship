@@ -31,8 +31,6 @@ class ScoutingMissionManagerTest {
     @Mock
     ScoutShipManager scoutShipManagerMock;
     @Mock
-    Random randomMock;
-    @Mock
     LocationDataGenerator locationDataGeneratorMock;
     @Mock
     Event eventMock;
@@ -122,6 +120,7 @@ class ScoutingMissionManagerTest {
                 .resourceReserve(50)
                 .distanceFromStation(10)
                 .resourceType(ResourceType.CRYSTAL)
+                .discovered(now.minusSeconds(5))
                 .build();
 
         ScoutingMission mission = ScoutingMission.builder()
