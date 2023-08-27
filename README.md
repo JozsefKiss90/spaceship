@@ -38,7 +38,7 @@ Backend:
 - You need JDK installed
 - From the root directory of the project, run `./mvnw clean install` to build the backend
 - Once it's built, if the db is in place, you can start it with `java -jar -Dusername={your_database_username} -Dpassword={your_database_password} target/spaceship-0.0.1.jar`
-- The server will need a few seconds to start, after that, you can reach it on localhost:8000, if you wish to change that, add --server.port={port_you_want} to the end of the start command
+- The server will need a few seconds to start, after that, you can reach it on localhost:8080, if you wish to change that, add --server.port={port_you_want} to the end of the start command
 
 Frontend:
 - You need Node.js and npm installed
