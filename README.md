@@ -1,4 +1,4 @@
-# MINUEND SPACESHIP GAME :video_game:
+# SPACESHIP GAME :video_game:
 
 Browser-based strategy game, the user can act as a space station commander. The aim is to upgrade your station, build
 ships and upgrade their parts. Ships can be used to discover locations and collect resources, which are necessary for building
