@@ -45,10 +45,9 @@ Frontend:
 - Navigate to the frontend directory
 - Install dependencies with the `npm ci` command
 - The frontend will assume you're running the backend on localhost:8080, if you changed that, you need to update the proxy in the bottom of the package.json file
-- You can start the frontend with the `npm run` command, which will make the frontend reachable on localhost:3000, if you want to change that, create a .env.local file, and write PORT={port_you_want} into it before starting the frontend
+- You can start the frontend with the `npm run start` command, which will make the frontend reachable on localhost:3000, if you want to change that, create a .env.local file, and write PORT={port_you_want} into it before starting the frontend
 
 ## After running
 
 - Play the game by creating your own user with registering
-- Play around with the demo user (username: DemoMan, password: password)
 - Try the admin features with the admin user (username: Mr. Admin, password: password)
